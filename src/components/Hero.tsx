@@ -21,7 +21,7 @@ export default function Hero({ onSearch }: HeroProps) {
         <img
           src="/luxury-authentic-dining-room-interior-design.jpg"
           alt="Luxury interior"
-          className="w-full h-full object-cover object-center md:object-center"
+          className="w-full h-full object-contain md:object-cover object-center"
         />
         <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/60 to-black/40" />
       </div>
