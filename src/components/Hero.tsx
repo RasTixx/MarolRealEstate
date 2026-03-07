@@ -1,5 +1,6 @@
 import { Search, MapPin, Home, Repeat2 } from 'lucide-react';
 import { useState } from 'react';
+import heroImage from '/luxury-authentic-dining-room-interior-design.jpg';
 
 interface HeroProps {
   onSearch: (searchTerm: string, transactionType: string, propertyType: string) => void;
@@ -19,7 +20,7 @@ export default function Hero({ onSearch }: HeroProps) {
     <section id="domov" className="relative py-24 overflow-hidden">
       <div className="absolute inset-0">
         <img
-          src="/luxury-authentic-dining-room-interior-design.jpg"
+          src={heroImage}
           alt="Luxury interior"
           className="w-full h-full object-cover"
         />
