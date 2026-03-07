@@ -7,7 +7,7 @@ export default function Header() {
   const isHomePage = location.pathname === '/';
 
   return (
-    <header className="bg-black/95 backdrop-blur-md border-b border-amber-500/20 fixed top-0 left-0 right-0 z-50 w-full" style={{ transform: 'translate3d(0, 0, 0)', WebkitTransform: 'translateZ(0)', willChange: 'transform', backfaceVisibility: 'hidden' }}>
+   <header className="bg-black/95 backdrop-blur-md border-b border-amber-500/20 fixed top-0 left-0 right-0 z-50 w-full">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center py-4">
           <Link to="/" className="flex items-center space-x-3">
