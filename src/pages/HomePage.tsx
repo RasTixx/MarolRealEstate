@@ -62,11 +62,13 @@ export default function HomePage() {
   return (
     <div className="min-h-screen bg-black">
       <Header />
-      <Hero onSearch={handleSearch} />
-      <PropertyList properties={filteredProperties} loading={loading} />
-      <About />
-      <Services />
-      <Contact />
+      <main>
+        <Hero onSearch={handleSearch} />
+        <PropertyList properties={filteredProperties} loading={loading} />
+        <About />
+        <Services />
+        <Contact />
+      </main>
       <Footer />
     </div>
   );

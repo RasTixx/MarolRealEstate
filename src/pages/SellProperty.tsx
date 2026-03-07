@@ -89,7 +89,7 @@ export default function SellProperty() {
     <div className="min-h-screen bg-black flex flex-col">
       <Header />
 
-      <main className="flex-grow">
+      <main className="flex-grow pt-20">
         <div className="bg-gradient-to-b from-amber-500/10 to-black py-20">
           <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="text-center mb-12">
