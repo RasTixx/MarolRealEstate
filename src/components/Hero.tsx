@@ -16,37 +16,26 @@ export default function Hero({ onSearch }: HeroProps) {
   };
 
   return (
-    <section
-      id="domov"
-      className="relative h-[420px] md:h-[600px] overflow-hidden flex items-center"
-    >
-      {/* Background Image */}
-      <img
-        src="/luxury-authentic-dining-room-interior-design.jpg"
-        alt="Luxury interior"
-        className="absolute inset-0 w-full h-full object-cover object-[center_30%]"
-      />
+    <section id="domov" className="relative py-16 md:py-24 overflow-hidden pt-24 md:pt-32">
+      <div className="absolute inset-0">
+        <img
+          src="/luxury-authentic-dining-room-interior-design.jpg"
+          alt="Luxury interior"
+          className="w-full h-full object-cover object-center md:object-center"
+        />
+        <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/60 to-black/40" />
+      </div>
 
-      {/* Dark overlay */}
-      <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/60 to-black/40" />
-
-      {/* Content */}
-      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
+      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-
-          {/* Left Text */}
           <div className="space-y-8">
             <div>
               <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-4 leading-tight text-white">
                 Nájdite svoj
-                <span className="bg-gradient-to-r from-amber-500 to-amber-300 bg-clip-text text-transparent">
-                  {" "}ideálny domov
-                </span>
+                <span className="bg-gradient-to-r from-amber-500 to-amber-300 bg-clip-text text-transparent"> ideálny domov</span>
               </h1>
-
               <p className="text-lg md:text-xl text-gray-300 leading-relaxed">
-                Vyberte si z tisícov nehnuteľností na Slovensku. Profesionálny prístup,
-                najlepšie ceny a overené ponuky.
+                Vyberte si z tisícov nehnuteľností na Slovensku. Profesionálny prístup, najlepšie ceny a overené ponuky.
               </p>
             </div>
 
@@ -55,7 +44,6 @@ export default function Hero({ onSearch }: HeroProps) {
                 <span className="text-3xl font-bold">500+</span>
                 <span className="text-sm text-gray-400">Aktívnych ponúk</span>
               </div>
-
               <div className="flex items-center space-x-2 text-amber-500">
                 <span className="text-3xl font-bold">15+</span>
                 <span className="text-sm text-gray-400">Rokov v odbore</span>
@@ -63,16 +51,10 @@ export default function Hero({ onSearch }: HeroProps) {
             </div>
           </div>
 
-          {/* Search Box */}
           <div className="bg-stone-900/90 backdrop-blur-xl rounded-2xl p-8 border border-amber-600/30 shadow-2xl shadow-amber-900/50">
             <form onSubmit={handleSearch} className="space-y-4">
-
-              {/* Transaction Type */}
               <div>
-                <label className="block text-sm font-medium text-amber-500 mb-2">
-                  Typ transakcie
-                </label>
-
+                <label className="block text-sm font-medium text-amber-500 mb-2">Typ transakcie</label>
                 <div className="grid grid-cols-2 gap-3">
                   {[
                     { value: 'predaj', label: 'Predaj', icon: Home },
@@ -81,9 +63,7 @@ export default function Hero({ onSearch }: HeroProps) {
                     <button
                       key={value}
                       type="button"
-                      onClick={() =>
-                        setTransactionType(transactionType === value ? '' : value)
-                      }
+                      onClick={() => setTransactionType(transactionType === value ? '' : value)}
                       className={`p-3 rounded-lg border-2 transition-all flex items-center justify-center gap-2 ${
                         transactionType === value
                           ? 'bg-amber-600/20 border-amber-600 text-amber-400'
@@ -97,12 +77,8 @@ export default function Hero({ onSearch }: HeroProps) {
                 </div>
               </div>
 
-              {/* Property Type */}
               <div>
-                <label className="block text-sm font-medium text-amber-500 mb-2">
-                  Typ nehnuteľnosti
-                </label>
-
+                <label className="block text-sm font-medium text-amber-500 mb-2">Typ nehnuteľnosti</label>
                 <select
                   value={propertyType}
                   onChange={(e) => setPropertyType(e.target.value)}
@@ -116,15 +92,10 @@ export default function Hero({ onSearch }: HeroProps) {
                 </select>
               </div>
 
-              {/* Location */}
               <div>
-                <label className="block text-sm font-medium text-amber-500 mb-2">
-                  Lokalita
-                </label>
-
+                <label className="block text-sm font-medium text-amber-500 mb-2">Lokalita</label>
                 <div className="relative">
                   <MapPin className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" />
-
                   <input
                     type="text"
                     placeholder="Bratislava, Košice, Žilina..."
@@ -135,7 +106,6 @@ export default function Hero({ onSearch }: HeroProps) {
                 </div>
               </div>
 
-              {/* Search Button */}
               <button
                 type="submit"
                 className="w-full bg-gradient-to-r from-amber-700 to-amber-600 hover:from-amber-600 hover:to-amber-500 text-white font-bold py-3 rounded-lg transition-all duration-200 flex items-center justify-center gap-2 shadow-lg hover:shadow-amber-600/50"
@@ -143,7 +113,6 @@ export default function Hero({ onSearch }: HeroProps) {
                 <Search className="h-5 w-5" />
                 Hľadať nehnuteľnosti
               </button>
-
             </form>
           </div>
         </div>
