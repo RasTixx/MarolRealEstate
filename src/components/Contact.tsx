@@ -13,48 +13,52 @@ export default function Contact() {
           </p>
         </div>
 
-        <div className="grid grid-cols-1 gap-12 justify-items-center text-center">
-        <div className="space-y-6">
-      
-          <div className="flex items-center space-x-4 justify-center">
-            <div className="bg-amber-500/10 p-3 rounded-lg border border-amber-500/20">
-              <MapPin className="h-6 w-6 text-amber-500" />
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
+          <div className="space-y-6">
+            <div className="flex items-start space-x-4">
+              <div className="bg-amber-500/10 p-3 rounded-lg border border-amber-500/20">
+                <MapPin className="h-6 w-6 text-amber-500" />
+              </div>
+              <div>
+                <h3 className="font-semibold text-white mb-1">Adresa</h3>
+                <p className="text-gray-300">Námestie SNP 47/36<br />Lehota pod Vtáčnikom 972 42<br />Slovensko</p>
+              </div>
             </div>
-            <div>
-              <h3 className="font-semibold text-white mb-1">Adresa</h3>
-              <p className="text-gray-300">
-                Námestie SNP 47/36<br />
-                Lehota pod Vtáčnikom 972 42<br />
-                Slovensko
-              </p>
+
+            <div className="flex items-start space-x-4">
+              <div className="bg-amber-500/10 p-3 rounded-lg border border-amber-500/20">
+                <Phone className="h-6 w-6 text-amber-500" />
+              </div>
+              <div>
+                <h3 className="font-semibold text-white mb-1">Telefón</h3>
+                <p className="text-gray-300">+421 900 123 456<br />+421 2 1234 5678</p>
+              </div>
+            </div>
+
+            <div className="flex items-start space-x-4">
+              <div className="bg-amber-500/10 p-3 rounded-lg border border-amber-500/20">
+                <Mail className="h-6 w-6 text-amber-500" />
+              </div>
+              <div>
+                <h3 className="font-semibold text-white mb-1">Email</h3>
+                <p className="text-gray-300">inffomre@gmail.com</p>
+              </div>
+            </div>
+
+            <div className="flex items-start space-x-4">
+              <div className="bg-amber-500/10 p-3 rounded-lg border border-amber-500/20">
+                <Clock className="h-6 w-6 text-amber-500" />
+              </div>
+              <div>
+                <h3 className="font-semibold text-white mb-1">Otváracie hodiny</h3>
+                <p className="text-gray-300">
+                  Pondelok - Piatok: 9:00 - 18:00<br />
+                  Sobota: 10:00 - 14:00<br />
+                  Nedeľa: Zatvorené
+                </p>
+              </div>
             </div>
           </div>
-      
-          <div className="flex items-center space-x-4 justify-center">
-            <div className="bg-amber-500/10 p-3 rounded-lg border border-amber-500/20">
-              <Phone className="h-6 w-6 text-amber-500" />
-            </div>
-            <div>
-              <h3 className="font-semibold text-white mb-1">Telefón</h3>
-              <p className="text-gray-300">
-                +421 900 123 456<br />
-                +421 2 1234 5678
-              </p>
-            </div>
-          </div>
-      
-          <div className="flex items-center space-x-4 justify-center">
-            <div className="bg-amber-500/10 p-3 rounded-lg border border-amber-500/20">
-              <Mail className="h-6 w-6 text-amber-500" />
-            </div>
-            <div>
-              <h3 className="font-semibold text-white mb-1">Email</h3>
-              <p className="text-gray-300">inffomre@gmail.com</p>
-            </div>
-          </div>
-      
-        </div>
-      </div>
 
           <div className="bg-black border border-amber-500/20 p-8 rounded-lg">
             <h3 className="text-xl font-bold text-white mb-6">Napíšte nám</h3>
