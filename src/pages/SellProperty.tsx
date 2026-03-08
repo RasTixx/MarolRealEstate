@@ -165,14 +165,15 @@ export default function SellProperty() {
                         Typ nehnuteľnosti *
                       </label>
                       <div className="relative">
-                        <ChevronDown className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-amber-500 pointer-events-none" />
+                        <ChevronDown className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-amber-500 pointer-events-none z-10" />
                         <select
                           id="propertyType"
                           name="propertyType"
                           required
                           value={formData.propertyType}
                           onChange={handleChange}
-                          className="w-full pl-12 pr-4 py-3 bg-black border border-amber-500/30 rounded-lg text-white focus:outline-none focus:border-amber-500 transition-colors appearance-none"
+                          className="w-full pl-12 pr-4 py-3 bg-black border border-amber-500/30 rounded-lg text-white focus:outline-none focus:border-amber-500 transition-colors [appearance:none] [-webkit-appearance:none] [-moz-appearance:none]"
+                          style={{ backgroundImage: 'none' }}
                         >
                           <option value="">Vyberte typ</option>
                           <option value="byt">Byt</option>
@@ -334,7 +335,8 @@ export default function SellProperty() {
                         required
                         value={formData.propertyCondition}
                         onChange={handleChange}
-                        className="w-full px-4 py-3 bg-black border border-amber-500/30 rounded-lg text-white focus:outline-none focus:border-amber-500 transition-colors"
+                        className="w-full px-4 py-3 bg-black border border-amber-500/30 rounded-lg text-white focus:outline-none focus:border-amber-500 transition-colors [appearance:none] [-webkit-appearance:none] [-moz-appearance:none]"
+                        style={{ backgroundImage: 'none' }}
                       >
                         <option value="">Vyberte stav</option>
                         <option value="nove">Nové</option>
