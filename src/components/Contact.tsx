@@ -45,19 +45,7 @@ export default function Contact() {
               </div>
             </div>
 
-            <div className="flex items-start space-x-4">
-              <div className="bg-amber-500/10 p-3 rounded-lg border border-amber-500/20">
-                <Clock className="h-6 w-6 text-amber-500" />
-              </div>
-              <div>
-                <h3 className="font-semibold text-white mb-1">Otváracie hodiny</h3>
-                <p className="text-gray-300">
-                  Pondelok - Piatok: 9:00 - 18:00<br />
-                  Sobota: 10:00 - 14:00<br />
-                  Nedeľa: Zatvorené
-                </p>
-              </div>
-            </div>
+           
           </div>
 
           <div className="bg-black border border-amber-500/20 p-8 rounded-lg">
