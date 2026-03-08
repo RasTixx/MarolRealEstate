@@ -14,7 +14,7 @@ export default function Contact() {
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
-          <div className="space-y-6">
+          <div className="space-y-6 max-w-md mx-auto">
             <div className="flex items-start space-x-4">
               <div className="bg-amber-500/10 p-3 rounded-lg border border-amber-500/20">
                 <MapPin className="h-6 w-6 text-amber-500" />
