@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Home, MapPin, DollarSign, Bed, Bath, Square } from 'lucide-react';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
+import CustomSelect from '../components/CustomSelect';
 import { supabase } from '../lib/supabase';
 
 export default function BuyProperty() {
@@ -23,12 +24,21 @@ export default function BuyProperty() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitMessage, setSubmitMessage] = useState('');
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement> | { target: { name: string; value: string } }) => {
     setFormData({
       ...formData,
       [e.target.name]: e.target.value,
     });
   };
+
+  const propertyTypeOptions = [
+    { value: '', label: 'Vyberte typ' },
+    { value: 'byt', label: 'Byt' },
+    { value: 'rodinny-dom', label: 'Rodinný dom' },
+    { value: 'pozemok', label: 'Pozemok' },
+    { value: 'komercna', label: 'Komerčná nehnuteľnosť' },
+    { value: 'ine', label: 'Iné' },
+  ];
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -151,21 +161,15 @@ export default function BuyProperty() {
                     <label htmlFor="propertyType" className="block text-sm font-medium text-gray-300 mb-2">
                       Typ nehnuteľnosti *
                     </label>
-                    <select
+                    <CustomSelect
                       id="propertyType"
                       name="propertyType"
-                      required
                       value={formData.propertyType}
                       onChange={handleChange}
-                      className="w-full px-4 py-3 bg-black border border-amber-500/30 rounded-lg text-white focus:outline-none focus:border-amber-500 transition-colors"
-                    >
-                      <option value="">Vyberte typ</option>
-                      <option value="byt">Byt</option>
-                      <option value="rodinny-dom">Rodinný dom</option>
-                      <option value="pozemok">Pozemok</option>
-                      <option value="komercna">Komerčná nehnuteľnosť</option>
-                      <option value="ine">Iné</option>
-                    </select>
+                      options={propertyTypeOptions}
+                      placeholder="Vyberte typ"
+                      required
+                    />
                   </div>
 
                   <div className="md:col-span-2">

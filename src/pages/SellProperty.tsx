@@ -1,7 +1,8 @@
 import { useState } from 'react';
-import { Home, MapPin, DollarSign, Bed, Bath, Square, Calendar, ChevronDown } from 'lucide-react';
+import { Home, MapPin, DollarSign, Bed, Bath, Square, Calendar } from 'lucide-react';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
+import CustomSelect from '../components/CustomSelect';
 import { supabase } from '../lib/supabase';
 
 export default function SellProperty() {
@@ -25,12 +26,29 @@ export default function SellProperty() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitMessage, setSubmitMessage] = useState('');
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement> | { target: { name: string; value: string } }) => {
     setFormData({
       ...formData,
       [e.target.name]: e.target.value,
     });
   };
+
+  const propertyTypeOptions = [
+    { value: '', label: 'Vyberte typ' },
+    { value: 'byt', label: 'Byt' },
+    { value: 'rodinny-dom', label: 'Rodinný dom' },
+    { value: 'pozemok', label: 'Pozemok' },
+    { value: 'komercna', label: 'Komerčná nehnuteľnosť' },
+    { value: 'ine', label: 'Iné' },
+  ];
+
+  const propertyConditionOptions = [
+    { value: '', label: 'Vyberte stav' },
+    { value: 'nove', label: 'Nové' },
+    { value: 'velmi-dobre', label: 'Veľmi dobré' },
+    { value: 'dobre', label: 'Dobré' },
+    { value: 'potrebuje-rekonstrukciu', label: 'Potrebuje rekonštrukciu' },
+  ];
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -164,25 +182,15 @@ export default function SellProperty() {
                       <label htmlFor="propertyType" className="block text-sm font-medium text-gray-300 mb-2">
                         Typ nehnuteľnosti *
                       </label>
-                      <div className="relative">
-                        <ChevronDown className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-amber-500 pointer-events-none z-10" />
-                        <select
-                          id="propertyType"
-                          name="propertyType"
-                          required
-                          value={formData.propertyType}
-                          onChange={handleChange}
-                          className="w-full pl-12 pr-4 py-3 bg-black border border-amber-500/30 rounded-lg text-white focus:outline-none focus:border-amber-500 transition-colors [appearance:none] [-webkit-appearance:none] [-moz-appearance:none]"
-                          style={{ backgroundImage: 'none' }}
-                        >
-                          <option value="">Vyberte typ</option>
-                          <option value="byt">Byt</option>
-                          <option value="rodinny-dom">Rodinný dom</option>
-                          <option value="pozemok">Pozemok</option>
-                          <option value="komercna">Komerčná nehnuteľnosť</option>
-                          <option value="ine">Iné</option>
-                        </select>
-                      </div>
+                      <CustomSelect
+                        id="propertyType"
+                        name="propertyType"
+                        value={formData.propertyType}
+                        onChange={handleChange}
+                        options={propertyTypeOptions}
+                        placeholder="Vyberte typ"
+                        required
+                      />
                     </div>
 
                     <div>
@@ -329,21 +337,15 @@ export default function SellProperty() {
                       <label htmlFor="propertyCondition" className="block text-sm font-medium text-gray-300 mb-2">
                         Stav nehnuteľnosti *
                       </label>
-                      <select
+                      <CustomSelect
                         id="propertyCondition"
                         name="propertyCondition"
-                        required
                         value={formData.propertyCondition}
                         onChange={handleChange}
-                        className="w-full px-4 py-3 bg-black border border-amber-500/30 rounded-lg text-white focus:outline-none focus:border-amber-500 transition-colors [appearance:none] [-webkit-appearance:none] [-moz-appearance:none]"
-                        style={{ backgroundImage: 'none' }}
-                      >
-                        <option value="">Vyberte stav</option>
-                        <option value="nove">Nové</option>
-                        <option value="velmi-dobre">Veľmi dobré</option>
-                        <option value="dobre">Dobré</option>
-                        <option value="potrebuje-rekonstrukciu">Potrebuje rekonštrukciu</option>
-                      </select>
+                        options={propertyConditionOptions}
+                        placeholder="Vyberte stav"
+                        required
+                      />
                     </div>
                   </div>
                 </div>
