@@ -31,7 +31,7 @@ export default function Contact() {
               </div>
               <div>
                 <h3 className="font-semibold text-white mb-1">Telefón</h3>
-                <p className="text-gray-300">+421 900 123 456</p>
+                <p className="text-gray-300">+421 948 192 272</p>
               </div>
             </div>
 
