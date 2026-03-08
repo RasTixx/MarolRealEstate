@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Home, MapPin, DollarSign, Bed, Bath, Square, Calendar } from 'lucide-react';
+import { Home, MapPin, DollarSign, Bed, Bath, Square, Calendar, ChevronDown } from 'lucide-react';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 import { supabase } from '../lib/supabase';
@@ -164,21 +164,24 @@ export default function SellProperty() {
                       <label htmlFor="propertyType" className="block text-sm font-medium text-gray-300 mb-2">
                         Typ nehnuteľnosti *
                       </label>
-                      <select
-                        id="propertyType"
-                        name="propertyType"
-                        required
-                        value={formData.propertyType}
-                        onChange={handleChange}
-                        className="w-full px-4 py-3 bg-black border border-amber-500/30 rounded-lg text-white focus:outline-none focus:border-amber-500 transition-colors"
-                      >
-                        <option value="">Vyberte typ</option>
-                        <option value="byt">Byt</option>
-                        <option value="rodinny-dom">Rodinný dom</option>
-                        <option value="pozemok">Pozemok</option>
-                        <option value="komercna">Komerčná nehnuteľnosť</option>
-                        <option value="ine">Iné</option>
-                      </select>
+                      <div className="relative">
+                        <ChevronDown className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-amber-500 pointer-events-none" />
+                        <select
+                          id="propertyType"
+                          name="propertyType"
+                          required
+                          value={formData.propertyType}
+                          onChange={handleChange}
+                          className="w-full pl-12 pr-4 py-3 bg-black border border-amber-500/30 rounded-lg text-white focus:outline-none focus:border-amber-500 transition-colors appearance-none"
+                        >
+                          <option value="">Vyberte typ</option>
+                          <option value="byt">Byt</option>
+                          <option value="rodinny-dom">Rodinný dom</option>
+                          <option value="pozemok">Pozemok</option>
+                          <option value="komercna">Komerčná nehnuteľnosť</option>
+                          <option value="ine">Iné</option>
+                        </select>
+                      </div>
                     </div>
 
                     <div>
