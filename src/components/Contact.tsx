@@ -44,8 +44,6 @@ export default function Contact() {
                 <p className="text-gray-300">inffomre@gmail.com</p>
               </div>
             </div>
-
-           
           </div>
 
           <div className="bg-black border border-amber-500/20 p-8 rounded-lg">
