@@ -53,7 +53,7 @@ export default function Contact() {
               </div>
             </div>
           </div>
-        </div>
+       
 
           <div className="bg-black border border-amber-500/20 p-8 rounded-lg">
             <h3 className="text-xl font-bold text-white mb-6">Napíšte nám</h3>
