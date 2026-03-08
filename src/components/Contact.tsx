@@ -21,7 +21,7 @@ export default function Contact() {
               </div>
               <div>
                 <h3 className="font-semibold text-white mb-1">Adresa</h3>
-                <p className="text-gray-300">Hlavná 123<br />Lehota pod Vtáčnikom 972 42<br />Slovensko</p>
+                <p className="text-gray-300">Námestie SNP 47/36<br />Lehota pod Vtáčnikom 972 42<br />Slovensko</p>
               </div>
             </div>
 
