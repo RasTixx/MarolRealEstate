@@ -77,20 +77,36 @@ export default function Hero({ onSearch }: HeroProps) {
                 </div>
               </div>
 
-              <div>
-                <label className="block text-sm font-medium text-amber-500 mb-2">Typ nehnuteľnosti</label>
-                <select
-                  value={propertyType}
-                  onChange={(e) => setPropertyType(e.target.value)}
-                  className="w-full px-4 py-3 bg-stone-800/80 border border-stone-700 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-amber-600 focus:ring-1 focus:ring-amber-600 transition-all"
-                >
-                  <option value="">Všetky typy</option>
-                  <option value="byt">Byt</option>
-                  <option value="dom">Rodinný dom</option>
-                  <option value="komercne">Komerčný priestor</option>
-                  <option value="pozemok">Pozemok</option>
-                </select>
-              </div>
+             <div>
+  <label className="block text-sm font-medium text-amber-500 mb-2">
+    Typ nehnuteľnosti
+  </label>
+
+  <div className="relative">
+    <select
+      value={propertyType}
+      onChange={(e) => setPropertyType(e.target.value)}
+      className="w-full px-4 py-3 pr-10 bg-stone-800/80 border border-stone-700 rounded-lg text-white appearance-none focus:outline-none focus:border-amber-600 focus:ring-1 focus:ring-amber-600 transition-all"
+    >
+      <option value="">Všetky typy</option>
+      <option value="byt">Byt</option>
+      <option value="dom">Rodinný dom</option>
+      <option value="komercne">Komerčný priestor</option>
+      <option value="pozemok">Pozemok</option>
+    </select>
+
+    {/* Custom Arrow */}
+    <svg
+      className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400"
+      xmlns="http://www.w3.org/2000/svg"
+      fill="none"
+      viewBox="0 0 24 24"
+      stroke="currentColor"
+      strokeWidth="2"
+    >
+      <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
+    </svg>
+  </div>
 
               <div>
                 <label className="block text-sm font-medium text-amber-500 mb-2">Lokalita</label>
