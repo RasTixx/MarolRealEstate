@@ -58,9 +58,9 @@ export default function Header() {
             )}
           </nav>
 
-          <button className="hidden lg:block px-6 py-2 bg-gradient-to-r from-amber-600 to-amber-500 text-black rounded-lg font-bold text-sm hover:shadow-lg hover:shadow-amber-500/50 hover:scale-105 transition-all duration-200">
+          <a href="mailto:inffomre@gmail.com" className="hidden lg:block px-6 py-2 bg-gradient-to-r from-amber-600 to-amber-500 text-black rounded-lg font-bold text-sm hover:shadow-lg hover:shadow-amber-500/50 hover:scale-105 transition-all duration-200">
             Kontaktujte nás
-          </button>
+          </a>
 
           <button
             onClick={() => setIsOpen(!isOpen)}
