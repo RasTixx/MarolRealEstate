@@ -107,6 +107,7 @@ export default function Hero({ onSearch }: HeroProps) {
       <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
     </svg>
   </div>
+               </div>
 
               <div>
                 <label className="block text-sm font-medium text-amber-500 mb-2">Lokalita</label>
