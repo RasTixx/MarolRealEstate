@@ -13,7 +13,7 @@ export default function Contact() {
           </p>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center min-h-[400px]">
           <div className="space-y-6">
             <div className="flex items-start space-x-4">
               <div className="bg-amber-500/10 p-3 rounded-lg border border-amber-500/20">
