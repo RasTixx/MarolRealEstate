@@ -41,8 +41,8 @@ export default function Hero({ onSearch }: HeroProps) {
 
             <div className="flex gap-4">
               <div className="flex items-center space-x-2 text-amber-500">
-                <span className="text-3xl font-bold">500+</span>
-                <span className="text-sm text-gray-400">Aktívnych ponúk</span>
+                <span className="text-3xl font-bold">100%</span>
+                <span className="text-sm text-gray-400">Overené ponuky</span>
               </div>
               <div className="flex items-center space-x-2 text-amber-500">
                 <span className="text-3xl font-bold">15+</span>
