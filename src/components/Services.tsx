@@ -42,7 +42,7 @@ export default function Services() {
             Naše služby
           </h2>
           <p className="text-lg text-gray-400 max-w-2xl mx-auto">
-            Poskytujeme komplexné služby v oblasti realitného poradenstva
+            Poskytujeme komplexné služby v oblasti nehnuteľností
           </p>
         </div>
 
