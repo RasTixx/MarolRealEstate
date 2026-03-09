@@ -21,7 +21,14 @@ export default function Contact() {
               </div>
               <div>
                 <h3 className="font-semibold text-white mb-1">Adresa</h3>
-                <p className="text-gray-300">Námestie SNP 47/36<br />Lehota pod Vtáčnikom 972 42<br />Slovensko</p>
+                <p className="text-gray-300">
+                  Námestie SNP 47/36<br />
+                  Lehota pod Vtáčnikom 972 42<br />
+                  Slovensko<br /><br />
+                  Marol Real Estate, s.r.o.<br />
+                  IČO: 52221539<br />
+                  DIČ: 2120932792
+                </p>
               </div>
             </div>
 
