@@ -51,7 +51,7 @@ export default function Hero({ onSearch }: HeroProps) {
             </div>
           </div>
 
-          <div className="bg-stone-900/40 backdrop-blur-xl rounded-2xl p-8 border border-amber-600/30 shadow-2xl shadow-amber-900/50">
+          <div className="bg-stone-900/30 backdrop-blur-xl rounded-2xl p-8 border border-amber-600/30 shadow-2xl shadow-amber-900/50">
             <form onSubmit={handleSearch} className="space-y-4">
               <div>
                 <label className="block text-sm font-medium text-amber-500 mb-2">Typ transakcie</label>
