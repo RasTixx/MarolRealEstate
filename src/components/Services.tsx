@@ -15,7 +15,7 @@ export default function Services() {
     {
       icon: Calculator,
       title: 'Odhad hodnoty',
-      description: 'Profesionálny odhad trhovej hodnoty vašej nehnuteľnosti zadarmo.',
+      description: 'Profesionálny odhad trhovej hodnoty vašej nehnuteľnosti.',
     },
     {
       icon: FileText,
