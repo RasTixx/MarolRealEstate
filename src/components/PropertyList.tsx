@@ -9,8 +9,8 @@ interface PropertyListProps {
 export default function PropertyList({ properties, loading }: PropertyListProps) {
   if (loading) {
     return (
-      <section id="nehnutelnosti" className="relative py-16 bg-black -mt-32 md:-mt-40">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+      <section id="nehnutelnosti" className="py-16 bg-black">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center">
             <div className="inline-block h-8 w-8 animate-spin rounded-full border-4 border-solid border-amber-500 border-r-transparent"></div>
             <p className="mt-4 text-gray-400">Načítavam nehnuteľnosti...</p>
@@ -22,8 +22,8 @@ export default function PropertyList({ properties, loading }: PropertyListProps)
 
   if (properties.length === 0) {
     return (
-      <section id="nehnutelnosti" className="relative py-16 bg-black -mt-32 md:-mt-40">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+      <section id="nehnutelnosti" className="py-16 bg-black">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center">
             <p className="text-gray-400">Žiadne nehnuteľnosti neboli nájdené.</p>
           </div>
@@ -33,8 +33,8 @@ export default function PropertyList({ properties, loading }: PropertyListProps)
   }
 
   return (
-    <section id="nehnutelnosti" className="relative py-16 bg-black -mt-32 md:-mt-40">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+    <section id="nehnutelnosti" className="py-16 bg-black">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-12">
           <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">
             Naše nehnuteľnosti
