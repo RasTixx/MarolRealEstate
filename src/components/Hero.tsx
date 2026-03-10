@@ -23,9 +23,7 @@ export default function Hero({ onSearch }: HeroProps) {
           alt="Luxury interior"
           className="w-full h-full object-cover object-center md:object-center"
         />
-        <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/60 to-black/40" />
-        {/* Bottom fade transition */}
-       <div className="absolute -bottom-32 left-0 w-full h-64 bg-gradient-to-b from-transparent to-white pointer-events-none"></div>
+        <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/60 to-black/40" /> 
       </div>
 
       <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
