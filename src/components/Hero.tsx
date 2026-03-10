@@ -19,10 +19,14 @@ export default function Hero({ onSearch }: HeroProps) {
     <section id="domov" className="relative py-16 md:py-24 pt-24 md:pt-32">
       <div className="absolute inset-0">
         <img
-          src="/luxury-authentic-dining-room-interior-design.jpg"
-          alt="Luxury interior"
-          className="w-full h-full object-cover object-center md:object-center"
-        />
+            src="/luxury-authentic-dining-room-interior-design.jpg"
+            alt="Luxury interior"
+            className="w-full h-full object-cover object-center"
+            style={{
+              WebkitMaskImage: "linear-gradient(to bottom, black 70%, transparent 100%)",
+              maskImage: "linear-gradient(to bottom, black 70%, transparent 100%)"
+            }}
+          />
         <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/60 to-black/40" /> 
       </div>
 
