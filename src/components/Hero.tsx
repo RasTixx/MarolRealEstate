@@ -24,6 +24,8 @@ export default function Hero({ onSearch }: HeroProps) {
           className="w-full h-full object-cover object-center md:object-center"
         />
         <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/60 to-black/40" />
+        {/* Bottom fade transition */}
+        <div className="absolute bottom-0 left-0 w-full h-40 bg-gradient-to-b from-transparent to-white"></div>
       </div>
 
       <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
