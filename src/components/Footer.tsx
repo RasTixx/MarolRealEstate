@@ -9,7 +9,7 @@ export default function Footer() {
           <div className="col-span-1 md:col-span-2">
             <div className="mb-4">
               <img
-                src="/logo_dark_new.png"
+                src="/logo_new_gold.png"
                 alt="Marol Real Estate"
                 className="h-14 w-auto"
               />
