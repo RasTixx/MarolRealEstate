@@ -16,7 +16,7 @@ export default function Hero({ onSearch }: HeroProps) {
   };
 
   return (
-    <section id="domov" className="relative py-16 md:py-24 overflow-hidden pt-24 md:pt-32">
+    <section id="domov" className="relative py-16 md:py-24 overflow-hidden pt-24 md:pt-32 pb-32 md:pb-40">
       <div className="absolute inset-0">
         <img
           src="/luxury-authentic-dining-room-interior-design.jpg"
@@ -24,6 +24,7 @@ export default function Hero({ onSearch }: HeroProps) {
           className="w-full h-full object-cover object-center md:object-center"
         />
         <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/60 to-black/40" />
+        <div className="absolute bottom-0 left-0 right-0 h-48 bg-gradient-to-b from-transparent via-black/50 to-black" />
       </div>
 
       <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
