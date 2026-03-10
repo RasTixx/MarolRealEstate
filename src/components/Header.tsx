@@ -12,7 +12,7 @@ export default function Header() {
         <div className="flex justify-between items-center py-4">
           <Link to="/" className="flex items-center space-x-3">
             <img
-              src="/logo_dark_new.png"
+              src="/logo_gold.png"
               alt="Marol Real Estate"
               className="h-14 w-auto"
             />
