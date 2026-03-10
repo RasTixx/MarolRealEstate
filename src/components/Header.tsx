@@ -14,7 +14,7 @@ export default function Header() {
             <img
               src="/logo_new_gold.png"
               alt="Marol Real Estate"
-              className="h-14 w-auto"
+              className="h-16 w-auto"
             />
           </Link>
 
