@@ -9,12 +9,12 @@ export default function Header() {
   return (
    <header className="bg-black/95 backdrop-blur-md border-b border-amber-500/20 fixed top-0 left-0 right-0 z-50 w-full">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between items-center py-4">
+        <div className="flex justify-between items-center py-4 lg:py-6">
           <Link to="/" className="flex items-center space-x-3">
             <img
               src="/logo_new_gold.png"
               alt="Marol Real Estate"
-              className="h-16 w-auto"
+              className="h-16 lg:h-24 w-auto"
             />
           </Link>
 
@@ -31,7 +31,7 @@ export default function Header() {
                   <a
                     key={item.href}
                     href={item.href}
-                    className="px-4 py-2 text-sm font-medium text-gray-300 hover:text-amber-500 hover:bg-white/5 rounded-lg transition-all duration-200"
+                    className="px-4 py-2 lg:px-5 lg:py-3 text-sm lg:text-base font-medium text-gray-300 hover:text-amber-500 hover:bg-white/5 rounded-lg transition-all duration-200"
                   >
                     {item.label}
                   </a>
@@ -49,7 +49,7 @@ export default function Header() {
                   <a
                     key={item.href}
                     href={item.href}
-                    className="px-4 py-2 text-sm font-medium text-gray-300 hover:text-amber-500 hover:bg-white/5 rounded-lg transition-all duration-200"
+                    className="px-4 py-2 lg:px-5 lg:py-3 text-sm lg:text-base font-medium text-gray-300 hover:text-amber-500 hover:bg-white/5 rounded-lg transition-all duration-200"
                   >
                     {item.label}
                   </a>
@@ -58,7 +58,7 @@ export default function Header() {
             )}
           </nav>
 
-          <a href="mailto:inffomre@gmail.com" className="hidden lg:block px-6 py-2 bg-gradient-to-r from-amber-600 to-amber-500 text-black rounded-lg font-bold text-sm hover:shadow-lg hover:shadow-amber-500/50 hover:scale-105 transition-all duration-200">
+          <a href="mailto:inffomre@gmail.com" className="hidden lg:block px-6 py-2 lg:px-7 lg:py-3 bg-gradient-to-r from-amber-600 to-amber-500 text-black rounded-lg font-bold text-sm lg:text-base hover:shadow-lg hover:shadow-amber-500/50 hover:scale-105 transition-all duration-200">
             Kontaktujte nás
           </a>
 
