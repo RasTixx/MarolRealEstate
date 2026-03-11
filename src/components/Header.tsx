@@ -6,11 +6,18 @@ export default function Header() {
   const location = useLocation();
   const isHomePage = location.pathname === '/';
 
+  const handleLogoClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
+    if (isHomePage) {
+      e.preventDefault();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+  };
+
   return (
    <header className="bg-black/95 backdrop-blur-md border-b border-amber-500/20 fixed top-0 left-0 right-0 z-50 w-full">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center py-4 lg:py-6">
-          <Link to="/" className="flex items-center space-x-3">
+          <Link to="/" onClick={handleLogoClick} className="flex items-center space-x-3">
             <img
               src="/logo_new_gold.png"
               alt="Marol Real Estate"
