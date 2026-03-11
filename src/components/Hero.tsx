@@ -16,7 +16,7 @@ export default function Hero({ onSearch }: HeroProps) {
   };
 
   return (
-    <section id="domov" className="relative py-16 md:py-24 pt-24 md:pt-32">
+    <section id="domov" className="relative py-16 md:py-24 pt-40 md:pt-32">
       <div className="absolute inset-0">
         <img
             src="/luxury-authentic-dining-room-interior-design.jpg"
