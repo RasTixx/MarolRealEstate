@@ -24,8 +24,8 @@ export default function Services() {
     },
     {
       icon: ClipboardCheck,
-      title: 'Správa nehnuteľností',
-      description: 'Profesionálna správa a údržba vašich prenajatých nehnuteľností.',
+      title: 'Kompletný servis',
+      description: 'Zabezpečíme vám kompletný servis od náberu nehnuteľnosti, jej inzercie až po finálne odovzdanie klientovi.',
     },
     {
       icon: Handshake,
