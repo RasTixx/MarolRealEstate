@@ -109,7 +109,7 @@ export default function Contact() {
 
               <button
                 type="submit"
-                className="w-full bg-gradient-to-r from-amber-600 to-amber-500 text-black font-bold py-3 px-6 rounded-lg hover:from-amber-500 hover:to-amber-400 transition-all shadow-lg hover:shadow-amber-500/50"
+                className="w-full bg-gradient-to-r from-yellow-500 via-yellow-400 to-amber-500 text-black font-bold py-3 px-6 rounded-lg hover:from-amber-500 hover:to-amber-400 transition-all shadow-lg hover:shadow-amber-500/50"
               >
                 Odoslať správu
               </button>
