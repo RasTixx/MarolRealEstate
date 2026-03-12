@@ -374,7 +374,7 @@ export default function SellProperty() {
                 <button
                   type="submit"
                   disabled={isSubmitting}
-                  className="w-full bg-amber-500 text-black font-semibold py-4 px-6 rounded-lg hover:bg-amber-400 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="w-full bg-gradient-to-r from-yellow-500 via-yellow-400 to-amber-500 text-black font-semibold py-4 px-6 rounded-lg border border-yellow-400/40 hover:from-amber-600 hover:to-amber-500 transition-all duration-200 shadow-lg hover:shadow-amber-600/50 disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   {isSubmitting ? 'Odosielam...' : 'Odoslať požiadavku'}
                 </button>
