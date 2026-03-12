@@ -262,98 +262,10 @@ export default function SellProperty() {
                 </div>
 
                 <div className="border-b border-amber-500/20 pb-6">
-                  <h2 className="text-2xl font-semibold text-white mb-4">Detaily nehnuteľnosti</h2>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div>
-                      <label htmlFor="bedrooms" className="block text-sm font-medium text-gray-300 mb-2">
-                        <Bed className="inline h-4 w-4 mr-1" />
-                        Počet izieb
-                      </label>
-                      <input
-                        type="number"
-                        id="bedrooms"
-                        name="bedrooms"
-                        value={formData.bedrooms}
-                        onChange={handleChange}
-                        className="w-full px-4 py-3 bg-black border border-amber-500/30 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-amber-500 transition-colors"
-                        placeholder="3"
-                        min="1"
-                      />
-                    </div>
-
-                    <div>
-                      <label htmlFor="bathrooms" className="block text-sm font-medium text-gray-300 mb-2">
-                        <Bath className="inline h-4 w-4 mr-1" />
-                        Počet kúpeľní
-                      </label>
-                      <input
-                        type="number"
-                        id="bathrooms"
-                        name="bathrooms"
-                        value={formData.bathrooms}
-                        onChange={handleChange}
-                        className="w-full px-4 py-3 bg-black border border-amber-500/30 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-amber-500 transition-colors"
-                        placeholder="1"
-                        min="1"
-                      />
-                    </div>
-
-                    <div>
-                      <label htmlFor="area" className="block text-sm font-medium text-gray-300 mb-2">
-                        <Square className="inline h-4 w-4 mr-1" />
-                        Výmera (m²) *
-                      </label>
-                      <input
-                        type="number"
-                        id="area"
-                        name="area"
-                        required
-                        value={formData.area}
-                        onChange={handleChange}
-                        className="w-full px-4 py-3 bg-black border border-amber-500/30 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-amber-500 transition-colors"
-                        placeholder="85"
-                      />
-                    </div>
-
-                    <div>
-                      <label htmlFor="yearBuilt" className="block text-sm font-medium text-gray-300 mb-2">
-                        <Calendar className="inline h-4 w-4 mr-1" />
-                        Rok výstavby
-                      </label>
-                      <input
-                        type="number"
-                        id="yearBuilt"
-                        name="yearBuilt"
-                        value={formData.yearBuilt}
-                        onChange={handleChange}
-                        className="w-full px-4 py-3 bg-black border border-amber-500/30 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-amber-500 transition-colors"
-                        placeholder="2010"
-                        min="1800"
-                        max={new Date().getFullYear()}
-                      />
-                    </div>
-
-                    <div className="md:col-span-2">
-                      <label htmlFor="propertyCondition" className="block text-sm font-medium text-gray-300 mb-2">
-                        Stav nehnuteľnosti *
-                      </label>
-                      <CustomSelect
-                        id="propertyCondition"
-                        name="propertyCondition"
-                        value={formData.propertyCondition}
-                        onChange={handleChange}
-                        options={propertyConditionOptions}
-                        placeholder="Vyberte stav"
-                        required
-                      />
-                    </div>
-                  </div>
-                </div>
-
-                <div>
-                  <label htmlFor="description" className="block text-sm font-medium text-gray-300 mb-2">
+                  <h2 className="text-2xl font-semibold text-white mb-4">
                     Popis nehnuteľnosti
-                  </label>
+                  </h2>
+                
                   <textarea
                     id="description"
                     name="description"
