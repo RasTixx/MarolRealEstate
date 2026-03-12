@@ -129,7 +129,7 @@ export default function Hero({ onSearch }: HeroProps) {
 
               <button
                 type="submit"
-                className="w-full bg-gradient-to-r from-yellow-500 via-yellow-400 to-amber-500 hover:from-amber-600 hover:to-amber-500 text-white font-bold py-3 rounded-lg transition-all duration-200 flex items-center justify-center gap-2 shadow-lg hover:shadow-amber-600/50"
+                className="w-full bg-gradient-to-r from-yellow-500 via-yellow-400 to-amber-500 hover:from-amber-600 hover:to-amber-500 text-black font-bold py-3 rounded-lg transition-all duration-200 flex items-center justify-center gap-2 shadow-lg hover:shadow-amber-600/50"
               >
                 <Search className="h-5 w-5" />
                 Hľadať nehnuteľnosti
