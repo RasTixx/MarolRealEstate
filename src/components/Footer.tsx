@@ -11,7 +11,7 @@ export default function Footer() {
               <img
                 src="/logo_gold_final.png"
                 alt="Marol Real Estate"
-                className="h-16 lg:h-18 w-auto"
+                className="h-16 lg:h-20 w-auto"
               />
             </div>
             <p className="text-gray-400 mb-4 max-w-md">
