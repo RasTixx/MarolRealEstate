@@ -11,7 +11,7 @@ export default function About() {
             </h2>
             <p className="text-gray-300 mb-4 leading-relaxed">
               Sme profesionálna realitná kancelária s viac ako 15-ročnými skúsenosťami na slovenskom trhu.
-              Špecializujeme sa na sprostredkovanie predaja a prenájmu nehnuteľností v celom Slovensku.
+              Špecializujeme sa na sprostredkovanie predaja a prenájmu nehnuteľností po celom Slovensku.
             </p>
             <p className="text-gray-300 mb-6 leading-relaxed">
               Našim klientom poskytujeme komplexné služby od prvotnej konzultácie až po úspešné odovzdanie
