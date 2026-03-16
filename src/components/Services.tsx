@@ -25,7 +25,7 @@ export default function Services() {
     {
       icon: ClipboardCheck,
       title: 'Kompletný servis',
-      description: 'Zabezpečíme vám kompletný servis od náberu nehnuteľnosti, jej inzercie až po finálne odovzdanie klientovi.',
+      description: 'Zabezpečíme vám kompletný servis od náberu nehnuteľnosti, jej inzercie až po finálne odovzdanie nehnuteľnosti klientovi.',
     },
     {
       icon: Handshake,
