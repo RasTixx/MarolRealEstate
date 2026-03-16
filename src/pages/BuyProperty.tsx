@@ -93,7 +93,7 @@ export default function BuyProperty() {
     <div className="min-h-screen bg-black flex flex-col">
       <Header />
 
-      <main className="flex-grow pt-20">
+      <main className="flex-grow pt-28 lg:pt-36">
         <div className="bg-gradient-to-b from-amber-500/10 to-black py-20">
           <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="text-center mb-12">
