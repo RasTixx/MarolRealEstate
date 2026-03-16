@@ -29,21 +29,31 @@ export default function Header() {
             {isHomePage ? (
               <>
                 {[
-                  { href: '#domov', label: 'Domov' },
-                  { href: '#nehnutelnosti', label: 'Nehnuteľnosti' },
-                  { href: '#o-nas', label: 'O nás' },
-                  { href: '#sluzby', label: 'Služby' },
-                  { href: '#referencie', label: 'Referencie' },
-                  { href: '#kontakt', label: 'Kontakt' },
-                ].map((item) => (
-                  <a
-                    key={item.href}
-                    href={item.href}
-                    className="px-4 py-2 lg:px-5 lg:py-3 text-sm lg:text-base font-medium text-gray-300 hover:text-amber-500 hover:bg-white/5 rounded-lg transition-all duration-200"
-                  >
-                    {item.label}
-                  </a>
-                ))}
+                  { href: '#domov', label: 'Domov', isAnchor: true },
+                  { href: '#nehnutelnosti', label: 'Nehnuteľnosti', isAnchor: true },
+                  { href: '#o-nas', label: 'O nás', isAnchor: true },
+                  { href: '#sluzby', label: 'Služby', isAnchor: true },
+                  { href: '/referencie', label: 'Referencie', isAnchor: false },
+                  { href: '#kontakt', label: 'Kontakt', isAnchor: true },
+                ].map((item) =>
+                  item.isAnchor ? (
+                    <a
+                      key={item.href}
+                      href={item.href}
+                      className="px-4 py-2 lg:px-5 lg:py-3 text-sm lg:text-base font-medium text-gray-300 hover:text-amber-500 hover:bg-white/5 rounded-lg transition-all duration-200"
+                    >
+                      {item.label}
+                    </a>
+                  ) : (
+                    <Link
+                      key={item.href}
+                      to={item.href}
+                      className="px-4 py-2 lg:px-5 lg:py-3 text-sm lg:text-base font-medium text-gray-300 hover:text-amber-500 hover:bg-white/5 rounded-lg transition-all duration-200"
+                    >
+                      {item.label}
+                    </Link>
+                  )
+                )}
               </>
             ) : (
               <>
@@ -52,7 +62,7 @@ export default function Header() {
                   { href: '/#nehnutelnosti', label: 'Nehnuteľnosti' },
                   { href: '/#o-nas', label: 'O nás' },
                   { href: '/#sluzby', label: 'Služby' },
-                  { href: '/#referencie', label: 'Referencie' },
+                  { href: '/referencie', label: 'Referencie' },
                   { href: '/#kontakt', label: 'Kontakt' },
                 ].map((item) => (
                   <a
@@ -88,22 +98,33 @@ export default function Header() {
             {isHomePage ? (
               <>
                 {[
-                  { href: '#domov', label: 'Domov' },
-                  { href: '#nehnutelnosti', label: 'Nehnuteľnosti' },
-                  { href: '#o-nas', label: 'O nás' },
-                  { href: '#sluzby', label: 'Služby' },
-                  { href: '#referencie', label: 'Referencie' },
-                  { href: '#kontakt', label: 'Kontakt' },
-                ].map((item) => (
-                  <a
-                    key={item.href}
-                    href={item.href}
-                    className="block px-4 py-2 text-sm font-medium text-gray-300 hover:text-amber-500 hover:bg-white/5 rounded-lg transition-all"
-                    onClick={() => setIsOpen(false)}
-                  >
-                    {item.label}
-                  </a>
-                ))}
+                  { href: '#domov', label: 'Domov', isAnchor: true },
+                  { href: '#nehnutelnosti', label: 'Nehnuteľnosti', isAnchor: true },
+                  { href: '#o-nas', label: 'O nás', isAnchor: true },
+                  { href: '#sluzby', label: 'Služby', isAnchor: true },
+                  { href: '/referencie', label: 'Referencie', isAnchor: false },
+                  { href: '#kontakt', label: 'Kontakt', isAnchor: true },
+                ].map((item) =>
+                  item.isAnchor ? (
+                    <a
+                      key={item.href}
+                      href={item.href}
+                      className="block px-4 py-2 text-sm font-medium text-gray-300 hover:text-amber-500 hover:bg-white/5 rounded-lg transition-all"
+                      onClick={() => setIsOpen(false)}
+                    >
+                      {item.label}
+                    </a>
+                  ) : (
+                    <Link
+                      key={item.href}
+                      to={item.href}
+                      className="block px-4 py-2 text-sm font-medium text-gray-300 hover:text-amber-500 hover:bg-white/5 rounded-lg transition-all"
+                      onClick={() => setIsOpen(false)}
+                    >
+                      {item.label}
+                    </Link>
+                  )
+                )}
               </>
             ) : (
               <>
@@ -112,7 +133,7 @@ export default function Header() {
                   { href: '/#nehnutelnosti', label: 'Nehnuteľnosti' },
                   { href: '/#o-nas', label: 'O nás' },
                   { href: '/#sluzby', label: 'Služby' },
-                  { href: '/#referencie', label: 'Referencie' },
+                  { href: '/referencie', label: 'Referencie' },
                   { href: '/#kontakt', label: 'Kontakt' },
                 ].map((item) => (
                   <a
