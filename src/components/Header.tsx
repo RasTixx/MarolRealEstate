@@ -33,6 +33,7 @@ export default function Header() {
                   { href: '#nehnutelnosti', label: 'Nehnuteľnosti' },
                   { href: '#o-nas', label: 'O nás' },
                   { href: '#sluzby', label: 'Služby' },
+                  { href: '#referencie', label: 'Referencie' },
                   { href: '#kontakt', label: 'Kontakt' },
                 ].map((item) => (
                   <a
@@ -51,6 +52,7 @@ export default function Header() {
                   { href: '/#nehnutelnosti', label: 'Nehnuteľnosti' },
                   { href: '/#o-nas', label: 'O nás' },
                   { href: '/#sluzby', label: 'Služby' },
+                  { href: '/#referencie', label: 'Referencie' },
                   { href: '/#kontakt', label: 'Kontakt' },
                 ].map((item) => (
                   <a
@@ -90,6 +92,7 @@ export default function Header() {
                   { href: '#nehnutelnosti', label: 'Nehnuteľnosti' },
                   { href: '#o-nas', label: 'O nás' },
                   { href: '#sluzby', label: 'Služby' },
+                  { href: '#referencie', label: 'Referencie' },
                   { href: '#kontakt', label: 'Kontakt' },
                 ].map((item) => (
                   <a
@@ -109,6 +112,7 @@ export default function Header() {
                   { href: '/#nehnutelnosti', label: 'Nehnuteľnosti' },
                   { href: '/#o-nas', label: 'O nás' },
                   { href: '/#sluzby', label: 'Služby' },
+                  { href: '/#referencie', label: 'Referencie' },
                   { href: '/#kontakt', label: 'Kontakt' },
                 ].map((item) => (
                   <a

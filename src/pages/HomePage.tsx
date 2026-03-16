@@ -5,6 +5,7 @@ import Hero from '../components/Hero';
 import PropertyList from '../components/PropertyList';
 import About from '../components/About';
 import Services from '../components/Services';
+import Testimonials from '../components/Testimonials';
 import Contact from '../components/Contact';
 import Footer from '../components/Footer';
 
@@ -67,6 +68,7 @@ export default function HomePage() {
         <PropertyList properties={filteredProperties} loading={loading} />
         <About />
         <Services />
+        <Testimonials />
         <Contact />
       </main>
       <Footer />
