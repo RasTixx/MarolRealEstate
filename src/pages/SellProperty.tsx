@@ -78,6 +78,31 @@ export default function SellProperty() {
 
       if (error) throw error;
 
+      const fullAddress = `${formData.address}, ${formData.city} ${formData.postalCode}`;
+      const sizeInfo = formData.area ? `${formData.area} m²` : '';
+
+      await fetch(
+        `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/send-inquiry-email`,
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            type: 'sell',
+            name: formData.fullName,
+            email: formData.email,
+            phone: formData.phone,
+            propertyAddress: fullAddress,
+            propertySize: sizeInfo,
+            yearBuilt: formData.yearBuilt,
+            propertyCondition: formData.propertyCondition,
+            askingPrice: formData.askingPrice ? `${formData.askingPrice}€` : '',
+            message: formData.description,
+          }),
+        }
+      );
+
       setSubmitMessage('Ďakujeme! Vaša požiadavka bola úspešne odoslaná. Čoskoro vás budeme kontaktovať.');
       setFormData({
         fullName: '',

@@ -66,6 +66,30 @@ export default function BuyProperty() {
 
       if (error) throw error;
 
+      const budgetRange = `${formData.minPrice || '0'}€ - ${formData.maxPrice || 'neobmedzené'}€`;
+      const roomInfo = formData.bedrooms ? `${formData.bedrooms} izby` : '';
+
+      await fetch(
+        `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/send-inquiry-email`,
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            type: 'buy',
+            name: formData.fullName,
+            email: formData.email,
+            phone: formData.phone,
+            budget: budgetRange,
+            location: formData.location,
+            roomCount: roomInfo,
+            propertyType: formData.propertyType,
+            message: formData.additionalRequirements,
+          }),
+        }
+      );
+
       setSubmitMessage('Ďakujeme! Vaša požiadavka bola úspešne odoslaná. Čoskoro vás budeme kontaktovať.');
       setFormData({
         fullName: '',
