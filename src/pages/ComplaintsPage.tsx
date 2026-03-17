@@ -4,177 +4,78 @@ export default function ComplaintsPage() {
   return (
     <LegalDocumentLayout title="Reklamačný poriadok">
       <div>
-        <h2>1. Všeobecné ustanovenia</h2>
-
-        <h3>1.1 Úvodné ustanovenia</h3>
         <p>
-          Tento reklamačný poriadok upravuje postup pri vybavovaní reklamácií poskytovaných služieb spoločnosťou <strong>Marol Real Estate s.r.o.</strong> (ďalej len "poskytovateľ").
+          Tento reklamačný poriadok bol vypracovaný a prijatý spoločnosťou <strong>Marol Real Estate, s.r.o.</strong>, so sídlom Námestie SNP 47/36, Lehota pod Vtáčnikom 972 42, IČO: 52221539 (ďalej len spoločnosť Marol Real Estate). Tento reklamačný poriadok vydáva spoločnosť Marol Real Estate v zmysle zákona č. 250/2007 Z. z. o ochrane spotrebiteľa.
         </p>
 
-        <h3>1.2 Základné údaje poskytovateľa</h3>
+        <h2>Všeobecné ustanovenia</h2>
         <p>
-          <strong>Obchodné meno:</strong> Marol Real Estate s.r.o.<br />
-          <strong>Sídlo:</strong> Bratislava, Slovenská republika<br />
-          <strong>IČO:</strong> 12345678<br />
-          <strong>E-mail:</strong> reklamacie@marolrealestate.sk<br />
-          <strong>Telefón:</strong> +421 XXX XXX XXX
+          Reklamačný poriadok upravuje podmienky, spôsob a miesto vybavovania reklamácií a tiež vzájomné práva a povinnosti spoločnosti Marol Real Estate a klienta v rámci reklamačného konania. Každý klient (ďalej len „spotrebiteľ") má právo uplatniť u spoločnosti Marol Real Estate reklamáciu poskytnutej služby.
+        </p>
+        <p>
+          Spotrebiteľ môže uplatniť reklamáciu v ktorejkoľvek pobočke spoločnosti Marol Real Estate alebo v sídle spoločnosti Marol Real Estate, prípadne písomne na adrese: Marol Real Estate, s.r.o., Námestie SNP 47/36, Lehota pod Vtáčnikom 972 42.
+        </p>
+        <p>
+          Pod pojmom reklamácia sa rozumie uplatnenie nároku spotrebiteľa na preverenie správnosti, kvality alebo rozsahu poskytovanej služby a/alebo uplatnenie zodpovednosti za vady služieb spoločnosti Marol Real Estate. Za reklamáciu sa nepovažuje sťažnosť spotrebiteľa, ktorá súvisí s neplnením alebo vadným plnením povinností tretej osoby, podnet spotrebiteľa na zlepšenie služieb spoločnosti Marol Real Estate alebo iná žiadosť, ktorej predmetom nie sú služby alebo činnosť spoločnosti Marol Real Estate.
         </p>
 
-        <h2>2. Práva klienta</h2>
-
-        <h3>2.1 Právo na reklamáciu</h3>
+        <h2>Práva spotrebiteľa</h2>
         <p>
-          Klient má právo reklamovať služby, ktoré:
+          Spotrebiteľ má pri uplatňovaní reklamácie práva podľa § 622 a § 623 Občianskeho zákonníka. Práva a povinnosti spotrebiteľa súvisiace s uplatnením a vybavením reklamácie upravuje § 18 a nasl. zákona č. 250/2007 Z.z. o ochrane spotrebiteľa.
         </p>
-        <ul>
-          <li>Neboli poskytnuté v dohodnutom rozsahu alebo kvalite</li>
-          <li>Neboli poskytnuté v dohodnutom termíne</li>
-          <li>Boli poskytnuté v rozpore so zmluvnými podmienkami</li>
-          <li>Boli poskytnuté v rozpore s platnými právnymi predpismi</li>
-        </ul>
 
-        <h3>2.2 Reklamačná lehota</h3>
+        <h2>Postup pri vybavovaní reklamácie</h2>
         <p>
-          Reklamáciu je potrebné uplatniť:
+          Spotrebiteľ pri uplatnení reklamácie rozhodne, ktoré z práv podľa § 622 a § 623 Občianskeho zákonníka si uplatňuje. Spotrebiteľ je povinný k reklamácií priložiť všetky dokumenty a dôkazy, ktoré preukazujú jeho tvrdenia. Spoločnosť Marol Real Estate na základe rozhodnutia spotrebiteľa určí spôsob vybavenia reklamácie a to bezodkladne, v zložitých prípadoch najneskôr do <strong>3 pracovných dní</strong> odo dňa uplatnenia reklamácie. V odôvodnených prípadoch, najmä ak sa vyžaduje zložité odborné posúdenie kvality alebo rozsahu poskytnutej služby, určí spôsob vybavenia do <strong>30 dní</strong> odo dňa uplatnenia reklamácie.
         </p>
-        <ul>
-          <li>Bez zbytočného odkladu po zistení nedostatku</li>
-          <li>Najneskôr do 30 dní od poskytnutia služby alebo od zistenia nedostatku</li>
-          <li>V prípade skrytých nedostatkov do 6 mesiacov od poskytnutia služby</li>
-        </ul>
-
-        <h2>3. Spôsob podania reklamácie</h2>
-
-        <h3>3.1 Formy podania reklamácie</h3>
         <p>
-          Reklamáciu je možné podať:
+          Po určení spôsobu vybavenia reklamácie sa reklamácia vybaví ihneď, v odôvodnených prípadoch možno reklamáciu vybaviť aj neskôr, pričom vybavenie reklamácie trvá najviac <strong>30 dní</strong> odo dňa uplatnenia reklamácie. Po uplynutí lehoty na vybavenie reklamácie má spotrebiteľ právo od zmluvy odstúpiť. Vybavením reklamácie sa rozumie ukončenie reklamačného konania nápravou nedostatočne alebo vôbec neposkytnutej (časti) služby, vyplatením primeranej zľavy zo sprostredkovateľskej odmeny (provízie). Ak je reklamácia neoprávnená, spoločnosť Marol Real Estate reklamáciu zamietne.
         </p>
-        <ul>
-          <li><strong>Písomne</strong> - listom na adresu sídla poskytovateľa</li>
-          <li><strong>Elektronicky</strong> - e-mailom na adresu: reklamacie@marolrealestate.sk</li>
-          <li><strong>Telefonicky</strong> - na čísle: +421 XXX XXX XXX (s následným písomným potvrdením)</li>
-          <li><strong>Osobne</strong> - v sídle poskytovateľa počas úradných hodín</li>
-        </ul>
-
-        <h3>3.2 Náležitosti reklamácie</h3>
         <p>
-          Reklamácia by mala obsahovať:
+          Realitná kancelária znáša náklady spojené s vybavovaním reklamácie. Týmto nie je dotknutý nárok RK na náhradu preukázateľne vynaložených nákladov súvisiacich s vybavovaním neoprávnenej reklamácie.
         </p>
-        <ul>
-          <li>Identifikačné údaje klienta (meno, priezvisko, adresa, kontakt)</li>
-          <li>Číslo zmluvy alebo objednávky (ak bolo pridelené)</li>
-          <li>Popis reklamovanej služby</li>
-          <li>Dôvod reklamácie a popis nedostatkov</li>
-          <li>Dátum zistenia nedostatku</li>
-          <li>Požiadavku na spôsob vybavenia reklamácie</li>
-          <li>Prílohy preukazujúce oprávnenosť reklamácie (ak sú k dispozícii)</li>
-        </ul>
 
-        <h2>4. Vybavenie reklamácie</h2>
-
-        <h3>4.1 Lehota na vybavenie</h3>
+        <h2>Potvrdenie a doklad o reklamácii</h2>
         <p>
-          Poskytovateľ sa zaväzuje:
+          Spoločnosť Marol Real Estate pri uplatnení reklamácie vydá spotrebiteľovi potvrdenie. Ak je reklamácia uplatnená prostredníctvom prostriedkov diaľkovej komunikácie (e-mailom), spoločnosť Marol Real Estate doručí potvrdenie o prijatí uplatnenej reklamácie spotrebiteľovi ihneď. Ak potvrdenie o uplatnení reklamácie nie je možné doručiť ihneď, doručí ho bez zbytočného odkladu, najneskôr však spolu s dokladom o vybavení reklamácie.
+        </p>
+        <p>
+          Spoločnosť Marol Real Estate o vybavení reklamácie vydá písomný doklad najneskôr do <strong>30 dní</strong> odo dňa uplatnenia reklamácie.
+        </p>
+
+        <h2>Poučenie o alternatívnom riešení sporov</h2>
+        <p>
+          Spotrebiteľ má právo obrátiť sa na spoločnosť Marol Real Estate (napr. e-mailom na adresu <a href="mailto:inffomre@gmail.com" className="text-amber-300 hover:text-amber-400">inffomre@gmail.com</a>) so žiadosťou o nápravu, ak nie je spokojný so spôsobom, ktorým spoločnosť Marol Real Estate vybavila jeho reklamáciu alebo ak sa domnieva, že spoločnosť Marol Real Estate porušila jeho práva.
+        </p>
+        <p>
+          Ak spoločnosť Marol Real Estate odpovie na túto žiadosť zamietavo alebo na ňu neodpovedal do 30 dní od jej odoslania, spotrebiteľ má právo podať návrh na začatie alternatívneho riešenia sporu subjektu alternatívneho riešenia sporov podľa § 12 zákona č. 391/2015 Z. z. o alternatívnom riešení spotrebiteľských sporov.
+        </p>
+        <p>
+          Príslušným subjektom na alternatívne riešenie spotrebiteľských sporov je Slovenská obchodná inšpekcia, ktorej spotrebiteľ môže podať návrh na adrese: <strong>Slovenská obchodná inšpekcia, ústredný inšpektorát, Odbor pre medzinárodné vzťahy a alternatívne riešenie spotrebiteľských sporov, Prievozská 32, p. p. 29, 827 99 Bratislava 27</strong> alebo elektronicky na adrese: <a href="mailto:ars@soi.sk" className="text-amber-300 hover:text-amber-400">ars@soi.sk</a>, <a href="mailto:adr@soi.sk" className="text-amber-300 hover:text-amber-400">adr@soi.sk</a>.
+        </p>
+        <p>
+          Klient (spotrebiteľ) spoločnosti Marol Real Estate môže na podanie návrhu na alternatívne riešenie spotrebiteľského sporu použiť platformu na riešenie sporov on-line, dostupnú na nasledujúcej adrese: <a href="https://consumer-redress.ec.europa.eu/index_sk" className="text-amber-300 hover:text-amber-400" target="_blank" rel="noopener noreferrer">https://consumer-redress.ec.europa.eu/index_sk</a>
+        </p>
+
+        <h2>Náležitosti návrhu na alternatívne riešenie sporu</h2>
+        <p>
+          Návrh na začatie alternatívneho riešenia spotrebiteľského sporu musí obsahovať:
         </p>
         <ul>
-          <li>Potvrdiť prijatie reklamácie do <strong>3 pracovných dní</strong></li>
-          <li>Prešetriť reklamáciu a informovať klienta o výsledku do <strong>30 dní</strong> od doručenia</li>
-          <li>V odôvodnených prípadoch môže byť lehota predĺžená, o čom bude klient informovaný</li>
-        </ul>
-
-        <h3>4.2 Spôsoby vybavenia reklamácie</h3>
-        <p>
-          V prípade oprávnenej reklamácie poskytovateľ:
-        </p>
-        <ul>
-          <li>Bezplatne odstráni nedostatky poskytnutej služby</li>
-          <li>Poskytne službu znova v súlade so zmluvnými podmienkami</li>
-          <li>Poskytne primeranú zľavu z ceny služby</li>
-          <li>Vráti uhradenú sumu za nespoknutú službu (úplne alebo čiastočne)</li>
-        </ul>
-
-        <h3>4.3 Neoprávnená reklamácia</h3>
-        <p>
-          Reklamácia je neoprávnená, ak:
-        </p>
-        <ul>
-          <li>Nedostatky vznikli zavinením klienta</li>
-          <li>Klient bol pred poskytnutím služby upozornený na obmedzenia</li>
-          <li>Nedostatky vznikli v dôsledku vyššej moci</li>
-          <li>Nedostatky vznikli na základe pokynov klienta</li>
-          <li>Reklamácia bola podaná po uplynutí reklamačnej lehoty</li>
-        </ul>
-
-        <h2>5. Protokol o reklamácii</h2>
-        <p>
-          O každej reklamácii poskytovateľ vypracuje:
-        </p>
-        <ul>
-          <li>Písomný záznam s dátumom prijatia</li>
-          <li>Evidenčné číslo reklamácie</li>
-          <li>Stanovisko k reklamácii</li>
-          <li>Spôsob a termín vybavenia</li>
+          <li>meno a priezvisko spotrebiteľa, adresu na doručovanie, elektronickú adresu a telefonický kontakt, ak ich má,</li>
+          <li>presné označenie realitnej agentúry,</li>
+          <li>úplný a zrozumiteľný opis rozhodujúcich skutočností,</li>
+          <li>označenie, čoho sa spotrebiteľ domáha,</li>
+          <li>dátum, kedy sa spotrebiteľ obrátil na spoločnosť Marol Real Estate so žiadosťou o nápravu a informáciu, že pokus o vyriešenie sporu priamo so spoločnosťou Marol Real Estate bol bezvýsledný,</li>
+          <li>vyhlásenie o tom, že vo veci nebol zaslaný rovnaký návrh inému subjektu alternatívneho riešenia sporov, nerozhodol vo veci súd alebo rozhodcovský súd, vo veci nebola uzavretá dohoda o mediácii, ani nebolo vo veci ukončené alternatívne riešenie sporu spôsobom podľa § 20 ods. 1 písm. a) až e) zákona č. 391/2015 Z. z. o alternatívnom riešení spotrebiteľských sporov.</li>
         </ul>
         <p>
-          Kópia protokolu bude doručená klientovi.
-        </p>
-
-        <h2>6. Alternatívne riešenie sporov</h2>
-
-        <h3>6.1 Mimosúdne riešenie sporov</h3>
-        <p>
-          V prípade nespokojnosti s vybavením reklamácie má klient právo:
-        </p>
-        <ul>
-          <li>Obrátiť sa na orgán dozoru alebo kontroly (podľa charakteru služby)</li>
-          <li>Využiť alternatívne riešenie sporov (mediácia, rozhodcovské konanie)</li>
-          <li>Podať sťažnosť príslušnému orgánu podľa platnej legislatívy</li>
-        </ul>
-
-        <h3>6.2 Súdne riešenie sporov</h3>
-        <p>
-          Klient má právo obrátiť sa na príslušný súd Slovenskej republiky.
-        </p>
-
-        <h2>7. Evidencia reklamácií</h2>
-        <p>
-          Poskytovateľ vedie evidenciu všetkých reklamácií, ktorá obsahuje:
-        </p>
-        <ul>
-          <li>Identifikačné údaje klienta</li>
-          <li>Dátum a spôsob podania reklamácie</li>
-          <li>Predmet reklamácie</li>
-          <li>Dátum a spôsob vybavenia</li>
-          <li>Výsledok reklamácie</li>
-        </ul>
-
-        <h2>8. Osobitné ustanovenia</h2>
-
-        <h3>8.1 Ochrana osobných údajov</h3>
-        <p>
-          Osobné údaje klienta získané v rámci reklamačného konania sú spracúvané v súlade s platnými právnymi predpismi o ochrane osobných údajov.
-        </p>
-
-        <h3>8.2 Archivovanie</h3>
-        <p>
-          Dokumentácia týkajúca sa reklamácií je archivovaná po dobu minimálne 3 roky od vybavenia reklamácie.
-        </p>
-
-        <h2>9. Kontaktné údaje pre reklamácie</h2>
-        <p>
-          <strong>E-mail:</strong> <a href="mailto:reklamacie@marolrealestate.sk">reklamacie@marolrealestate.sk</a><br />
-          <strong>Telefón:</strong> +421 XXX XXX XXX<br />
-          <strong>Adresa:</strong> Marol Real Estate s.r.o., Bratislava, Slovenská republika<br />
-          <strong>Úradné hodiny:</strong> Pondelok - Piatok, 9:00 - 17:00
-        </p>
-
-        <h2>10. Záverečné ustanovenia</h2>
-        <p>
-          Tento reklamačný poriadok je súčasťou všeobecných obchodných podmienok a je záväzný pre všetky zmluvné strany. Poskytovateľ si vyhradzuje právo tento reklamačný poriadok meniť a dopĺňať.
+          Návrh na začatie alternatívneho riešenia spotrebiteľského sporu je dostupný on-line na adrese:<br />
+          <a href="https://www.slov-lex.sk/pravne-predpisy/prilohy/SK/ZZ/2015/391/20160201_4545799-2.pdf" className="text-amber-300 hover:text-amber-400" target="_blank" rel="noopener noreferrer">https://www.slov-lex.sk/pravne-predpisy/prilohy/SK/ZZ/2015/391/20160201_4545799-2.pdf</a>
         </p>
 
         <p className="text-sm text-gray-400 mt-8 italic">
-          Tento reklamačný poriadok nadobúda účinnosť dňa: {new Date().toLocaleDateString('sk-SK')}
+          Tento reklamačný poriadok nadobúda účinnosť dňa: 16.02.2019
         </p>
       </div>
     </LegalDocumentLayout>
