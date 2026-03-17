@@ -53,11 +53,11 @@ export default function LegalDocumentLayout({ title, children }: LegalDocumentLa
             prose-headings:text-white prose-headings:font-bold
             prose-h2:text-2xl prose-h2:mt-10 prose-h2:mb-6 prose-h2:text-amber-400
             prose-h3:text-xl prose-h3:mt-8 prose-h3:mb-4 prose-h3:text-amber-300
-            prose-p:text-gray-200 prose-p:leading-relaxed prose-p:mb-6
+            prose-p:text-white prose-p:leading-relaxed prose-p:mb-6
             prose-strong:text-white prose-strong:font-semibold
-            prose-ul:text-gray-200 prose-ul:my-6
-            prose-ol:text-gray-200 prose-ol:my-6
-            prose-li:my-3 prose-li:text-gray-200
+            prose-ul:text-white prose-ul:my-6
+            prose-ol:text-white prose-ol:my-6
+            prose-li:my-3 prose-li:text-white
             prose-a:text-amber-400 prose-a:no-underline hover:prose-a:text-amber-300">
             {children}
           </div>
