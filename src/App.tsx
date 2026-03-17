@@ -8,6 +8,10 @@ import AdminLogin from './pages/AdminLogin';
 import AdminDashboard from './pages/AdminDashboard';
 import AddProperty from './pages/AddProperty';
 import EditProperty from './pages/EditProperty';
+import GDPRPage from './pages/GDPRPage';
+import TermsPage from './pages/TermsPage';
+import ComplaintsPage from './pages/ComplaintsPage';
+import EthicsPage from './pages/EthicsPage';
 import ProtectedRoute from './components/ProtectedRoute';
 import ScrollToTop from './components/ScrollToTop';
 
@@ -21,6 +25,10 @@ function App() {
           <Route path="/chcem-kupit" element={<BuyProperty />} />
           <Route path="/chcem-predat" element={<SellProperty />} />
           <Route path="/referencie" element={<Testimonials />} />
+          <Route path="/ochrana-osobnych-udajov" element={<GDPRPage />} />
+          <Route path="/vseobecne-obchodne-podmienky" element={<TermsPage />} />
+          <Route path="/reklamacny-poriadok" element={<ComplaintsPage />} />
+          <Route path="/eticky-kodex" element={<EthicsPage />} />
           <Route path="/admin/login" element={<AdminLogin />} />
           <Route
             path="/admin"

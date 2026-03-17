@@ -5,8 +5,8 @@ export default function Footer() {
   return (
     <footer className="bg-black border-t border-amber-500/20">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
-          <div className="col-span-1 md:col-span-2">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+          <div className="col-span-1 md:col-span-2 lg:col-span-1">
             <div className="mb-4">
               <img
                 src="/logo_new.png"
@@ -75,15 +75,31 @@ export default function Footer() {
                   Chcem predať
                 </Link>
               </li>
+            </ul>
+          </div>
+
+          <div>
+            <h3 className="text-lg font-semibold mb-4 text-white">Právne dokumenty</h3>
+            <ul className="space-y-2">
               <li>
-                <a href="#" className="text-gray-400 hover:text-amber-500 transition-colors">
+                <Link to="/ochrana-osobnych-udajov" className="text-gray-400 hover:text-amber-500 transition-colors">
                   Ochrana osobných údajov
-                </a>
+                </Link>
               </li>
               <li>
-                <a href="#" className="text-gray-400 hover:text-amber-500 transition-colors">
+                <Link to="/vseobecne-obchodne-podmienky" className="text-gray-400 hover:text-amber-500 transition-colors">
                   Obchodné podmienky
-                </a>
+                </Link>
+              </li>
+              <li>
+                <Link to="/reklamacny-poriadok" className="text-gray-400 hover:text-amber-500 transition-colors">
+                  Reklamačný poriadok
+                </Link>
+              </li>
+              <li>
+                <Link to="/eticky-kodex" className="text-gray-400 hover:text-amber-500 transition-colors">
+                  Etický kódex
+                </Link>
               </li>
             </ul>
           </div>
