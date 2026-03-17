@@ -29,7 +29,7 @@ export default function About() {
               <div className="flex items-start space-x-3">
                 <Users className="h-6 w-6 text-amber-500 flex-shrink-0 mt-1" />
                 <div>
-                  <h3 className="font-semibold text-white">500+</h3>
+                  <h3 className="font-semibold text-white">1000+</h3>
                   <p className="text-sm text-gray-400">spokojných klientov</p>
                 </div>
               </div>
