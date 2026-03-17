@@ -1,4 +1,4 @@
-import { Search, MapPin, Home, Repeat2 } from 'lucide-react';
+import { Search, MapPin, Home, Repeat2, Quote } from 'lucide-react';
 import { useState } from 'react';
 
 interface HeroProps {
@@ -51,6 +51,15 @@ export default function Hero({ onSearch }: HeroProps) {
               <div className="flex items-center space-x-2 text-amber-500">
                 <span className="text-3xl font-bold">15+</span>
                 <span className="text-sm text-gray-400">Rokov v odbore</span>
+              </div>
+            </div>
+
+            <div className="bg-stone-900/40 backdrop-blur-sm rounded-lg p-4 border-l-4 border-amber-500">
+              <div className="flex gap-3">
+                <Quote className="h-6 w-6 text-amber-500 flex-shrink-0 mt-1" />
+                <p className="text-gray-300 italic text-sm md:text-base leading-relaxed">
+                  Rozhodnutie o kúpe alebo prenájme nehnuteľnosti je dôležité. Veríme, že práve my vám pomôžeme urobiť to správne.
+                </p>
               </div>
             </div>
           </div>
