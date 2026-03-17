@@ -122,7 +122,7 @@ export default function Testimonials() {
       <section className="relative pt-32 pb-24 lg:pt-40 bg-gradient-to-b from-black via-stone-950 to-black">
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(217,119,6,0.1),transparent_50%)]" />
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h1 className="text-3xl md:text-6xl font-bold text-white mb-6 mt-12">
+          <h1 className="text-2xl md:text-6xl font-bold text-white mb-6 mt-12">
             Referencie
           </h1>
           <p className="text-xl text-gray-400 max-w-3xl mx-auto">
