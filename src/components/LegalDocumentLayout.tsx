@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { ChevronRight, ArrowUp } from 'lucide-react';
+import { ChevronRight, ArrowUp, Home } from 'lucide-react';
 import { useState, useEffect } from 'react';
 
 interface LegalDocumentLayoutProps {
@@ -34,9 +34,16 @@ export default function LegalDocumentLayout({ title, children }: LegalDocumentLa
             <ChevronRight className="h-4 w-4 text-gray-600" />
             <span className="text-amber-500">{title}</span>
           </nav>
-          <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold text-white mb-4">
+          <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold text-white mb-6">
             {title}
           </h1>
+          <Link
+            to="/"
+            className="inline-flex items-center gap-2 bg-amber-500 hover:bg-amber-600 text-black font-semibold px-6 py-3 rounded-lg transition-all transform hover:scale-105 shadow-lg"
+          >
+            <Home className="h-5 w-5" />
+            Späť na hlavnú stránku
+          </Link>
         </div>
       </div>
 
@@ -44,14 +51,14 @@ export default function LegalDocumentLayout({ title, children }: LegalDocumentLa
         <div className="bg-white/5 backdrop-blur-sm rounded-lg border border-amber-500/20 p-8 md:p-12">
           <div className="prose prose-invert prose-amber max-w-none
             prose-headings:text-white prose-headings:font-bold
-            prose-h2:text-2xl prose-h2:mt-8 prose-h2:mb-4 prose-h2:text-amber-400
-            prose-h3:text-xl prose-h3:mt-6 prose-h3:mb-3 prose-h3:text-amber-300
-            prose-p:text-gray-300 prose-p:leading-relaxed prose-p:mb-4
+            prose-h2:text-2xl prose-h2:mt-10 prose-h2:mb-6 prose-h2:text-amber-400
+            prose-h3:text-xl prose-h3:mt-8 prose-h3:mb-4 prose-h3:text-amber-300
+            prose-p:text-gray-200 prose-p:leading-relaxed prose-p:mb-6
             prose-strong:text-white prose-strong:font-semibold
-            prose-ul:text-gray-300 prose-ul:my-4
-            prose-ol:text-gray-300 prose-ol:my-4
-            prose-li:my-2
-            prose-a:text-amber-500 prose-a:no-underline hover:prose-a:text-amber-400">
+            prose-ul:text-gray-200 prose-ul:my-6
+            prose-ol:text-gray-200 prose-ol:my-6
+            prose-li:my-3 prose-li:text-gray-200
+            prose-a:text-amber-400 prose-a:no-underline hover:prose-a:text-amber-300">
             {children}
           </div>
         </div>
