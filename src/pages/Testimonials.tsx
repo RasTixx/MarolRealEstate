@@ -125,7 +125,7 @@ export default function Testimonials() {
           <h1 className="text-3xl md:text-4xl font-bold text-white mb-6 mt-12">
             Referencie
           </h1>
-          <p className="text-xl text-gray-400 max-w-3xl mx-auto">
+          <p className="text-lg text-gray-400 max-w-3xl mx-auto">
             Prečítajte si skúsenosti našich spokojných klientov a pridajte svoju vlastnú referenciu
           </p>
         </div>
