@@ -31,7 +31,7 @@ export default function Header() {
         <div className="flex justify-between items-center py-4 lg:py-6">
           <Link to="/" onClick={handleLogoClick} className="flex items-center space-x-3">
             <img
-              src="/logo_goldennn.png"
+              src="/logo_new.png"
               alt="Marol Real Estate"
               className="h-16 lg:h-24 w-auto"
             />
