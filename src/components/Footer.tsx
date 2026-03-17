@@ -16,7 +16,7 @@ export default function Footer() {
             </div>
             <p className="text-gray-400 mb-4 max-w-md">
               Profesionálna realitná kancelária s dlhoročnými skúsenosťami na slovenskom trhu.
-              Pomáhame nájsť vysnívaný domov pre vás a vašu rodinu.
+              Pomáhame nájsť vysnívaný domov pre Vás a Vašu rodinu.
             </p>
             <div className="flex space-x-4">
               <a href="#" className="text-gray-400 hover:text-amber-500 transition-colors">
