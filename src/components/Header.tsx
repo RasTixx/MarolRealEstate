@@ -1,15 +1,27 @@
-import { useState } from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import { useState, useEffect } from 'react';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 
 export default function Header() {
   const [isOpen, setIsOpen] = useState(false);
   const location = useLocation();
+  const navigate = useNavigate();
   const isHomePage = location.pathname === '/';
 
   const handleLogoClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
     if (isHomePage) {
       e.preventDefault();
       window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+  };
+
+  const handleHashNavigation = (hash: string) => {
+    if (isHomePage) {
+      const element = document.querySelector(hash);
+      if (element) {
+        element.scrollIntoView({ behavior: 'smooth' });
+      }
+    } else {
+      navigate('/', { state: { scrollTo: hash } });
     }
   };
 
@@ -58,12 +70,12 @@ export default function Header() {
             ) : (
               <>
                 {[
-                  { href: '/', label: 'Domov', isRoute: true },
-                  { href: '/#nehnutelnosti', label: 'Nehnuteľnosti', isRoute: false },
-                  { href: '/#o-nas', label: 'O nás', isRoute: false },
-                  { href: '/#sluzby', label: 'Služby', isRoute: false },
-                  { href: '/referencie', label: 'Referencie', isRoute: true },
-                  { href: '/#kontakt', label: 'Kontakt', isRoute: false },
+                  { href: '/', label: 'Domov', isRoute: true, hash: null },
+                  { href: '/#nehnutelnosti', label: 'Nehnuteľnosti', isRoute: false, hash: '#nehnutelnosti' },
+                  { href: '/#o-nas', label: 'O nás', isRoute: false, hash: '#o-nas' },
+                  { href: '/#sluzby', label: 'Služby', isRoute: false, hash: '#sluzby' },
+                  { href: '/referencie', label: 'Referencie', isRoute: true, hash: null },
+                  { href: '/#kontakt', label: 'Kontakt', isRoute: false, hash: '#kontakt' },
                 ].map((item) =>
                   item.isRoute ? (
                     <Link
@@ -74,13 +86,13 @@ export default function Header() {
                       {item.label}
                     </Link>
                   ) : (
-                    <a
+                    <button
                       key={item.href}
-                      href={item.href}
+                      onClick={() => handleHashNavigation(item.hash!)}
                       className="px-4 py-2 lg:px-5 lg:py-3 text-sm lg:text-base font-medium text-gray-300 hover:text-amber-500 hover:bg-white/5 rounded-lg transition-all duration-200"
                     >
                       {item.label}
-                    </a>
+                    </button>
                   )
                 )}
               </>
@@ -139,12 +151,12 @@ export default function Header() {
             ) : (
               <>
                 {[
-                  { href: '/', label: 'Domov', isRoute: true },
-                  { href: '/#nehnutelnosti', label: 'Nehnuteľnosti', isRoute: false },
-                  { href: '/#o-nas', label: 'O nás', isRoute: false },
-                  { href: '/#sluzby', label: 'Služby', isRoute: false },
-                  { href: '/referencie', label: 'Referencie', isRoute: true },
-                  { href: '/#kontakt', label: 'Kontakt', isRoute: false },
+                  { href: '/', label: 'Domov', isRoute: true, hash: null },
+                  { href: '/#nehnutelnosti', label: 'Nehnuteľnosti', isRoute: false, hash: '#nehnutelnosti' },
+                  { href: '/#o-nas', label: 'O nás', isRoute: false, hash: '#o-nas' },
+                  { href: '/#sluzby', label: 'Služby', isRoute: false, hash: '#sluzby' },
+                  { href: '/referencie', label: 'Referencie', isRoute: true, hash: null },
+                  { href: '/#kontakt', label: 'Kontakt', isRoute: false, hash: '#kontakt' },
                 ].map((item) =>
                   item.isRoute ? (
                     <Link
@@ -156,14 +168,16 @@ export default function Header() {
                       {item.label}
                     </Link>
                   ) : (
-                    <a
+                    <button
                       key={item.href}
-                      href={item.href}
-                      className="block px-4 py-2 text-sm font-medium text-gray-300 hover:text-amber-500 hover:bg-white/5 rounded-lg transition-all"
-                      onClick={() => setIsOpen(false)}
+                      onClick={() => {
+                        handleHashNavigation(item.hash!);
+                        setIsOpen(false);
+                      }}
+                      className="block px-4 py-2 text-sm font-medium text-gray-300 hover:text-amber-500 hover:bg-white/5 rounded-lg transition-all text-left w-full"
                     >
                       {item.label}
-                    </a>
+                    </button>
                   )
                 )}
               </>
