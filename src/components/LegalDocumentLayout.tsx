@@ -59,7 +59,6 @@ export default function LegalDocumentLayout({ title, children }: LegalDocumentLa
             prose-ol:text-white prose-ol:my-6
             prose-li:my-3 prose-li:text-white
             prose-a:text-amber-400 prose-a:no-underline prose-a:break-words hover:prose-a:text-amber-300">
-            >
             {children}
           </div>
         </div>
