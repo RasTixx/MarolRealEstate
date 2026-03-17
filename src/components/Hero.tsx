@@ -58,7 +58,7 @@ export default function Hero({ onSearch }: HeroProps) {
               <div className="flex gap-3">
                 <Quote className="h-6 w-6 text-amber-500 flex-shrink-0 mt-1" />
                 <p className="text-gray-300 italic text-sm md:text-base leading-relaxed">
-                  Rozhodnutie o kúpe alebo prenájme nehnuteľnosti je dôležité. Veríme, že práve my vám pomôžeme urobiť to správne.
+                  Nerozhodujte sa dlho, rozhodujte sa správne.
                 </p>
               </div>
             </div>
