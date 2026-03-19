@@ -1,11 +1,27 @@
 import { Calculator, Check } from 'lucide-react';
 import { useState, useEffect } from 'react';
+import { useFormChangeDetection } from '../hooks/useFormChangeDetection';
+
+const DEFAULT_LOAN_AMOUNT = '150000';
+const DEFAULT_INTEREST_RATE = '3.5';
+const DEFAULT_LOAN_TERM = '25';
 
 export default function FinancingSection() {
-  const [loanAmount, setLoanAmount] = useState<string>('150000');
-  const [interestRate, setInterestRate] = useState<string>('3.5');
-  const [loanTerm, setLoanTerm] = useState<string>('25');
+  const [loanAmount, setLoanAmount] = useState<string>(DEFAULT_LOAN_AMOUNT);
+  const [interestRate, setInterestRate] = useState<string>(DEFAULT_INTEREST_RATE);
+  const [loanTerm, setLoanTerm] = useState<string>(DEFAULT_LOAN_TERM);
   const [monthlyPayment, setMonthlyPayment] = useState<number>(0);
+  const [isFormDirty, setIsFormDirty] = useState(false);
+
+  useFormChangeDetection(isFormDirty);
+
+  useEffect(() => {
+    const hasChanges =
+      loanAmount !== DEFAULT_LOAN_AMOUNT ||
+      interestRate !== DEFAULT_INTEREST_RATE ||
+      loanTerm !== DEFAULT_LOAN_TERM;
+    setIsFormDirty(hasChanges);
+  }, [loanAmount, interestRate, loanTerm]);
 
   useEffect(() => {
     calculateMonthlyPayment();

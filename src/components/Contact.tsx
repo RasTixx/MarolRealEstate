@@ -1,6 +1,7 @@
 import { MapPin, Phone, Mail } from 'lucide-react';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { supabase } from '../lib/supabase';
+import { useFormChangeDetection } from '../hooks/useFormChangeDetection';
 
 export default function Contact() {
   const [formData, setFormData] = useState({
@@ -11,6 +12,14 @@ export default function Contact() {
   });
   const [loading, setLoading] = useState(false);
   const [status, setStatus] = useState<{ type: 'success' | 'error'; message: string } | null>(null);
+  const [isFormDirty, setIsFormDirty] = useState(false);
+
+  useFormChangeDetection(isFormDirty);
+
+  useEffect(() => {
+    const hasContent = formData.name || formData.email || formData.phone || formData.message;
+    setIsFormDirty(!!hasContent);
+  }, [formData]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -64,6 +73,7 @@ export default function Contact() {
         phone: '',
         message: '',
       });
+      setIsFormDirty(false);
     } catch (error) {
       console.error('Error submitting contact form:', error);
       setStatus({
