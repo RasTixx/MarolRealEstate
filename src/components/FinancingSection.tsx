@@ -125,25 +125,24 @@ export default function FinancingSection() {
           </div>
 
           {/* Mortgage Calculator - Right Side */}
-          <div className="bg-black/40 border border-amber-500/20 p-8 rounded-lg backdrop-blur-sm">
+          <div className="bg-gradient-to-br from-amber-100/95 via-yellow-50/95 to-amber-50/95 p-8 rounded-lg shadow-xl backdrop-blur-sm border border-amber-200/50">
             <div className="flex items-center space-x-3 mb-6">
-              <div className="bg-amber-500/10 p-3 rounded-lg border border-amber-500/20">
-                <Calculator className="h-8 w-8 text-amber-500" />
+              <div className="bg-white/80 p-3 rounded-lg border-2 border-amber-700/30">
+                <Calculator className="h-8 w-8 text-amber-800" />
               </div>
-              <h2 className="text-3xl md:text-4xl font-bold text-white">
+              <h2 className="text-3xl md:text-4xl font-serif font-bold text-amber-900">
                 Hypotekárna kalkulačka
               </h2>
             </div>
 
-            <p className="text-gray-300 mb-8 leading-relaxed">
-              Vypočítajte si orientačnú výšku mesačnej splátky vašej hypotéky rýchlo a jednoducho.
-              Zadajte výšku úveru, percentuálnu sadzbu a dobu splatnosti.
+            <p className="text-amber-900/80 mb-8 leading-relaxed">
+              Vypočítajte si orientačnú výšku mesačnej splátky vášho hypotekárneho úveru rýchlo a jednoducho. Stačí zadať výšku úveru, percentuálnu úrokovú sadzbu a dobu splatnosti.
             </p>
 
-            <div className="space-y-6">
+            <div className="space-y-5">
               {/* Loan Amount Input */}
               <div>
-                <label className="block text-amber-400 font-medium mb-2">
+                <label className="block text-amber-900 font-medium mb-2">
                   Výška úveru
                 </label>
                 <div className="relative">
@@ -151,10 +150,10 @@ export default function FinancingSection() {
                     type="number"
                     value={loanAmount}
                     onChange={(e) => setLoanAmount(e.target.value)}
-                    className="w-full px-4 py-3 pr-12 bg-zinc-900 border border-zinc-700 text-white rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-transparent transition-all"
+                    className="w-full px-4 py-3.5 pr-12 bg-white/60 border-2 border-amber-700/30 text-amber-900 rounded-lg focus:ring-2 focus:ring-amber-600 focus:border-amber-600 transition-all placeholder:text-amber-700/40"
                     placeholder="150000"
                   />
-                  <span className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 font-medium">
+                  <span className="absolute right-4 top-1/2 -translate-y-1/2 text-amber-800 font-semibold text-lg">
                     €
                   </span>
                 </div>
@@ -162,7 +161,7 @@ export default function FinancingSection() {
 
               {/* Interest Rate Input */}
               <div>
-                <label className="block text-amber-400 font-medium mb-2">
+                <label className="block text-amber-900 font-medium mb-2">
                   Percentuálna sadzba
                 </label>
                 <div className="relative">
@@ -171,10 +170,10 @@ export default function FinancingSection() {
                     step="0.1"
                     value={interestRate}
                     onChange={(e) => setInterestRate(e.target.value)}
-                    className="w-full px-4 py-3 pr-12 bg-zinc-900 border border-zinc-700 text-white rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-transparent transition-all"
+                    className="w-full px-4 py-3.5 pr-12 bg-white/60 border-2 border-amber-700/30 text-amber-900 rounded-lg focus:ring-2 focus:ring-amber-600 focus:border-amber-600 transition-all placeholder:text-amber-700/40"
                     placeholder="3.5"
                   />
-                  <span className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 font-medium">
+                  <span className="absolute right-4 top-1/2 -translate-y-1/2 text-amber-800 font-semibold text-lg">
                     %
                   </span>
                 </div>
@@ -182,7 +181,7 @@ export default function FinancingSection() {
 
               {/* Loan Term Input */}
               <div>
-                <label className="block text-amber-400 font-medium mb-2">
+                <label className="block text-amber-900 font-medium mb-2">
                   Splatnosť (roky)
                 </label>
                 <div className="relative">
@@ -190,31 +189,28 @@ export default function FinancingSection() {
                     type="number"
                     value={loanTerm}
                     onChange={(e) => setLoanTerm(e.target.value)}
-                    className="w-full px-4 py-3 pr-16 bg-zinc-900 border border-zinc-700 text-white rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-transparent transition-all"
+                    className="w-full px-4 py-3.5 pr-20 bg-white/60 border-2 border-amber-700/30 text-amber-900 rounded-lg focus:ring-2 focus:ring-amber-600 focus:border-amber-600 transition-all placeholder:text-amber-700/40"
                     placeholder="25"
                   />
-                  <span className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 font-medium">
+                  <span className="absolute right-4 top-1/2 -translate-y-1/2 text-amber-800 font-medium">
                     {getYearsLabel(loanTerm)}
                   </span>
                 </div>
               </div>
 
               {/* Monthly Payment Output */}
-              <div className="pt-4 border-t border-amber-500/20">
-                <label className="block text-amber-400 font-medium mb-2">
+              <div className="pt-2">
+                <label className="block text-amber-900 font-medium mb-2">
                   Mesačná splátka
                 </label>
                 <div className="relative">
-                  <div className="w-full px-4 py-3 pr-12 bg-zinc-950 border border-amber-500/30 text-white rounded-lg font-bold text-xl">
+                  <div className="w-full px-4 py-3.5 pr-12 bg-white/60 border-2 border-amber-700/30 text-amber-900 rounded-lg font-bold text-xl">
                     {formatCurrency(monthlyPayment)}
                   </div>
-                  <span className="absolute right-4 top-1/2 -translate-y-1/2 text-amber-400 font-bold">
+                  <span className="absolute right-4 top-1/2 -translate-y-1/2 text-amber-800 font-bold text-lg">
                     €
                   </span>
                 </div>
-                <p className="text-xs text-gray-400 mt-2">
-                  * Orientačný výpočet, presné podmienky záležia od konkrétnej banky
-                </p>
               </div>
             </div>
           </div>
