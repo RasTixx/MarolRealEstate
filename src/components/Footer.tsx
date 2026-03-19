@@ -1,7 +1,23 @@
 import { Facebook, Instagram, Linkedin } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 
 export default function Footer() {
+  const location = useLocation();
+  const navigate = useNavigate();
+
+  const handleHashNavigation = (e: React.MouseEvent<HTMLAnchorElement>, hash: string) => {
+    e.preventDefault();
+
+    if (location.pathname === '/') {
+      const element = document.querySelector(hash);
+      if (element) {
+        element.scrollIntoView({ behavior: 'smooth' });
+      }
+    } else {
+      navigate('/' + hash);
+    }
+  };
+
   return (
     <footer className="bg-black border-t border-amber-500/20">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
@@ -40,27 +56,47 @@ export default function Footer() {
                 </Link>
               </li>
               <li>
-                <a href="/#nehnutelnosti" className="text-gray-400 hover:text-amber-500 transition-colors">
+                <a
+                  href="/#nehnutelnosti"
+                  onClick={(e) => handleHashNavigation(e, '#nehnutelnosti')}
+                  className="text-gray-400 hover:text-amber-500 transition-colors"
+                >
                   Nehnuteľnosti
                 </a>
               </li>
               <li>
-                <a href="/#o-nas" className="text-gray-400 hover:text-amber-500 transition-colors">
+                <a
+                  href="/#o-nas"
+                  onClick={(e) => handleHashNavigation(e, '#o-nas')}
+                  className="text-gray-400 hover:text-amber-500 transition-colors"
+                >
                   O nás
                 </a>
               </li>
               <li>
-                <a href="/#sluzby" className="text-gray-400 hover:text-amber-500 transition-colors">
+                <a
+                  href="/#sluzby"
+                  onClick={(e) => handleHashNavigation(e, '#sluzby')}
+                  className="text-gray-400 hover:text-amber-500 transition-colors"
+                >
                   Služby
                 </a>
               </li>
               <li>
-                <a href="/#financovanie" className="text-gray-400 hover:text-amber-500 transition-colors">
+                <a
+                  href="/#financovanie"
+                  onClick={(e) => handleHashNavigation(e, '#financovanie')}
+                  className="text-gray-400 hover:text-amber-500 transition-colors"
+                >
                   Financovanie
                 </a>
               </li>
               <li>
-                <a href="/#kontakt" className="text-gray-400 hover:text-amber-500 transition-colors">
+                <a
+                  href="/#kontakt"
+                  onClick={(e) => handleHashNavigation(e, '#kontakt')}
+                  className="text-gray-400 hover:text-amber-500 transition-colors"
+                >
                   Kontakt
                 </a>
               </li>
