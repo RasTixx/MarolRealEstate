@@ -95,7 +95,7 @@ export default function FinancingSection() {
                   <Check className="h-5 w-5 text-amber-400" />
                 </div>
                 <p className="text-gray-200 text-lg">
-                  Poskytujeme túto službu bezplatne pri kúpe
+                  Poskytujeme túto službu bezplatne pri kúpe nehnuteľnosti
                 </p>
               </div>
             </div>
