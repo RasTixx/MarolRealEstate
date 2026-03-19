@@ -37,6 +37,13 @@ export default function FinancingSection() {
     }).format(value);
   };
 
+  const getYearsLabel = (years: string) => {
+    const num = parseInt(years) || 0;
+    if (num === 1) return 'rok';
+    if (num >= 2 && num <= 4) return 'roky';
+    return 'rokov';
+  };
+
   return (
     <section className="py-16 bg-gradient-to-b from-amber-900/20 via-amber-800/10 to-amber-900/20">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -171,7 +178,7 @@ export default function FinancingSection() {
                     placeholder="25"
                   />
                   <span className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 font-medium">
-                    rec
+                    {getYearsLabel(loanTerm)}
                   </span>
                 </div>
               </div>
