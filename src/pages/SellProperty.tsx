@@ -4,6 +4,7 @@ import Header from '../components/Header';
 import Footer from '../components/Footer';
 import CustomSelect from '../components/CustomSelect';
 import { supabase } from '../lib/supabase';
+import { useFormChangeDetection } from '../hooks/useFormChangeDetection';
 
 export default function SellProperty() {
   const [formData, setFormData] = useState({
@@ -25,6 +26,9 @@ export default function SellProperty() {
 
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitMessage, setSubmitMessage] = useState('');
+
+  const hasFormData = Object.values(formData).some(value => value !== '');
+  const { clearDirtyFlag } = useFormChangeDetection(hasFormData);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement> | { target: { name: string; value: string } }) => {
     setFormData({
@@ -104,6 +108,7 @@ export default function SellProperty() {
       );
 
       setSubmitMessage('Ďakujeme! Vaša požiadavka bola úspešne odoslaná. Čoskoro vás budeme kontaktovať.');
+      clearDirtyFlag();
       setFormData({
         fullName: '',
         email: '',

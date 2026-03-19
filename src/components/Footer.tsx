@@ -55,6 +55,11 @@ export default function Footer() {
                 </a>
               </li>
               <li>
+                <a href="/#financovanie" className="text-gray-400 hover:text-amber-500 transition-colors">
+                  Financovanie
+                </a>
+              </li>
+              <li>
                 <a href="/#kontakt" className="text-gray-400 hover:text-amber-500 transition-colors">
                   Kontakt
                 </a>
