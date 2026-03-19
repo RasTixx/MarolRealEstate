@@ -32,6 +32,17 @@ export default function HomePage() {
     }
   }, [location]);
 
+  useEffect(() => {
+    if (location.hash) {
+      setTimeout(() => {
+        const element = document.querySelector(location.hash);
+        if (element) {
+          element.scrollIntoView({ behavior: 'smooth' });
+        }
+      }, 100);
+    }
+  }, [location.hash]);
+
   const fetchProperties = async () => {
     try {
       setLoading(true);
