@@ -86,7 +86,7 @@ export default function FinancingSection() {
                   <Check className="h-5 w-5 text-amber-400" />
                 </div>
                 <p className="text-gray-200 text-lg">
-                  Výber najvhodnejšieho riešenia pre konkrétny prípad
+                  Hľadáme najlepšie podmienky pre vašu situáciu
                 </p>
               </div>
 
