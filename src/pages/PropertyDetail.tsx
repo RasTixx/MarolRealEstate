@@ -204,11 +204,11 @@ export default function PropertyDetail() {
     <div className="min-h-screen bg-black">
       <Header />
 
-      <div className="relative bg-stone-900 pt-20 md:pt-28 lg:pt-32">
+      <div className="relative bg-black pt-20 md:pt-28 lg:pt-32">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
           <button
             onClick={() => navigate(-1)}
-            className="flex items-center gap-2 text-gray-400 hover:text-white transition-colors mb-4"
+            className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-amber-700 to-amber-600 hover:from-amber-600 hover:to-amber-500 text-white font-bold rounded-lg transition-all duration-200 shadow-lg"
           >
             <ArrowLeft className="w-5 h-5" />
             Späť
