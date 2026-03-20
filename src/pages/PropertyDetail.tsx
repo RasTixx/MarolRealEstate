@@ -204,7 +204,7 @@ export default function PropertyDetail() {
     <div className="min-h-screen bg-black">
       <Header />
 
-      <div className="relative bg-stone-900">
+      <div className="relative bg-stone-900 pt-20 md:pt-28 lg:pt-32">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
           <button
             onClick={() => navigate(-1)}
@@ -443,7 +443,7 @@ export default function PropertyDetail() {
           </div>
 
           <div className="lg:col-span-1">
-            <div className="sticky top-24">
+            <div className="sticky top-28 md:top-32 lg:top-36">
               <ContactCard />
             </div>
           </div>
