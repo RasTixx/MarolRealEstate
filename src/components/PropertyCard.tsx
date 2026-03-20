@@ -80,9 +80,9 @@ export default function PropertyCard({ property }: PropertyCardProps) {
           </div>
         </div>
 
-        <div className="relative">
+        <div className="flex items-center justify-between min-h-[44px]">
           <span className="text-2xl md:text-3xl font-bold text-amber-500">{formatPrice(property.price)}</span>
-          <span className="absolute right-0 top-1/2 -translate-y-1/2 px-4 py-2 bg-gradient-to-r from-yellow-500 via-yellow-400 to-amber-500 text-black rounded-lg font-bold text-sm transition-all duration-200 opacity-0 group-hover:opacity-100">
+          <span className="px-4 py-2 bg-gradient-to-r from-yellow-500 via-yellow-400 to-amber-500 text-black rounded-lg font-bold text-sm transition-all duration-200 opacity-0 group-hover:opacity-100 whitespace-nowrap">
             Detaily
           </span>
         </div>
