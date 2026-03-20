@@ -2,9 +2,9 @@ import { Calculator, Check } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import { useFormChangeDetection } from '../hooks/useFormChangeDetection';
 
-const DEFAULT_LOAN_AMOUNT = '150000';
-const DEFAULT_INTEREST_RATE = '3.5';
-const DEFAULT_LOAN_TERM = '25';
+const DEFAULT_LOAN_AMOUNT = '0';
+const DEFAULT_INTEREST_RATE = '0';
+const DEFAULT_LOAN_TERM = '0';
 
 export default function FinancingSection() {
   const [loanAmount, setLoanAmount] = useState<string>(DEFAULT_LOAN_AMOUNT);
@@ -149,10 +149,11 @@ export default function FinancingSection() {
                 <div className="relative">
                   <input
                     type="number"
+                    min="0"
                     value={loanAmount}
                     onChange={(e) => setLoanAmount(e.target.value)}
                     className="w-full px-4 py-3.5 pr-12 bg-zinc-900 border-2 border-zinc-700 text-white rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-amber-500 transition-all placeholder:text-zinc-500"
-                    placeholder="150000"
+                    placeholder="0"
                   />
                   <span className="absolute right-4 top-1/2 -translate-y-1/2 text-amber-400 font-semibold text-lg">
                     €
@@ -168,11 +169,12 @@ export default function FinancingSection() {
                 <div className="relative">
                   <input
                     type="number"
+                    min="0"
                     step="0.1"
                     value={interestRate}
                     onChange={(e) => setInterestRate(e.target.value)}
                     className="w-full px-4 py-3.5 pr-12 bg-zinc-900 border-2 border-zinc-700 text-white rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-amber-500 transition-all placeholder:text-zinc-500"
-                    placeholder="3.5"
+                    placeholder="0"
                   />
                   <span className="absolute right-4 top-1/2 -translate-y-1/2 text-amber-400 font-semibold text-lg">
                     %
@@ -188,10 +190,11 @@ export default function FinancingSection() {
                 <div className="relative">
                   <input
                     type="number"
+                    min="0"
                     value={loanTerm}
                     onChange={(e) => setLoanTerm(e.target.value)}
                     className="w-full px-4 py-3.5 pr-20 bg-zinc-900 border-2 border-zinc-700 text-white rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-amber-500 transition-all placeholder:text-zinc-500"
-                    placeholder="25"
+                    placeholder="0"
                   />
                   <span className="absolute right-4 top-1/2 -translate-y-1/2 text-amber-400 font-medium">
                     {getYearsLabel(loanTerm)}
@@ -205,7 +208,7 @@ export default function FinancingSection() {
                   Mesačná splátka
                 </label>
                 <div className="relative">
-                  <div className="w-full px-4 py-3.5 pr-12 bg-zinc-900 border-2 border-amber-500/50 text-white rounded-lg font-bold text-xl">
+                  <div className="w-full px-4 py-3.5 pr-12 bg-zinc-900 border-2 border-amber-500/50 text-white rounded-lg font-bold text-lg">
                     {formatCurrency(monthlyPayment)}
                   </div>
                   <span className="absolute right-4 top-1/2 -translate-y-1/2 text-amber-400 font-bold text-lg">
