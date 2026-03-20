@@ -33,7 +33,7 @@ export default function ContactCard() {
               <div className="w-10 h-10 rounded-full bg-amber-600/10 flex items-center justify-center group-hover:bg-amber-600/20 transition-colors">
                 <Phone className="w-5 h-5 text-amber-600" />
               </div>
-              <span className="text-lg">0903296559</span>
+              <span className="text-lg">+421 948 192 272</span>
             </a>
 
             <a
