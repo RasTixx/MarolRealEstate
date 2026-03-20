@@ -39,7 +39,7 @@ export default function Hero({ onSearch }: HeroProps) {
                 <span className="bg-gradient-to-r from-amber-500 to-amber-300 bg-clip-text text-transparent"> ideálny domov</span>
               </h1>
               <p className="text-lg md:text-xl text-gray-300 leading-relaxed">
-                Vyberte si z ponuky nehnuteľností na Slovensku. Profesionálny prístup, najlepšie ceny a overené ponuky.
+                Vyberte si z našej ponuky nehnuteľností práve tú Vašu. Profesionálny prístup, riešenia na mieru a overené ponuky.
               </p>
             </div>
 
