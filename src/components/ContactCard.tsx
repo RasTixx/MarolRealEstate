@@ -43,7 +43,7 @@ export default function ContactCard() {
               <div className="w-10 h-10 rounded-full bg-amber-600/10 flex items-center justify-center group-hover:bg-amber-600/20 transition-colors">
                 <Mail className="w-5 h-5 text-amber-600" />
               </div>
-              <span className="text-sm md:text-base break-all">peter@globalreality.sk</span>
+              <span className="text-sm md:text-base break-all">inffomre@gmail.com</span>
             </a>
           </div>
         </div>
