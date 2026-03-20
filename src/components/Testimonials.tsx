@@ -103,7 +103,7 @@ export default function Testimonials() {
         <div className="text-center">
           <Link
             to="/referencie"
-            className="inline-flex items-center gap-2 bg-gradient-to-r from-amber-600 to-amber-700 hover:from-amber-700 hover:to-amber-800 text-white font-semibold py-3 px-8 rounded-lg transition-all duration-300 transform hover:scale-105"
+            className="inline-flex items-center gap-2 bg-gradient-to-r from-yellow-500 via-yellow-400 to-amber-500 text-black font-semibold py-3 px-8 rounded-lg transition-all duration-300 transform hover:scale-105"
           >
             Zobraziť všetky referencie
             <ArrowRight className="w-5 h-5" />

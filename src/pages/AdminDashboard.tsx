@@ -340,7 +340,7 @@ export default function AdminDashboard() {
             onClick={() => setActiveTab('properties')}
             className={`flex items-center gap-2 px-6 py-3 rounded-lg font-semibold transition-all ${
               activeTab === 'properties'
-                ? 'bg-gradient-to-r from-amber-700 to-amber-600 text-white shadow-lg'
+                ? 'bg-gradient-to-r from-yellow-500 via-yellow-400 to-amber-500 text-black shadow-lg'
                 : 'bg-stone-800 text-gray-400 hover:bg-stone-700'
             }`}
           >
@@ -351,7 +351,7 @@ export default function AdminDashboard() {
             onClick={() => setActiveTab('testimonials')}
             className={`flex items-center gap-2 px-6 py-3 rounded-lg font-semibold transition-all ${
               activeTab === 'testimonials'
-                ? 'bg-gradient-to-r from-amber-700 to-amber-600 text-white shadow-lg'
+                ? 'bg-gradient-to-r from-yellow-500 via-yellow-400 to-amber-500 text-black shadow-lg'
                 : 'bg-stone-800 text-gray-400 hover:bg-stone-700'
             }`}
           >
@@ -367,7 +367,7 @@ export default function AdminDashboard() {
             onClick={() => setActiveTab('messages')}
             className={`flex items-center gap-2 px-6 py-3 rounded-lg font-semibold transition-all ${
               activeTab === 'messages'
-                ? 'bg-gradient-to-r from-amber-700 to-amber-600 text-white shadow-lg'
+                ? 'bg-gradient-to-r from-yellow-500 via-yellow-400 to-amber-500 text-black shadow-lg'
                 : 'bg-stone-800 text-gray-400 hover:bg-stone-700'
             }`}
           >
@@ -423,7 +423,7 @@ export default function AdminDashboard() {
               <h2 className="text-2xl font-bold text-white">Správa nehnuteľností</h2>
               <button
                 onClick={() => navigate('/admin/properties/new')}
-                className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-amber-700 to-amber-600 hover:from-amber-600 hover:to-amber-500 text-white font-medium rounded-lg transition-all shadow-lg"
+                className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-yellow-500 via-yellow-400 to-amber-500 text-black font-medium rounded-lg transition-all shadow-lg"
               >
                 <Plus className="w-5 h-5" />
                 Pridať nehnuteľnosť

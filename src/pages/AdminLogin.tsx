@@ -30,8 +30,8 @@ export default function AdminLogin() {
     <div className="min-h-screen bg-gradient-to-br from-stone-900 via-black to-stone-900 flex items-center justify-center px-4">
       <div className="max-w-md w-full">
         <div className="text-center mb-8">
-          <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-amber-600 to-amber-700 rounded-2xl mb-4">
-            <Lock className="w-8 h-8 text-white" />
+          <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-r from-yellow-500 via-yellow-400 to-amber-500 rounded-2xl mb-4">
+            <Lock className="w-8 h-8 text-black" />
           </div>
           <h1 className="text-3xl font-bold text-white mb-2">Admin prihlásenie</h1>
           <p className="text-gray-400">Prihláste sa na správu nehnuteľností</p>
@@ -83,7 +83,7 @@ export default function AdminLogin() {
             <button
               type="submit"
               disabled={loading}
-              className="w-full bg-gradient-to-r from-amber-700 to-amber-600 hover:from-amber-600 hover:to-amber-500 text-white font-bold py-3 rounded-lg transition-all duration-200 flex items-center justify-center gap-2 shadow-lg hover:shadow-amber-600/50 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="w-full bg-gradient-to-r from-yellow-500 via-yellow-400 to-amber-500 text-black font-bold py-3 rounded-lg transition-all duration-200 flex items-center justify-center gap-2 shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {loading ? (
                 <>

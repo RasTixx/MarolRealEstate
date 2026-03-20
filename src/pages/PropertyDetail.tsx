@@ -208,7 +208,7 @@ export default function PropertyDetail() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 mt-4">
           <button
             onClick={() => navigate(-1)}
-            className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-amber-700 to-amber-600 hover:from-amber-600 hover:to-amber-500 text-white font-bold rounded-lg transition-all duration-200 shadow-lg"
+            className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-yellow-500 via-yellow-400 to-amber-500 text-black font-bold rounded-lg transition-all duration-200 shadow-lg"
           >
             <ArrowLeft className="w-5 h-5" />
             Späť
@@ -268,14 +268,14 @@ export default function PropertyDetail() {
             <div className="bg-stone-900 rounded-2xl p-6 md:p-8">
               <div className="flex items-start justify-between mb-4">
                 <div>
-                  <h1 className="text-3xl md:text-4xl font-bold text-white mb-2">{property.title}</h1>
+                  <h1 className="text-2xl md:text-4xl font-bold text-white mb-2">{property.title}</h1>
                   <div className="flex items-center gap-2 text-gray-400">
                     <MapPin className="w-5 h-5" />
                     <span>{property.address}, {property.location}</span>
                   </div>
                 </div>
                 <div className="text-right">
-                  <div className="text-3xl md:text-4xl font-bold text-amber-600">
+                  <div className="text-2xl md:text-4xl font-bold text-amber-600">
                     {property.price.toLocaleString('sk-SK')} €
                   </div>
                   <div className="text-sm text-gray-400">{getTransactionTypeLabel(property.transaction_type)}</div>
@@ -424,7 +424,7 @@ export default function PropertyDetail() {
                 <button
                   type="submit"
                   disabled={formSubmitting}
-                  className="w-full px-6 py-3 bg-gradient-to-r from-amber-700 to-amber-600 hover:from-amber-600 hover:to-amber-500 text-white font-bold rounded-lg transition-all duration-200 flex items-center justify-center gap-2 shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="w-full px-6 py-3 bg-gradient-to-r from-yellow-500 via-yellow-400 to-amber-500 text-black font-bold rounded-lg transition-all duration-200 flex items-center justify-center gap-2 shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   {formSubmitting ? (
                     <>

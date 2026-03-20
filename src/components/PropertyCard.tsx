@@ -30,7 +30,7 @@ export default function PropertyCard({ property }: PropertyCardProps) {
 
         <div className="absolute top-4 left-4 flex gap-2">
           {property.featured && (
-            <div className="bg-gradient-to-r from-amber-600 to-amber-500 text-black px-4 py-2 rounded-lg text-xs font-bold uppercase tracking-wider">
+            <div className="bg-gradient-to-r from-yellow-500 via-yellow-400 to-amber-500 text-black px-4 py-2 rounded-lg text-xs font-bold uppercase tracking-wider">
               Odporúčané
             </div>
           )}
@@ -82,7 +82,7 @@ export default function PropertyCard({ property }: PropertyCardProps) {
 
         <div className="flex items-center justify-between">
           <span className="text-3xl font-bold text-amber-500">{formatPrice(property.price)}</span>
-          <span className="px-4 py-2 bg-gradient-to-r from-amber-600 to-amber-500 text-black rounded-lg font-bold text-sm hover:from-amber-500 hover:to-amber-400 transition-all duration-200 opacity-0 group-hover:opacity-100">
+          <span className="px-4 py-2 bg-gradient-to-r from-yellow-500 via-yellow-400 to-amber-500 text-black rounded-lg font-bold text-sm transition-all duration-200 opacity-0 group-hover:opacity-100">
             Detaily
           </span>
         </div>
