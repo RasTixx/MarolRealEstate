@@ -37,7 +37,7 @@ export default function ContactCard() {
             </a>
 
             <a
-              href="mailto:peter@globalreality.sk"
+              href="mailto:inffomre@gmail.com"
               className="flex items-center justify-center gap-3 text-white hover:text-amber-600 transition-colors group"
             >
               <div className="w-10 h-10 rounded-full bg-amber-600/10 flex items-center justify-center group-hover:bg-amber-600/20 transition-colors">
