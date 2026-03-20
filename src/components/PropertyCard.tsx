@@ -48,18 +48,18 @@ export default function PropertyCard({ property }: PropertyCardProps) {
       </div>
 
       <div className="p-6">
-        <div className="mb-3 flex items-center justify-between gap-4">
-          <h3 className="text-lg font-bold text-white line-clamp-2">{property.title}</h3>
+        <div className="mb-6">
+          <h3 className="text-xl md:text-3xl font-bold text-white mb-3 leading-tight">{property.title}</h3>
+
+          <div className="flex items-center text-gray-400 mb-3">
+            <MapPin className="h-4 w-4 mr-2 text-amber-500 flex-shrink-0" />
+            <span className="text-sm font-medium">{property.location}</span>
+          </div>
+
+          <p className="text-gray-400 text-sm mb-4 line-clamp-2">{property.description}</p>
         </div>
 
-        <div className="flex items-center text-gray-400 mb-3">
-          <MapPin className="h-4 w-4 mr-2 text-amber-500 flex-shrink-0" />
-          <span className="text-sm font-medium">{property.location}</span>
-        </div>
-
-        <p className="text-gray-400 text-sm mb-4 line-clamp-2">{property.description}</p>
-
-        <div className="flex items-center justify-between mb-4 pb-4 border-b border-zinc-800">
+        <div className="flex items-center justify-between mb-6 pb-4 border-b border-zinc-800">
           <div className="flex gap-4 text-xs text-gray-400">
             {property.bedrooms > 0 && (
               <div className="flex items-center gap-1.5">
@@ -80,9 +80,9 @@ export default function PropertyCard({ property }: PropertyCardProps) {
           </div>
         </div>
 
-        <div className="flex items-center justify-between">
-          <span className="text-3xl font-bold text-amber-500">{formatPrice(property.price)}</span>
-          <span className="px-4 py-2 bg-gradient-to-r from-yellow-500 via-yellow-400 to-amber-500 text-black rounded-lg font-bold text-sm transition-all duration-200 opacity-0 group-hover:opacity-100">
+        <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+          <span className="text-2xl md:text-3xl font-bold text-amber-500">{formatPrice(property.price)}</span>
+          <span className="px-4 py-2 bg-gradient-to-r from-yellow-500 via-yellow-400 to-amber-500 text-black rounded-lg font-bold text-sm transition-all duration-200 opacity-0 group-hover:opacity-100 self-start md:self-auto">
             Detaily
           </span>
         </div>
