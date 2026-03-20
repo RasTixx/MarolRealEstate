@@ -18,17 +18,17 @@ To access the admin dashboard, you need to create an admin user in Supabase.
 ### Step 2: Add User to Admin Table
 
 1. In your Supabase dashboard, go to **SQL Editor**
-2. Run this query (replace `YOUR_USER_UUID` with the UUID you copied and `admin@example.com` with your email):
+2. Run this query (replace `YOUR_USER_UUID` with the UUID you copied):
 
 ```sql
-INSERT INTO admin_users (id, email, full_name)
-VALUES ('YOUR_USER_UUID', 'admin@example.com', 'Admin User');
+INSERT INTO admin_users (id)
+VALUES ('YOUR_USER_UUID');
 ```
 
 For example:
 ```sql
-INSERT INTO admin_users (id, email, full_name)
-VALUES ('a1b2c3d4-e5f6-7890-abcd-ef1234567890', 'admin@example.com', 'Admin User');
+INSERT INTO admin_users (id)
+VALUES ('a1b2c3d4-e5f6-7890-abcd-ef1234567890');
 ```
 
 ## 2. Access the Admin Dashboard
@@ -106,10 +106,7 @@ Your admin system includes:
 ## 7. Database Schema
 
 ### admin_users table
-- `id` (uuid) - References auth.users(id)
-- `email` (text) - Admin email address
-- `full_name` (text) - Admin full name
-- `created_at` (timestamptz) - Account creation date
+- `id` (uuid) - Primary key, references auth.users(id)
 
 ### properties table (already exists)
 - All existing fields remain the same
