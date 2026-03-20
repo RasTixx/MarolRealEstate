@@ -205,7 +205,7 @@ export default function PropertyDetail() {
       <Header />
 
       <div className="relative bg-black pt-20 md:pt-28 lg:pt-32">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
           <button
             onClick={() => navigate(-1)}
             className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-amber-700 to-amber-600 hover:from-amber-600 hover:to-amber-500 text-white font-bold rounded-lg transition-all duration-200 shadow-lg"
