@@ -268,14 +268,14 @@ export default function PropertyDetail() {
             <div className="bg-stone-900 rounded-2xl p-6 md:p-8">
               <div className="flex items-start justify-between mb-4">
                 <div>
-                  <h1 className="text-2xl md:text-4xl font-bold text-white mb-2">{property.title}</h1>
+                  <h1 className="text-xl md:text-4xl font-bold text-white mb-2">{property.title}</h1>
                   <div className="flex items-center gap-2 text-gray-400">
                     <MapPin className="w-5 h-5" />
                     <span>{property.address}, {property.location}</span>
                   </div>
                 </div>
                 <div className="text-right">
-                  <div className="text-2xl md:text-4xl font-bold text-amber-600">
+                  <div className="text-xl md:text-4xl font-bold text-amber-600">
                     {property.price.toLocaleString('sk-SK')} €
                   </div>
                   <div className="text-sm text-gray-400">{getTransactionTypeLabel(property.transaction_type)}</div>
