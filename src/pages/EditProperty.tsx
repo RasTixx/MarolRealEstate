@@ -1,15 +1,23 @@
 import { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { supabase, Property } from '../lib/supabase';
-import { ArrowLeft, Upload, X, Save } from 'lucide-react';
+import { ArrowLeft, Upload, X, Save, GripVertical } from 'lucide-react';
+
+interface ImagePreview {
+  id?: string;
+  file?: File;
+  preview: string;
+  order: number;
+  is_primary: boolean;
+  existing: boolean;
+}
 
 export default function EditProperty() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
   const [fetching, setFetching] = useState(true);
-  const [imageFile, setImageFile] = useState<File | null>(null);
-  const [imagePreview, setImagePreview] = useState<string>('');
+  const [images, setImages] = useState<ImagePreview[]>([]);
   const [error, setError] = useState('');
 
   const [formData, setFormData] = useState({
@@ -25,6 +33,8 @@ export default function EditProperty() {
     area: '',
     year_built: '',
     floor: '',
+    latitude: '',
+    longitude: '',
     featured: false,
     image_url: '',
   });
@@ -32,6 +42,7 @@ export default function EditProperty() {
   useEffect(() => {
     if (id) {
       fetchProperty();
+      fetchImages();
     }
   }, [id]);
 
@@ -62,10 +73,11 @@ export default function EditProperty() {
         area: data.area.toString(),
         year_built: data.year_built?.toString() || '',
         floor: data.floor?.toString() || '',
+        latitude: data.latitude?.toString() || '',
+        longitude: data.longitude?.toString() || '',
         featured: data.featured,
         image_url: data.image_url,
       });
-      setImagePreview(data.image_url);
     } catch (err: any) {
       setError(err.message || 'Chyba pri načítaní nehnuteľnosti');
     } finally {
@@ -73,44 +85,122 @@ export default function EditProperty() {
     }
   };
 
+  const fetchImages = async () => {
+    try {
+      const { data, error } = await supabase
+        .from('property_images')
+        .select('*')
+        .eq('property_id', id)
+        .order('display_order', { ascending: true });
+
+      if (error) throw error;
+
+      if (data && data.length > 0) {
+        setImages(
+          data.map((img) => ({
+            id: img.id,
+            preview: img.image_url,
+            order: img.display_order,
+            is_primary: img.is_primary,
+            existing: true,
+          }))
+        );
+      }
+    } catch (err: any) {
+      console.error('Error fetching images:', err);
+    }
+  };
+
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      setImageFile(file);
+    const files = Array.from(e.target.files || []);
+    if (files.length === 0) return;
+
+    const remainingSlots = 30 - images.length;
+    const filesToAdd = files.slice(0, remainingSlots);
+
+    filesToAdd.forEach((file) => {
       const reader = new FileReader();
       reader.onloadend = () => {
-        setImagePreview(reader.result as string);
+        setImages((prev) => [
+          ...prev,
+          {
+            file,
+            preview: reader.result as string,
+            order: prev.length + 1,
+            is_primary: prev.length === 0,
+            existing: false,
+          },
+        ]);
       };
       reader.readAsDataURL(file);
-    }
+    });
+
+    e.target.value = '';
   };
 
-  const removeImage = () => {
-    setImageFile(null);
-    setImagePreview(formData.image_url);
-  };
+  const removeImage = async (index: number) => {
+    const imageToRemove = images[index];
 
-  const uploadImage = async (): Promise<string | null> => {
-    if (!imageFile) return null;
-
-    const fileExt = imageFile.name.split('.').pop();
-    const fileName = `${Math.random().toString(36).substring(2)}-${Date.now()}.${fileExt}`;
-    const filePath = `${fileName}`;
-
-    const { error: uploadError } = await supabase.storage
-      .from('property-images')
-      .upload(filePath, imageFile);
-
-    if (uploadError) {
-      console.error('Error uploading image:', uploadError);
-      return null;
+    if (imageToRemove.existing && imageToRemove.id) {
+      const { error } = await supabase.from('property_images').delete().eq('id', imageToRemove.id);
+      if (error) {
+        console.error('Error deleting image:', error);
+        return;
+      }
     }
 
-    const {
-      data: { publicUrl },
-    } = supabase.storage.from('property-images').getPublicUrl(filePath);
+    setImages((prev) => {
+      const updated = prev.filter((_, i) => i !== index);
+      return updated.map((img, i) => ({ ...img, order: i + 1, is_primary: i === 0 }));
+    });
+  };
 
-    return publicUrl;
+  const moveImage = (fromIndex: number, toIndex: number) => {
+    setImages((prev) => {
+      const updated = [...prev];
+      const [moved] = updated.splice(fromIndex, 1);
+      updated.splice(toIndex, 0, moved);
+      return updated.map((img, i) => ({ ...img, order: i + 1, is_primary: i === 0 }));
+    });
+  };
+
+  const uploadNewImages = async (): Promise<void> => {
+    if (!id) return;
+
+    for (let i = 0; i < images.length; i++) {
+      const image = images[i];
+
+      if (image.existing && image.id) {
+        await supabase
+          .from('property_images')
+          .update({
+            display_order: image.order,
+            is_primary: image.is_primary,
+          })
+          .eq('id', image.id);
+      } else if (image.file) {
+        const fileExt = image.file.name.split('.').pop();
+        const fileName = `${id}/${Math.random().toString(36).substring(2)}-${Date.now()}.${fileExt}`;
+
+        const { error: uploadError } = await supabase.storage.from('property-images').upload(fileName, image.file);
+
+        if (uploadError) {
+          console.error('Error uploading image:', uploadError);
+          continue;
+        }
+
+        const {
+          data: { publicUrl },
+        } = supabase.storage.from('property-images').getPublicUrl(fileName);
+
+        await supabase.from('property_images').insert({
+          property_id: id,
+          image_url: publicUrl,
+          display_order: image.order,
+          is_primary: image.is_primary,
+        });
+      }
+    }
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -119,15 +209,6 @@ export default function EditProperty() {
     setLoading(true);
 
     try {
-      let imageUrl = formData.image_url;
-      if (imageFile) {
-        const uploadedUrl = await uploadImage();
-        if (!uploadedUrl) {
-          throw new Error('Nepodarilo sa nahrať obrázok');
-        }
-        imageUrl = uploadedUrl;
-      }
-
       const { error: updateError } = await supabase
         .from('properties')
         .update({
@@ -143,12 +224,16 @@ export default function EditProperty() {
           area: parseFloat(formData.area),
           year_built: formData.year_built ? parseInt(formData.year_built) : null,
           floor: formData.floor ? parseInt(formData.floor) : null,
+          latitude: formData.latitude ? parseFloat(formData.latitude) : null,
+          longitude: formData.longitude ? parseFloat(formData.longitude) : null,
           featured: formData.featured,
-          image_url: imageUrl,
+          image_url: images.length > 0 ? images[0].preview : formData.image_url,
         })
         .eq('id', id);
 
       if (updateError) throw updateError;
+
+      await uploadNewImages();
 
       navigate('/admin');
     } catch (err: any) {
@@ -202,39 +287,68 @@ export default function EditProperty() {
           )}
 
           <div className="bg-stone-900 rounded-xl border border-stone-800 p-6">
-            <h2 className="text-lg font-semibold text-white mb-4">Obrázok nehnuteľnosti</h2>
-            <div className="space-y-4">
-              {imagePreview ? (
-                <div className="relative">
-                  <img src={imagePreview} alt="Preview" className="w-full h-64 object-cover rounded-lg" />
-                  {imageFile && (
-                    <button
-                      type="button"
-                      onClick={removeImage}
-                      className="absolute top-2 right-2 p-2 bg-red-600 hover:bg-red-700 text-white rounded-lg transition-colors"
-                    >
-                      <X className="w-5 h-5" />
-                    </button>
-                  )}
-                  <label className="absolute bottom-2 right-2 px-4 py-2 bg-amber-600 hover:bg-amber-700 text-white rounded-lg cursor-pointer transition-colors flex items-center gap-2">
-                    <Upload className="w-4 h-4" />
-                    Zmeniť obrázok
-                    <input type="file" className="hidden" accept="image/*" onChange={handleImageChange} />
-                  </label>
-                </div>
-              ) : (
-                <label className="flex flex-col items-center justify-center w-full h-64 border-2 border-dashed border-stone-700 rounded-lg cursor-pointer hover:border-amber-600 transition-colors">
-                  <div className="flex flex-col items-center justify-center pt-5 pb-6">
-                    <Upload className="w-12 h-12 text-gray-500 mb-3" />
-                    <p className="mb-2 text-sm text-gray-400">
-                      <span className="font-semibold">Kliknite pre nahratie</span> alebo pretiahnite obrázok
-                    </p>
-                    <p className="text-xs text-gray-500">PNG, JPG alebo WebP (MAX. 5MB)</p>
-                  </div>
-                  <input type="file" className="hidden" accept="image/*" onChange={handleImageChange} />
+            <div className="flex items-center justify-between mb-4">
+              <h2 className="text-lg font-semibold text-white">Fotografie ({images.length}/30)</h2>
+              {images.length < 30 && (
+                <label className="px-4 py-2 bg-amber-700 hover:bg-amber-600 text-white font-medium rounded-lg cursor-pointer transition-colors flex items-center gap-2">
+                  <Upload className="w-4 h-4" />
+                  Pridať fotografie
+                  <input type="file" className="hidden" accept="image/*" multiple onChange={handleImageChange} />
                 </label>
               )}
             </div>
+
+            {images.length === 0 ? (
+              <label className="flex flex-col items-center justify-center w-full h-64 border-2 border-dashed border-stone-700 rounded-lg cursor-pointer hover:border-amber-600 transition-colors">
+                <div className="flex flex-col items-center justify-center pt-5 pb-6">
+                  <Upload className="w-12 h-12 text-gray-500 mb-3" />
+                  <p className="mb-2 text-sm text-gray-400">
+                    <span className="font-semibold">Kliknite pre nahratie</span> alebo pretiahnite fotografie
+                  </p>
+                  <p className="text-xs text-gray-500">PNG, JPG alebo WebP (až 30 fotografií)</p>
+                </div>
+                <input type="file" className="hidden" accept="image/*" multiple onChange={handleImageChange} />
+              </label>
+            ) : (
+              <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                {images.map((image, index) => (
+                  <div key={index} className="relative group">
+                    <img
+                      src={image.preview}
+                      alt={`Preview ${index + 1}`}
+                      className="w-full h-32 object-cover rounded-lg"
+                    />
+                    {index === 0 && (
+                      <div className="absolute top-2 left-2 px-2 py-1 bg-amber-600 text-white text-xs font-semibold rounded">
+                        Hlavná
+                      </div>
+                    )}
+                    <div className="absolute top-2 right-2 flex gap-1">
+                      {index > 0 && (
+                        <button
+                          type="button"
+                          onClick={() => moveImage(index, index - 1)}
+                          className="p-1.5 bg-black/70 hover:bg-black text-white rounded transition-colors"
+                          title="Posunúť doľava"
+                        >
+                          <GripVertical className="w-4 h-4" />
+                        </button>
+                      )}
+                      <button
+                        type="button"
+                        onClick={() => removeImage(index)}
+                        className="p-1.5 bg-red-600/90 hover:bg-red-600 text-white rounded transition-colors"
+                      >
+                        <X className="w-4 h-4" />
+                      </button>
+                    </div>
+                    <div className="absolute bottom-2 left-2 px-2 py-0.5 bg-black/70 text-white text-xs rounded">
+                      #{image.order}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
 
           <div className="bg-stone-900 rounded-xl border border-stone-800 p-6">
@@ -398,6 +512,32 @@ export default function EditProperty() {
                   onChange={handleChange}
                   required
                   className="w-full px-4 py-3 bg-stone-800 border border-stone-700 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-amber-600 focus:ring-1 focus:ring-amber-600"
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-300 mb-2">Zemepisná šírka</label>
+                <input
+                  type="number"
+                  name="latitude"
+                  value={formData.latitude}
+                  onChange={handleChange}
+                  step="any"
+                  className="w-full px-4 py-3 bg-stone-800 border border-stone-700 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-amber-600 focus:ring-1 focus:ring-amber-600"
+                  placeholder="48.1486"
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-300 mb-2">Zemepisná dĺžka</label>
+                <input
+                  type="number"
+                  name="longitude"
+                  value={formData.longitude}
+                  onChange={handleChange}
+                  step="any"
+                  className="w-full px-4 py-3 bg-stone-800 border border-stone-700 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-amber-600 focus:ring-1 focus:ring-amber-600"
+                  placeholder="17.1077"
                 />
               </div>
             </div>

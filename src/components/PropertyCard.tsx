@@ -1,4 +1,5 @@
 import { Bed, Bath, Square, MapPin, ArrowRight } from 'lucide-react';
+import { Link } from 'react-router-dom';
 import { Property } from '../lib/supabase';
 
 interface PropertyCardProps {
@@ -15,7 +16,10 @@ export default function PropertyCard({ property }: PropertyCardProps) {
   };
 
   return (
-    <div className="group bg-zinc-900 rounded-xl overflow-hidden border border-amber-500/20 hover:border-amber-500 hover:shadow-2xl hover:shadow-amber-500/20 transition-all duration-300">
+    <Link
+      to={`/nehnutelnost/${property.id}`}
+      className="group bg-zinc-900 rounded-xl overflow-hidden border border-amber-500/20 hover:border-amber-500 hover:shadow-2xl hover:shadow-amber-500/20 transition-all duration-300 block cursor-pointer"
+    >
       <div className="relative h-72 overflow-hidden bg-zinc-800">
         <img
           src={property.image_url}
@@ -71,18 +75,18 @@ export default function PropertyCard({ property }: PropertyCardProps) {
             )}
             <div className="flex items-center gap-1.5">
               <Square className="h-4 w-4 text-amber-500" />
-              <span className="font-medium">{property.area_sqm} m²</span>
+              <span className="font-medium">{property.area || property.area_sqm} m²</span>
             </div>
           </div>
         </div>
 
         <div className="flex items-center justify-between">
           <span className="text-3xl font-bold text-amber-500">{formatPrice(property.price)}</span>
-          <button className="px-4 py-2 bg-gradient-to-r from-amber-600 to-amber-500 text-black rounded-lg font-bold text-sm hover:from-amber-500 hover:to-amber-400 transition-all duration-200 opacity-0 group-hover:opacity-100">
+          <span className="px-4 py-2 bg-gradient-to-r from-amber-600 to-amber-500 text-black rounded-lg font-bold text-sm hover:from-amber-500 hover:to-amber-400 transition-all duration-200 opacity-0 group-hover:opacity-100">
             Detaily
-          </button>
+          </span>
         </div>
       </div>
-    </div>
+    </Link>
   );
 }

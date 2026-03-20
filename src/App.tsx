@@ -4,6 +4,7 @@ import HomePage from './pages/HomePage';
 import BuyProperty from './pages/BuyProperty';
 import SellProperty from './pages/SellProperty';
 import Testimonials from './pages/Testimonials';
+import PropertyDetail from './pages/PropertyDetail';
 import AdminLogin from './pages/AdminLogin';
 import AdminDashboard from './pages/AdminDashboard';
 import AddProperty from './pages/AddProperty';
@@ -25,6 +26,7 @@ function App() {
           <Route path="/chcem-kupit" element={<BuyProperty />} />
           <Route path="/chcem-predat" element={<SellProperty />} />
           <Route path="/referencie" element={<Testimonials />} />
+          <Route path="/nehnutelnost/:id" element={<PropertyDetail />} />
           <Route path="/ochrana-osobnych-udajov" element={<GDPRPage />} />
           <Route path="/vseobecne-obchodne-podmienky" element={<TermsPage />} />
           <Route path="/reklamacny-poriadok" element={<ComplaintsPage />} />

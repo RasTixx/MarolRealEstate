@@ -16,9 +16,12 @@ export interface Property {
   transaction_type: string;
   bedrooms: number;
   bathrooms: number;
-  area_sqm: number;
+  area: number;
+  area_sqm?: number;
   year_built: number | null;
   floor: number | null;
+  latitude: number | null;
+  longitude: number | null;
   image_url: string;
   featured: boolean;
   created_at: string;
