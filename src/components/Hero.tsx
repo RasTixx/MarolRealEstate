@@ -2,32 +2,72 @@ import { Search, MapPin, Home, Repeat2, Quote } from 'lucide-react';
 import { useState } from 'react';
 
 interface HeroProps {
-  onSearch: (searchTerm: string, transactionType: string, propertyType: string) => void;
+  onSearch: (searchTerm: string, transactionType: string, propertyType: string, stav: string) => void;
+}
+
+const PROPERTY_TYPES = [
+  { value: 'garsonka', label: 'Garsónka' },
+  { value: 'apartman', label: 'Apartmán' },
+  { value: '1izbovy', label: '1 izbový byt' },
+  { value: '2izbovy', label: '2 izbový byt' },
+  { value: '3izbovy', label: '3 izbový byt' },
+  { value: '4izbovy', label: '4 izbový byt' },
+  { value: '5izbovy', label: '5 a viac izbový byt' },
+  { value: 'dom', label: 'Rodinný dom' },
+  { value: 'zrubovy', label: 'Zrubový dom' },
+  { value: 'vidiecky', label: 'Vidiecky dom' },
+  { value: 'komercne', label: 'Komerčný priestor' },
+  { value: 'pozemok', label: 'Pozemok' },
+];
+
+const STAV_OPTIONS = [
+  { value: 'novostavba', label: 'Novostavba' },
+  { value: 'ciastocna_rekonstrukcia', label: 'Čiastočná rekonštrukcia' },
+  { value: 'kompletna_rekonstrukcia', label: 'Kompletná rekonštrukcia' },
+  { value: 'povodny_stav', label: 'Pôvodný stav' },
+  { value: 'vo_vystavbe', label: 'Vo výstavbe' },
+  { value: 'developersky_projekt', label: 'Developerský projekt' },
+];
+
+const selectClass = "w-full px-4 py-3 pr-10 bg-stone-800/80 border border-stone-700 rounded-lg text-white appearance-none focus:outline-none focus:border-amber-500 focus:ring-1 focus:ring-amber-500 transition-all";
+
+function SelectArrow() {
+  return (
+    <svg className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
+      <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
+    </svg>
+  );
 }
 
 export default function Hero({ onSearch }: HeroProps) {
   const [searchTerm, setSearchTerm] = useState('');
   const [transactionType, setTransactionType] = useState('');
   const [propertyType, setPropertyType] = useState('');
+  const [stav, setStav] = useState('');
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
-    onSearch(searchTerm, transactionType, propertyType);
+    onSearch(searchTerm, transactionType, propertyType, stav);
+
+    setTimeout(() => {
+      const el = document.querySelector('#nehnutelnosti');
+      if (el) el.scrollIntoView({ behavior: 'smooth' });
+    }, 100);
   };
 
   return (
     <section id="domov" className="relative py-16 md:py-24 pt-28 md:pt-44">
       <div className="absolute inset-0">
         <img
-            src="/luxury-authentic-dining-room-interior-design.jpg"
-            alt="Luxury interior"
-            className="w-full h-full object-cover object-center"
-            style={{
-              WebkitMaskImage: "linear-gradient(to bottom, black 70%, transparent 100%)",
-              maskImage: "linear-gradient(to bottom, black 70%, transparent 100%)"
-            }}
-          />
-        <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/60 to-black/40" /> 
+          src="/luxury-authentic-dining-room-interior-design.jpg"
+          alt="Luxury interior"
+          className="w-full h-full object-cover object-center"
+          style={{
+            WebkitMaskImage: "linear-gradient(to bottom, black 70%, transparent 100%)",
+            maskImage: "linear-gradient(to bottom, black 70%, transparent 100%)"
+          }}
+        />
+        <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/60 to-black/40" />
       </div>
 
       <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -64,7 +104,7 @@ export default function Hero({ onSearch }: HeroProps) {
             </div>
           </div>
 
-          <div className="bg-stone-900/20 backdrop-blur-xl rounded-2xl p-8 border border-amber-600/30 shadow-2xl shadow-amber-900/50">
+          <div className="bg-stone-900/20 backdrop-blur-xl rounded-2xl p-8 border border-amber-500/30 shadow-2xl shadow-amber-900/50">
             <form onSubmit={handleSearch} className="space-y-4">
               <div>
                 <label className="block text-sm font-medium text-amber-500 mb-2">Typ transakcie</label>
@@ -79,8 +119,8 @@ export default function Hero({ onSearch }: HeroProps) {
                       onClick={() => setTransactionType(transactionType === value ? '' : value)}
                       className={`p-3 rounded-lg border-2 transition-all flex items-center justify-center gap-2 ${
                         transactionType === value
-                          ? 'bg-amber-600/20 border-amber-600 text-amber-400'
-                          : 'border-stone-700 text-gray-300 hover:border-amber-600/50'
+                          ? 'bg-amber-500/20 border-amber-500 text-amber-400'
+                          : 'border-stone-700 text-gray-300 hover:border-amber-500/50'
                       }`}
                     >
                       <Icon className="h-4 w-4" />
@@ -90,37 +130,27 @@ export default function Hero({ onSearch }: HeroProps) {
                 </div>
               </div>
 
-             <div>
-  <label className="block text-sm font-medium text-amber-500 mb-2">
-    Typ nehnuteľnosti
-  </label>
+              <div>
+                <label className="block text-sm font-medium text-amber-500 mb-2">Typ nehnuteľnosti</label>
+                <div className="relative">
+                  <select value={propertyType} onChange={(e) => setPropertyType(e.target.value)} className={selectClass}>
+                    <option value="">Všetky typy</option>
+                    {PROPERTY_TYPES.map(t => <option key={t.value} value={t.value}>{t.label}</option>)}
+                  </select>
+                  <SelectArrow />
+                </div>
+              </div>
 
-  <div className="relative">
-    <select
-      value={propertyType}
-      onChange={(e) => setPropertyType(e.target.value)}
-      className="w-full px-4 py-3 pr-10 bg-stone-800/80 border border-stone-700 rounded-lg text-white appearance-none focus:outline-none focus:border-amber-600 focus:ring-1 focus:ring-amber-600 transition-all"
-    >
-      <option value="">Všetky typy</option>
-      <option value="byt">Byt</option>
-      <option value="dom">Rodinný dom</option>
-      <option value="komercne">Komerčný priestor</option>
-      <option value="pozemok">Pozemok</option>
-    </select>
-
-    {/* Custom Arrow */}
-    <svg
-      className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400"
-      xmlns="http://www.w3.org/2000/svg"
-      fill="none"
-      viewBox="0 0 24 24"
-      stroke="currentColor"
-      strokeWidth="2"
-    >
-      <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
-    </svg>
-  </div>
-               </div>
+              <div>
+                <label className="block text-sm font-medium text-amber-500 mb-2">Stav nehnuteľnosti</label>
+                <div className="relative">
+                  <select value={stav} onChange={(e) => setStav(e.target.value)} className={selectClass}>
+                    <option value="">Všetky stavy</option>
+                    {STAV_OPTIONS.map(s => <option key={s.value} value={s.value}>{s.label}</option>)}
+                  </select>
+                  <SelectArrow />
+                </div>
+              </div>
 
               <div>
                 <label className="block text-sm font-medium text-amber-500 mb-2">Lokalita</label>
@@ -131,14 +161,14 @@ export default function Hero({ onSearch }: HeroProps) {
                     placeholder="Bratislava, Košice, Žilina..."
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
-                    className="w-full pl-12 pr-4 py-3 bg-stone-800/80 border border-stone-700 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-amber-600 focus:ring-1 focus:ring-amber-600 transition-all"
+                    className="w-full pl-12 pr-4 py-3 bg-stone-800/80 border border-stone-700 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-amber-500 focus:ring-1 focus:ring-amber-500 transition-all"
                   />
                 </div>
               </div>
 
               <button
                 type="submit"
-                className="w-full bg-gradient-to-r from-yellow-500 via-yellow-400 to-amber-500 hover:from-amber-600 hover:to-amber-500 text-black font-bold py-3 rounded-lg transition-all duration-200 flex items-center justify-center gap-2 shadow-lg hover:shadow-amber-600/50"
+                className="w-full bg-gradient-to-r from-yellow-500 via-yellow-400 to-amber-500 hover:from-amber-600 hover:to-amber-500 text-black font-bold py-3 rounded-lg transition-all duration-200 flex items-center justify-center gap-2 shadow-lg hover:shadow-amber-500/50"
               >
                 <Search className="h-5 w-5" />
                 Hľadať nehnuteľnosti

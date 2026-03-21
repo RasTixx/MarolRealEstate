@@ -268,14 +268,14 @@ export default function PropertyDetail() {
             <div className="bg-stone-900 rounded-2xl p-6 md:p-8">
               <div className="flex items-start justify-between mb-4">
                 <div>
-                  <h1 className="text-xl md:text-4xl font-bold text-white mb-2">{property.title}</h1>
+                  <h1 className="text-lg md:text-2xl font-bold text-white mb-2">{property.title}</h1>
                   <div className="flex items-center gap-2 text-gray-400">
-                    <MapPin className="w-5 h-5" />
-                    <span>{property.address}, {property.location}</span>
+                    <MapPin className="w-4 h-4 text-amber-500" />
+                    <span className="text-sm">{property.address}, {property.location}</span>
                   </div>
                 </div>
                 <div className="text-right">
-                  <div className="text-xl md:text-4xl font-bold text-amber-600">
+                  <div className="text-xl md:text-2xl font-bold text-amber-500">
                     {property.price.toLocaleString('sk-SK')} €
                   </div>
                   <div className="text-sm text-gray-400">{getTransactionTypeLabel(property.transaction_type)}</div>
@@ -284,29 +284,29 @@ export default function PropertyDetail() {
 
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4 py-6 border-y border-stone-800">
                 <div className="text-center">
-                  <div className="w-12 h-12 mx-auto mb-2 bg-amber-600/10 rounded-full flex items-center justify-center">
-                    <Home className="w-6 h-6 text-amber-600" />
+                  <div className="w-12 h-12 mx-auto mb-2 bg-amber-500/10 rounded-full flex items-center justify-center">
+                    <Home className="w-6 h-6 text-amber-500" />
                   </div>
                   <div className="text-sm text-gray-400">Typ</div>
                   <div className="text-white font-semibold">{getPropertyTypeLabel(property.property_type)}</div>
                 </div>
                 <div className="text-center">
-                  <div className="w-12 h-12 mx-auto mb-2 bg-amber-600/10 rounded-full flex items-center justify-center">
-                    <BedDouble className="w-6 h-6 text-amber-600" />
+                  <div className="w-12 h-12 mx-auto mb-2 bg-amber-500/10 rounded-full flex items-center justify-center">
+                    <BedDouble className="w-6 h-6 text-amber-500" />
                   </div>
                   <div className="text-sm text-gray-400">Izby</div>
                   <div className="text-white font-semibold">{property.bedrooms}</div>
                 </div>
                 <div className="text-center">
-                  <div className="w-12 h-12 mx-auto mb-2 bg-amber-600/10 rounded-full flex items-center justify-center">
-                    <Bath className="w-6 h-6 text-amber-600" />
+                  <div className="w-12 h-12 mx-auto mb-2 bg-amber-500/10 rounded-full flex items-center justify-center">
+                    <Bath className="w-6 h-6 text-amber-500" />
                   </div>
                   <div className="text-sm text-gray-400">Kúpeľne</div>
                   <div className="text-white font-semibold">{property.bathrooms}</div>
                 </div>
                 <div className="text-center">
-                  <div className="w-12 h-12 mx-auto mb-2 bg-amber-600/10 rounded-full flex items-center justify-center">
-                    <Maximize className="w-6 h-6 text-amber-600" />
+                  <div className="w-12 h-12 mx-auto mb-2 bg-amber-500/10 rounded-full flex items-center justify-center">
+                    <Maximize className="w-6 h-6 text-amber-500" />
                   </div>
                   <div className="text-sm text-gray-400">Výmera</div>
                   <div className="text-white font-semibold">{property.area} m²</div>
@@ -324,7 +324,7 @@ export default function PropertyDetail() {
                   <div className="grid grid-cols-2 gap-4">
                     {property.year_built && (
                       <div className="flex items-center gap-3">
-                        <Calendar className="w-5 h-5 text-amber-600" />
+                        <Calendar className="w-5 h-5 text-amber-500" />
                         <div>
                           <div className="text-sm text-gray-400">Rok výstavby</div>
                           <div className="text-white font-semibold">{property.year_built}</div>
@@ -333,7 +333,7 @@ export default function PropertyDetail() {
                     )}
                     {property.floor !== null && (
                       <div className="flex items-center gap-3">
-                        <Layers className="w-5 h-5 text-amber-600" />
+                        <Layers className="w-5 h-5 text-amber-500" />
                         <div>
                           <div className="text-sm text-gray-400">Poschodie</div>
                           <div className="text-white font-semibold">{property.floor}</div>
@@ -381,7 +381,7 @@ export default function PropertyDetail() {
                       value={formData.name}
                       onChange={handleChange}
                       required
-                      className="w-full px-4 py-3 bg-stone-800 border border-stone-700 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-amber-600 focus:ring-1 focus:ring-amber-600"
+                      className="w-full px-4 py-3 bg-stone-800 border border-stone-700 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-amber-500 focus:ring-1 focus:ring-amber-500"
                       placeholder="Vaše meno"
                     />
                   </div>
@@ -393,7 +393,7 @@ export default function PropertyDetail() {
                       value={formData.email}
                       onChange={handleChange}
                       required
-                      className="w-full px-4 py-3 bg-stone-800 border border-stone-700 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-amber-600 focus:ring-1 focus:ring-amber-600"
+                      className="w-full px-4 py-3 bg-stone-800 border border-stone-700 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-amber-500 focus:ring-1 focus:ring-amber-500"
                       placeholder="vas@email.sk"
                     />
                   </div>
@@ -405,7 +405,7 @@ export default function PropertyDetail() {
                     name="phone"
                     value={formData.phone}
                     onChange={handleChange}
-                    className="w-full px-4 py-3 bg-stone-800 border border-stone-700 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-amber-600 focus:ring-1 focus:ring-amber-600"
+                    className="w-full px-4 py-3 bg-stone-800 border border-stone-700 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-amber-500 focus:ring-1 focus:ring-amber-500"
                     placeholder="+421 900 000 000"
                   />
                 </div>
@@ -417,7 +417,7 @@ export default function PropertyDetail() {
                     onChange={handleChange}
                     required
                     rows={4}
-                    className="w-full px-4 py-3 bg-stone-800 border border-stone-700 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-amber-600 focus:ring-1 focus:ring-amber-600"
+                    className="w-full px-4 py-3 bg-stone-800 border border-stone-700 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-amber-500 focus:ring-1 focus:ring-amber-500"
                     placeholder="Mám záujem o túto nehnuteľnosť..."
                   />
                 </div>

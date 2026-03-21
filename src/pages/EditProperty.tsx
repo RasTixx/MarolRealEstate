@@ -1,7 +1,7 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { supabase, Property } from '../lib/supabase';
-import { ArrowLeft, Upload, X, Save, GripVertical } from 'lucide-react';
+import { supabase } from '../lib/supabase';
+import { ArrowLeft, Upload, X, Save } from 'lucide-react';
 
 interface ImagePreview {
   id?: string;
@@ -12,6 +12,39 @@ interface ImagePreview {
   existing: boolean;
 }
 
+const PROPERTY_TYPES = [
+  { value: 'garsonka', label: 'Garsónka' },
+  { value: 'apartman', label: 'Apartmán' },
+  { value: '1izbovy', label: '1 izbový byt' },
+  { value: '2izbovy', label: '2 izbový byt' },
+  { value: '3izbovy', label: '3 izbový byt' },
+  { value: '4izbovy', label: '4 izbový byt' },
+  { value: '5izbovy', label: '5 a viac izbový byt' },
+  { value: 'dom', label: 'Rodinný dom' },
+  { value: 'zrubovy', label: 'Zrubový dom' },
+  { value: 'vidiecky', label: 'Vidiecky dom' },
+  { value: 'komercne', label: 'Komerčný priestor' },
+  { value: 'pozemok', label: 'Pozemok' },
+];
+
+const TRANSACTION_TYPES = [
+  { value: 'predaj', label: 'Predaj' },
+  { value: 'prenajom', label: 'Prenájom' },
+  { value: 'cena_dohodou', label: 'Cena dohodou' },
+  { value: 'ponuknite', label: 'Ponúknite' },
+];
+
+const STAV_OPTIONS = [
+  { value: 'novostavba', label: 'Novostavba' },
+  { value: 'ciastocna_rekonstrukcia', label: 'Čiastočná rekonštrukcia' },
+  { value: 'kompletna_rekonstrukcia', label: 'Kompletná rekonštrukcia' },
+  { value: 'povodny_stav', label: 'Pôvodný stav' },
+  { value: 'vo_vystavbe', label: 'Vo výstavbe' },
+  { value: 'developersky_projekt', label: 'Developerský projekt' },
+];
+
+const isPozemok = (type: string) => type === 'pozemok';
+
 export default function EditProperty() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
@@ -19,6 +52,8 @@ export default function EditProperty() {
   const [fetching, setFetching] = useState(true);
   const [images, setImages] = useState<ImagePreview[]>([]);
   const [error, setError] = useState('');
+  const [dragOverIndex, setDragOverIndex] = useState<number | null>(null);
+  const dragIndexRef = useRef<number | null>(null);
 
   const [formData, setFormData] = useState({
     title: '',
@@ -31,11 +66,20 @@ export default function EditProperty() {
     bedrooms: '',
     bathrooms: '',
     area: '',
+    uzitkova_plocha: '',
+    zastavana_plocha: '',
+    stav: '',
     year_built: '',
     floor: '',
     latitude: '',
     longitude: '',
     featured: false,
+    rezervovane: false,
+    pridane: false,
+    vytah: false,
+    pivnica: false,
+    balkon: false,
+    terasa: false,
     image_url: '',
   });
 
@@ -68,14 +112,23 @@ export default function EditProperty() {
         address: data.address,
         property_type: data.property_type,
         transaction_type: data.transaction_type,
-        bedrooms: data.bedrooms.toString(),
-        bathrooms: data.bathrooms.toString(),
-        area: data.area.toString(),
+        bedrooms: data.bedrooms?.toString() || '',
+        bathrooms: data.bathrooms?.toString() || '',
+        area: data.area?.toString() || '',
+        uzitkova_plocha: data.uzitkova_plocha?.toString() || '',
+        zastavana_plocha: data.zastavana_plocha?.toString() || '',
+        stav: data.stav || '',
         year_built: data.year_built?.toString() || '',
         floor: data.floor?.toString() || '',
         latitude: data.latitude?.toString() || '',
         longitude: data.longitude?.toString() || '',
-        featured: data.featured,
+        featured: data.featured || false,
+        rezervovane: data.rezervovane || false,
+        pridane: data.pridane || false,
+        vytah: data.vytah || false,
+        pivnica: data.pivnica || false,
+        balkon: data.balkon || false,
+        terasa: data.terasa || false,
         image_url: data.image_url,
       });
     } catch (err: any) {
@@ -123,13 +176,7 @@ export default function EditProperty() {
       reader.onloadend = () => {
         setImages((prev) => [
           ...prev,
-          {
-            file,
-            preview: reader.result as string,
-            order: prev.length + 1,
-            is_primary: prev.length === 0,
-            existing: false,
-          },
+          { file, preview: reader.result as string, order: prev.length + 1, is_primary: prev.length === 0, existing: false },
         ]);
       };
       reader.readAsDataURL(file);
@@ -155,13 +202,35 @@ export default function EditProperty() {
     });
   };
 
-  const moveImage = (fromIndex: number, toIndex: number) => {
+  const handleDragStart = (index: number) => {
+    dragIndexRef.current = index;
+  };
+
+  const handleDragOver = (e: React.DragEvent, index: number) => {
+    e.preventDefault();
+    setDragOverIndex(index);
+  };
+
+  const handleDrop = (e: React.DragEvent, toIndex: number) => {
+    e.preventDefault();
+    const fromIndex = dragIndexRef.current;
+    if (fromIndex === null || fromIndex === toIndex) {
+      setDragOverIndex(null);
+      return;
+    }
     setImages((prev) => {
       const updated = [...prev];
       const [moved] = updated.splice(fromIndex, 1);
       updated.splice(toIndex, 0, moved);
       return updated.map((img, i) => ({ ...img, order: i + 1, is_primary: i === 0 }));
     });
+    dragIndexRef.current = null;
+    setDragOverIndex(null);
+  };
+
+  const handleDragEnd = () => {
+    dragIndexRef.current = null;
+    setDragOverIndex(null);
   };
 
   const uploadNewImages = async (): Promise<void> => {
@@ -173,10 +242,7 @@ export default function EditProperty() {
       if (image.existing && image.id) {
         await supabase
           .from('property_images')
-          .update({
-            display_order: image.order,
-            is_primary: image.is_primary,
-          })
+          .update({ display_order: image.order, is_primary: image.is_primary })
           .eq('id', image.id);
       } else if (image.file) {
         const fileExt = image.file.name.split('.').pop();
@@ -189,9 +255,7 @@ export default function EditProperty() {
           continue;
         }
 
-        const {
-          data: { publicUrl },
-        } = supabase.storage.from('property-images').getPublicUrl(fileName);
+        const { data: { publicUrl } } = supabase.storage.from('property-images').getPublicUrl(fileName);
 
         await supabase.from('property_images').insert({
           property_id: id,
@@ -209,24 +273,35 @@ export default function EditProperty() {
     setLoading(true);
 
     try {
+      const isLand = isPozemok(formData.property_type);
+
       const { error: updateError } = await supabase
         .from('properties')
         .update({
           title: formData.title,
           description: formData.description,
-          price: parseFloat(formData.price),
+          price: parseFloat(formData.price) || 0,
           location: formData.location,
           address: formData.address,
           property_type: formData.property_type,
           transaction_type: formData.transaction_type,
-          bedrooms: parseInt(formData.bedrooms),
-          bathrooms: parseInt(formData.bathrooms),
-          area: parseFloat(formData.area),
+          bedrooms: isLand ? 0 : (parseInt(formData.bedrooms) || 0),
+          bathrooms: isLand ? 0 : (parseInt(formData.bathrooms) || 0),
+          area: parseFloat(formData.area) || 0,
+          uzitkova_plocha: formData.uzitkova_plocha ? parseFloat(formData.uzitkova_plocha) : null,
+          zastavana_plocha: formData.zastavana_plocha ? parseFloat(formData.zastavana_plocha) : null,
+          stav: formData.stav || null,
           year_built: formData.year_built ? parseInt(formData.year_built) : null,
           floor: formData.floor ? parseInt(formData.floor) : null,
           latitude: formData.latitude ? parseFloat(formData.latitude) : null,
           longitude: formData.longitude ? parseFloat(formData.longitude) : null,
           featured: formData.featured,
+          rezervovane: formData.rezervovane,
+          pridane: formData.pridane,
+          vytah: formData.vytah,
+          pivnica: formData.pivnica,
+          balkon: formData.balkon,
+          terasa: formData.terasa,
           image_url: images.length > 0 ? images[0].preview : formData.image_url,
         })
         .eq('id', id);
@@ -250,11 +325,16 @@ export default function EditProperty() {
     }));
   };
 
+  const inputClass = "w-full px-4 py-3 bg-stone-800 border border-stone-700 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-amber-500 focus:ring-1 focus:ring-amber-500";
+  const labelClass = "block text-sm font-medium text-gray-300 mb-2";
+
+  const isLand = isPozemok(formData.property_type);
+
   if (fetching) {
     return (
       <div className="min-h-screen bg-black flex items-center justify-center">
         <div className="text-center">
-          <div className="w-16 h-16 border-4 border-amber-600/30 border-t-amber-600 rounded-full animate-spin mx-auto mb-4" />
+          <div className="w-16 h-16 border-4 border-amber-500/30 border-t-amber-500 rounded-full animate-spin mx-auto mb-4" />
           <p className="text-gray-400">Načítavam nehnuteľnosť...</p>
         </div>
       </div>
@@ -266,10 +346,7 @@ export default function EditProperty() {
       <header className="bg-stone-900 border-b border-stone-800">
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center gap-4 h-16">
-            <button
-              onClick={() => navigate('/admin')}
-              className="flex items-center gap-2 text-gray-400 hover:text-white transition-colors"
-            >
+            <button onClick={() => navigate('/admin')} className="flex items-center gap-2 text-gray-400 hover:text-white transition-colors">
               <ArrowLeft className="w-5 h-5" />
               Späť
             </button>
@@ -286,11 +363,12 @@ export default function EditProperty() {
             </div>
           )}
 
+          {/* Images */}
           <div className="bg-stone-900 rounded-xl border border-stone-800 p-6">
             <div className="flex items-center justify-between mb-4">
               <h2 className="text-lg font-semibold text-white">Fotografie ({images.length}/30)</h2>
               {images.length < 30 && (
-                <label className="px-4 py-2 bg-amber-700 hover:bg-amber-600 text-white font-medium rounded-lg cursor-pointer transition-colors flex items-center gap-2">
+                <label className="px-4 py-2 bg-amber-500 hover:bg-amber-400 text-black font-medium rounded-lg cursor-pointer transition-colors flex items-center gap-2">
                   <Upload className="w-4 h-4" />
                   Pridať fotografie
                   <input type="file" className="hidden" accept="image/*" multiple onChange={handleImageChange} />
@@ -299,7 +377,7 @@ export default function EditProperty() {
             </div>
 
             {images.length === 0 ? (
-              <label className="flex flex-col items-center justify-center w-full h-64 border-2 border-dashed border-stone-700 rounded-lg cursor-pointer hover:border-amber-600 transition-colors">
+              <label className="flex flex-col items-center justify-center w-full h-64 border-2 border-dashed border-stone-700 rounded-lg cursor-pointer hover:border-amber-500 transition-colors">
                 <div className="flex flex-col items-center justify-center pt-5 pb-6">
                   <Upload className="w-12 h-12 text-gray-500 mb-3" />
                   <p className="mb-2 text-sm text-gray-400">
@@ -312,38 +390,35 @@ export default function EditProperty() {
             ) : (
               <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
                 {images.map((image, index) => (
-                  <div key={index} className="relative group">
-                    <img
-                      src={image.preview}
-                      alt={`Preview ${index + 1}`}
-                      className="w-full h-32 object-cover rounded-lg"
-                    />
+                  <div
+                    key={image.id || index}
+                    draggable
+                    onDragStart={() => handleDragStart(index)}
+                    onDragOver={(e) => handleDragOver(e, index)}
+                    onDrop={(e) => handleDrop(e, index)}
+                    onDragEnd={handleDragEnd}
+                    className={`relative group cursor-grab active:cursor-grabbing rounded-lg overflow-hidden border-2 transition-all ${
+                      dragOverIndex === index ? 'border-amber-500 scale-105' : 'border-transparent'
+                    }`}
+                  >
+                    <img src={image.preview} alt={`Preview ${index + 1}`} className="w-full h-32 object-cover" />
                     {index === 0 && (
-                      <div className="absolute top-2 left-2 px-2 py-1 bg-amber-600 text-white text-xs font-semibold rounded">
+                      <div className="absolute top-2 left-2 px-2 py-1 bg-amber-500 text-black text-xs font-semibold rounded">
                         Hlavná
                       </div>
                     )}
-                    <div className="absolute top-2 right-2 flex gap-1">
-                      {index > 0 && (
-                        <button
-                          type="button"
-                          onClick={() => moveImage(index, index - 1)}
-                          className="p-1.5 bg-black/70 hover:bg-black text-white rounded transition-colors"
-                          title="Posunúť doľava"
-                        >
-                          <GripVertical className="w-4 h-4" />
-                        </button>
-                      )}
-                      <button
-                        type="button"
-                        onClick={() => removeImage(index)}
-                        className="p-1.5 bg-red-600/90 hover:bg-red-600 text-white rounded transition-colors"
-                      >
-                        <X className="w-4 h-4" />
-                      </button>
-                    </div>
+                    <button
+                      type="button"
+                      onClick={() => removeImage(index)}
+                      className="absolute top-2 right-2 p-1.5 bg-red-600/90 hover:bg-red-600 text-white rounded transition-colors opacity-0 group-hover:opacity-100"
+                    >
+                      <X className="w-4 h-4" />
+                    </button>
                     <div className="absolute bottom-2 left-2 px-2 py-0.5 bg-black/70 text-white text-xs rounded">
                       #{image.order}
+                    </div>
+                    <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 pointer-events-none">
+                      <div className="bg-black/50 rounded-lg px-2 py-1 text-white text-xs">Pretiahnuť</div>
                     </div>
                   </div>
                 ))}
@@ -351,220 +426,163 @@ export default function EditProperty() {
             )}
           </div>
 
+          {/* Basic info */}
           <div className="bg-stone-900 rounded-xl border border-stone-800 p-6">
             <h2 className="text-lg font-semibold text-white mb-4">Základné informácie</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="md:col-span-2">
-                <label className="block text-sm font-medium text-gray-300 mb-2">Názov *</label>
-                <input
-                  type="text"
-                  name="title"
-                  value={formData.title}
-                  onChange={handleChange}
-                  required
-                  className="w-full px-4 py-3 bg-stone-800 border border-stone-700 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-amber-600 focus:ring-1 focus:ring-amber-600"
-                />
+                <label className={labelClass}>Názov *</label>
+                <input type="text" name="title" value={formData.title} onChange={handleChange} required className={inputClass} />
               </div>
 
               <div className="md:col-span-2">
-                <label className="block text-sm font-medium text-gray-300 mb-2">Popis *</label>
-                <textarea
-                  name="description"
-                  value={formData.description}
-                  onChange={handleChange}
-                  required
-                  rows={4}
-                  className="w-full px-4 py-3 bg-stone-800 border border-stone-700 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-amber-600 focus:ring-1 focus:ring-amber-600"
-                />
+                <label className={labelClass}>Popis *</label>
+                <textarea name="description" value={formData.description} onChange={handleChange} required rows={4} className={inputClass} />
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-300 mb-2">Typ transakcie *</label>
-                <select
-                  name="transaction_type"
-                  value={formData.transaction_type}
-                  onChange={handleChange}
-                  required
-                  className="w-full px-4 py-3 bg-stone-800 border border-stone-700 rounded-lg text-white focus:outline-none focus:border-amber-600 focus:ring-1 focus:ring-amber-600"
-                >
-                  <option value="predaj">Predaj</option>
-                  <option value="prenajom">Prenájom</option>
+                <label className={labelClass}>Typ transakcie *</label>
+                <select name="transaction_type" value={formData.transaction_type} onChange={handleChange} required className={inputClass}>
+                  {TRANSACTION_TYPES.map(t => <option key={t.value} value={t.value}>{t.label}</option>)}
                 </select>
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-300 mb-2">Typ nehnuteľnosti *</label>
-                <select
-                  name="property_type"
-                  value={formData.property_type}
-                  onChange={handleChange}
-                  required
-                  className="w-full px-4 py-3 bg-stone-800 border border-stone-700 rounded-lg text-white focus:outline-none focus:border-amber-600 focus:ring-1 focus:ring-amber-600"
-                >
-                  <option value="byt">Byt</option>
-                  <option value="dom">Rodinný dom</option>
-                  <option value="komercne">Komerčný priestor</option>
-                  <option value="pozemok">Pozemok</option>
+                <label className={labelClass}>Typ nehnuteľnosti *</label>
+                <select name="property_type" value={formData.property_type} onChange={handleChange} required className={inputClass}>
+                  {PROPERTY_TYPES.map(t => <option key={t.value} value={t.value}>{t.label}</option>)}
                 </select>
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-300 mb-2">Cena (€) *</label>
-                <input
-                  type="number"
-                  name="price"
-                  value={formData.price}
-                  onChange={handleChange}
-                  required
-                  min="0"
-                  step="0.01"
-                  className="w-full px-4 py-3 bg-stone-800 border border-stone-700 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-amber-600 focus:ring-1 focus:ring-amber-600"
-                />
+                <label className={labelClass}>Stav nehnuteľnosti</label>
+                <select name="stav" value={formData.stav} onChange={handleChange} className={inputClass}>
+                  <option value="">-- Vyberte stav --</option>
+                  {STAV_OPTIONS.map(s => <option key={s.value} value={s.value}>{s.label}</option>)}
+                </select>
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-300 mb-2">Výmera (m²) *</label>
-                <input
-                  type="number"
-                  name="area"
-                  value={formData.area}
-                  onChange={handleChange}
-                  required
-                  min="0"
-                  step="0.01"
-                  className="w-full px-4 py-3 bg-stone-800 border border-stone-700 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-amber-600 focus:ring-1 focus:ring-amber-600"
-                />
+                <label className={labelClass}>Cena (€) *</label>
+                <input type="number" name="price" value={formData.price} onChange={handleChange} required min="0" step="0.01" className={inputClass} />
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-300 mb-2">Počet izieb *</label>
-                <input
-                  type="number"
-                  name="bedrooms"
-                  value={formData.bedrooms}
-                  onChange={handleChange}
-                  required
-                  min="0"
-                  className="w-full px-4 py-3 bg-stone-800 border border-stone-700 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-amber-600 focus:ring-1 focus:ring-amber-600"
-                />
+                <label className={labelClass}>Plocha (m²) *</label>
+                <input type="number" name="area" value={formData.area} onChange={handleChange} required min="0" step="0.01" className={inputClass} />
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-300 mb-2">Počet kúpeľní *</label>
-                <input
-                  type="number"
-                  name="bathrooms"
-                  value={formData.bathrooms}
-                  onChange={handleChange}
-                  required
-                  min="0"
-                  className="w-full px-4 py-3 bg-stone-800 border border-stone-700 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-amber-600 focus:ring-1 focus:ring-amber-600"
-                />
+                <label className={labelClass}>Užitková plocha (m²)</label>
+                <input type="number" name="uzitkova_plocha" value={formData.uzitkova_plocha} onChange={handleChange} min="0" step="0.01" className={inputClass} placeholder="65" />
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-300 mb-2">Rok výstavby</label>
-                <input
-                  type="number"
-                  name="year_built"
-                  value={formData.year_built}
-                  onChange={handleChange}
-                  min="1800"
-                  max={new Date().getFullYear()}
-                  className="w-full px-4 py-3 bg-stone-800 border border-stone-700 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-amber-600 focus:ring-1 focus:ring-amber-600"
-                />
+                <label className={labelClass}>Zastavaná plocha (m²)</label>
+                <input type="number" name="zastavana_plocha" value={formData.zastavana_plocha} onChange={handleChange} min="0" step="0.01" className={inputClass} placeholder="120" />
+              </div>
+
+              {!isLand && (
+                <>
+                  <div>
+                    <label className={labelClass}>Počet izieb</label>
+                    <input type="number" name="bedrooms" value={formData.bedrooms} onChange={handleChange} min="0" className={inputClass} />
+                  </div>
+
+                  <div>
+                    <label className={labelClass}>Počet kúpeľní</label>
+                    <input type="number" name="bathrooms" value={formData.bathrooms} onChange={handleChange} min="0" className={inputClass} />
+                  </div>
+                </>
+              )}
+
+              <div>
+                <label className={labelClass}>Rok výstavby</label>
+                <input type="number" name="year_built" value={formData.year_built} onChange={handleChange} min="1800" max={new Date().getFullYear()} className={inputClass} />
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-300 mb-2">Poschodie</label>
-                <input
-                  type="number"
-                  name="floor"
-                  value={formData.floor}
-                  onChange={handleChange}
-                  className="w-full px-4 py-3 bg-stone-800 border border-stone-700 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-amber-600 focus:ring-1 focus:ring-amber-600"
-                />
+                <label className={labelClass}>Poschodie</label>
+                <input type="number" name="floor" value={formData.floor} onChange={handleChange} className={inputClass} />
               </div>
             </div>
           </div>
 
+          {/* Location */}
           <div className="bg-stone-900 rounded-xl border border-stone-800 p-6">
             <h2 className="text-lg font-semibold text-white mb-4">Lokalita</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
-                <label className="block text-sm font-medium text-gray-300 mb-2">Mesto/Obec *</label>
-                <input
-                  type="text"
-                  name="location"
-                  value={formData.location}
-                  onChange={handleChange}
-                  required
-                  className="w-full px-4 py-3 bg-stone-800 border border-stone-700 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-amber-600 focus:ring-1 focus:ring-amber-600"
-                />
+                <label className={labelClass}>Mesto/Obec *</label>
+                <input type="text" name="location" value={formData.location} onChange={handleChange} required className={inputClass} />
               </div>
-
               <div>
-                <label className="block text-sm font-medium text-gray-300 mb-2">Adresa *</label>
-                <input
-                  type="text"
-                  name="address"
-                  value={formData.address}
-                  onChange={handleChange}
-                  required
-                  className="w-full px-4 py-3 bg-stone-800 border border-stone-700 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-amber-600 focus:ring-1 focus:ring-amber-600"
-                />
+                <label className={labelClass}>Adresa *</label>
+                <input type="text" name="address" value={formData.address} onChange={handleChange} required className={inputClass} />
               </div>
-
               <div>
-                <label className="block text-sm font-medium text-gray-300 mb-2">Zemepisná šírka</label>
-                <input
-                  type="number"
-                  name="latitude"
-                  value={formData.latitude}
-                  onChange={handleChange}
-                  step="any"
-                  className="w-full px-4 py-3 bg-stone-800 border border-stone-700 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-amber-600 focus:ring-1 focus:ring-amber-600"
-                  placeholder="48.1486"
-                />
+                <label className={labelClass}>Zemepisná šírka</label>
+                <input type="number" name="latitude" value={formData.latitude} onChange={handleChange} step="any" className={inputClass} placeholder="48.1486" />
               </div>
-
               <div>
-                <label className="block text-sm font-medium text-gray-300 mb-2">Zemepisná dĺžka</label>
-                <input
-                  type="number"
-                  name="longitude"
-                  value={formData.longitude}
-                  onChange={handleChange}
-                  step="any"
-                  className="w-full px-4 py-3 bg-stone-800 border border-stone-700 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-amber-600 focus:ring-1 focus:ring-amber-600"
-                  placeholder="17.1077"
-                />
+                <label className={labelClass}>Zemepisná dĺžka</label>
+                <input type="number" name="longitude" value={formData.longitude} onChange={handleChange} step="any" className={inputClass} placeholder="17.1077" />
               </div>
             </div>
           </div>
 
+          {/* Features */}
           <div className="bg-stone-900 rounded-xl border border-stone-800 p-6">
-            <label className="flex items-center gap-3 cursor-pointer">
-              <input
-                type="checkbox"
-                name="featured"
-                checked={formData.featured}
-                onChange={handleChange}
-                className="w-5 h-5 rounded border-stone-700 bg-stone-800 text-amber-600 focus:ring-amber-600 focus:ring-offset-0"
-              />
-              <div>
-                <span className="text-white font-medium">Odporúčaná nehnuteľnosť</span>
-                <p className="text-sm text-gray-400">Zobrazí sa na hlavnej stránke medzi top ponukami</p>
-              </div>
-            </label>
+            <h2 className="text-lg font-semibold text-white mb-4">Vybavenie a vlastnosti</h2>
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+              {[
+                { name: 'vytah', label: 'Výťah' },
+                { name: 'pivnica', label: 'Pivnica' },
+                { name: 'balkon', label: 'Balkón' },
+                { name: 'terasa', label: 'Terasa' },
+              ].map(({ name, label }) => (
+                <label key={name} className="flex items-center gap-3 cursor-pointer p-3 rounded-lg bg-stone-800 border border-stone-700 hover:border-amber-500/50 transition-colors">
+                  <input
+                    type="checkbox"
+                    name={name}
+                    checked={(formData as any)[name]}
+                    onChange={handleChange}
+                    className="w-4 h-4 rounded border-stone-600 bg-stone-700 text-amber-500 focus:ring-amber-500 focus:ring-offset-0"
+                  />
+                  <span className="text-white text-sm font-medium">{label}</span>
+                </label>
+              ))}
+            </div>
+          </div>
+
+          {/* Labels */}
+          <div className="bg-stone-900 rounded-xl border border-stone-800 p-6">
+            <h2 className="text-lg font-semibold text-white mb-4">Štítky</h2>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              {[
+                { name: 'featured', label: 'Odporúčame', desc: 'Zobrazí sa medzi top ponukami' },
+                { name: 'rezervovane', label: 'Rezervované', desc: 'Nehnuteľnosť je rezervovaná' },
+                { name: 'pridane', label: 'Pridané', desc: 'Zvýraznenie ako novinky' },
+              ].map(({ name, label, desc }) => (
+                <label key={name} className="flex items-start gap-3 cursor-pointer p-4 rounded-lg bg-stone-800 border border-stone-700 hover:border-amber-500/50 transition-colors">
+                  <input
+                    type="checkbox"
+                    name={name}
+                    checked={(formData as any)[name]}
+                    onChange={handleChange}
+                    className="w-4 h-4 mt-0.5 rounded border-stone-600 bg-stone-700 text-amber-500 focus:ring-amber-500 focus:ring-offset-0"
+                  />
+                  <div>
+                    <span className="text-white font-medium block">{label}</span>
+                    <span className="text-gray-400 text-xs">{desc}</span>
+                  </div>
+                </label>
+              ))}
+            </div>
           </div>
 
           <div className="flex gap-4">
-            <button
-              type="button"
-              onClick={() => navigate('/admin')}
-              className="flex-1 px-6 py-3 bg-stone-800 hover:bg-stone-700 text-white font-medium rounded-lg transition-colors"
-            >
+            <button type="button" onClick={() => navigate('/admin')} className="flex-1 px-6 py-3 bg-stone-800 hover:bg-stone-700 text-white font-medium rounded-lg transition-colors">
               Zrušiť
             </button>
             <button
@@ -574,7 +592,7 @@ export default function EditProperty() {
             >
               {loading ? (
                 <>
-                  <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                  <div className="w-5 h-5 border-2 border-black/30 border-t-black rounded-full animate-spin" />
                   Ukladám...
                 </>
               ) : (

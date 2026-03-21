@@ -15,12 +15,14 @@ import ComplaintsPage from './pages/ComplaintsPage';
 import EthicsPage from './pages/EthicsPage';
 import ProtectedRoute from './components/ProtectedRoute';
 import ScrollToTop from './components/ScrollToTop';
+import CookieBanner from './components/CookieBanner';
 
 function App() {
   return (
     <AuthProvider>
       <Router>
         <ScrollToTop />
+        <CookieBanner />
         <Routes>
           <Route path="/" element={<HomePage />} />
           <Route path="/chcem-kupit" element={<BuyProperty />} />

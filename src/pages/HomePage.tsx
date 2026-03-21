@@ -63,14 +63,15 @@ export default function HomePage() {
     }
   };
 
-  const handleSearch = (searchTerm: string, transactionType: string, propertyType: string) => {
+  const handleSearch = (searchTerm: string, transactionType: string, propertyType: string, stav: string) => {
     let filtered = [...properties];
 
     if (searchTerm) {
       filtered = filtered.filter(
         (p) =>
           p.location.toLowerCase().includes(searchTerm.toLowerCase()) ||
-          p.address.toLowerCase().includes(searchTerm.toLowerCase())
+          p.address.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          p.title.toLowerCase().includes(searchTerm.toLowerCase())
       );
     }
 
@@ -80,6 +81,10 @@ export default function HomePage() {
 
     if (propertyType) {
       filtered = filtered.filter((p) => p.property_type === propertyType);
+    }
+
+    if (stav) {
+      filtered = filtered.filter((p) => p.stav === stav);
     }
 
     setFilteredProperties(filtered);

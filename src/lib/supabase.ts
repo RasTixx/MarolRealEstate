@@ -18,6 +18,15 @@ export interface Property {
   bathrooms: number;
   area: number;
   area_sqm?: number;
+  uzitkova_plocha?: number | null;
+  zastavana_plocha?: number | null;
+  stav?: string | null;
+  vytah?: boolean;
+  pivnica?: boolean;
+  balkon?: boolean;
+  terasa?: boolean;
+  rezervovane?: boolean;
+  pridane?: boolean;
   year_built: number | null;
   floor: number | null;
   latitude: number | null;
