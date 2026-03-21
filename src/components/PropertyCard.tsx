@@ -61,7 +61,7 @@ export default function PropertyCard({ property }: PropertyCardProps) {
             {labels.slice(0, 1).map((label, i) => (
               <div
                 key={i}
-                className={`absolute -left-10 top-7 w-40 text-center text-[11px] font-bold uppercase tracking-wider py-1.5 shadow-md rotate-[-45deg] ${label.color}`}
+                className={`absolute -left-8 top-7 w-40 text-center text-[11px] font-bold uppercase tracking-wider py-1.5 shadow-md rotate-[-45deg] ${label.color}`}
               >
                 {label.text}
               </div>
