@@ -7,7 +7,7 @@ export default function ContactCard() {
         <div className="relative flex-shrink-0">
           <div className="w-36 h-36 rounded-lg overflow-hidden bg-stone-900">
             <img
-              src="/man_logo.png"
+              src="/man_logo copy.png"
               alt="Karol Maslík"
               className="w-full h-full object-cover"
             />
