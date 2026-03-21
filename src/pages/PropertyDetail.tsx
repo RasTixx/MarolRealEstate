@@ -166,7 +166,9 @@ export default function PropertyDetail() {
   };
 
   const getTransactionTypeLabel = (type: string) => {
-    return type === 'predaj' ? 'Predaj' : 'Prenájom';
+    if (type === 'predaj' || type === 'sale') return 'Predaj';
+    if (type === 'prenajom' || type === 'rent') return 'Prenájom';
+    return type;
   };
 
   if (loading) {

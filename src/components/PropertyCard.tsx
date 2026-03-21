@@ -11,8 +11,10 @@ const truncate = (str: string, max: number) =>
 
 const getTransactionLabel = (type: string) => {
   switch (type) {
-    case 'predaj': return 'Predaj';
-    case 'prenajom': return 'Prenájom';
+    case 'predaj':
+    case 'sale': return 'Predaj';
+    case 'prenajom':
+    case 'rent': return 'Prenájom';
     case 'cena_dohodou': return 'Cena dohodou';
     case 'ponuknite': return 'Ponúknite';
     default: return type;
