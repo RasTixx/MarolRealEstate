@@ -12,13 +12,7 @@ export default function ContactCard() {
               className="w-full h-full object-cover"
             />
           </div>
-          <div className="absolute -bottom-3 -right-3 w-16 h-16 bg-black rounded-full flex items-center justify-center border-4 border-stone-900">
-            <img
-              src="/logo_goldennn.png"
-              alt="Logo"
-              className="w-12 h-12 object-contain"
-            />
-          </div>
+         
         </div>
 
         <div className="w-full">
