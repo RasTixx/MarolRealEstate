@@ -22,7 +22,7 @@ export default function ContactCard() {
         </div>
 
         <div className="w-full">
-          <h3 className="text-2xl font-bold text-white mb-1">Karol Maslík</h3>
+          <h3 className="text-xl font-bold text-white mb-1">Karol Maslík</h3>
           <p className="text-amber-600 font-medium mb-6">Maklér, konateľ</p>
 
           <div className="space-y-3">
