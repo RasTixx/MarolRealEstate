@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Home, MapPin, DollarSign, Bed, Bath, Square } from 'lucide-react';
+import { Home } from 'lucide-react';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 import CustomSelect from '../components/CustomSelect';
@@ -12,13 +12,6 @@ export default function BuyProperty() {
     email: '',
     phone: '',
     propertyType: '',
-    location: '',
-    minPrice: '',
-    maxPrice: '',
-    bedrooms: '',
-    bathrooms: '',
-    minArea: '',
-    maxArea: '',
     additionalRequirements: '',
   });
 
@@ -57,21 +50,11 @@ export default function BuyProperty() {
           email: formData.email,
           phone: formData.phone,
           property_type: formData.propertyType,
-          location: formData.location,
-          min_price: formData.minPrice ? parseFloat(formData.minPrice) : null,
-          max_price: formData.maxPrice ? parseFloat(formData.maxPrice) : null,
-          bedrooms: formData.bedrooms ? parseInt(formData.bedrooms) : null,
-          bathrooms: formData.bathrooms ? parseInt(formData.bathrooms) : null,
-          min_area: formData.minArea ? parseFloat(formData.minArea) : null,
-          max_area: formData.maxArea ? parseFloat(formData.maxArea) : null,
           additional_requirements: formData.additionalRequirements,
         },
       ]);
 
       if (error) throw error;
-
-      const budgetRange = `${formData.minPrice || '0'}€ - ${formData.maxPrice || 'neobmedzené'}€`;
-      const roomInfo = formData.bedrooms ? `${formData.bedrooms} izby` : '';
 
       fetch(
         `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/send-inquiry-email`,
@@ -85,9 +68,6 @@ export default function BuyProperty() {
             name: formData.fullName,
             email: formData.email,
             phone: formData.phone,
-            budget: budgetRange,
-            location: formData.location,
-            roomCount: roomInfo,
             propertyType: formData.propertyType,
             message: formData.additionalRequirements,
           }),
@@ -101,13 +81,6 @@ export default function BuyProperty() {
         email: '',
         phone: '',
         propertyType: '',
-        location: '',
-        minPrice: '',
-        maxPrice: '',
-        bedrooms: '',
-        bathrooms: '',
-        minArea: '',
-        maxArea: '',
         additionalRequirements: '',
       });
     } catch (error) {
@@ -202,132 +175,17 @@ export default function BuyProperty() {
                   </div>
 
                   <div className="md:col-span-2">
-                    <label htmlFor="location" className="block text-sm font-medium text-gray-300 mb-2">
-                      <MapPin className="inline h-4 w-4 mr-1" />
-                      Preferovaná lokalita *
-                    </label>
-                    <input
-                      type="text"
-                      id="location"
-                      name="location"
-                      required
-                      value={formData.location}
-                      onChange={handleChange}
-                      className="w-full px-4 py-3 bg-black border border-amber-500/30 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-amber-500 transition-colors"
-                      placeholder="Napríklad: Bratislava, Košice, Nitra..."
-                    />
-                  </div>
-
-                  <div>
-                    <label htmlFor="minPrice" className="block text-sm font-medium text-gray-300 mb-2">
-                      <DollarSign className="inline h-4 w-4 mr-1" />
-                      Minimálna cena (€)
-                    </label>
-                    <input
-                      type="number"
-                      id="minPrice"
-                      name="minPrice"
-                      value={formData.minPrice}
-                      onChange={handleChange}
-                      className="w-full px-4 py-3 bg-black border border-amber-500/30 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-amber-500 transition-colors"
-                      placeholder="50000"
-                    />
-                  </div>
-
-                  <div>
-                    <label htmlFor="maxPrice" className="block text-sm font-medium text-gray-300 mb-2">
-                      <DollarSign className="inline h-4 w-4 mr-1" />
-                      Maximálna cena (€)
-                    </label>
-                    <input
-                      type="number"
-                      id="maxPrice"
-                      name="maxPrice"
-                      value={formData.maxPrice}
-                      onChange={handleChange}
-                      className="w-full px-4 py-3 bg-black border border-amber-500/30 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-amber-500 transition-colors"
-                      placeholder="200000"
-                    />
-                  </div>
-
-                  <div>
-                    <label htmlFor="bedrooms" className="block text-sm font-medium text-gray-300 mb-2">
-                      <Bed className="inline h-4 w-4 mr-1" />
-                      Počet izieb
-                    </label>
-                    <input
-                      type="number"
-                      id="bedrooms"
-                      name="bedrooms"
-                      value={formData.bedrooms}
-                      onChange={handleChange}
-                      className="w-full px-4 py-3 bg-black border border-amber-500/30 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-amber-500 transition-colors"
-                      placeholder="3"
-                      min="1"
-                    />
-                  </div>
-
-                  <div>
-                    <label htmlFor="bathrooms" className="block text-sm font-medium text-gray-300 mb-2">
-                      <Bath className="inline h-4 w-4 mr-1" />
-                      Počet kúpeľní
-                    </label>
-                    <input
-                      type="number"
-                      id="bathrooms"
-                      name="bathrooms"
-                      value={formData.bathrooms}
-                      onChange={handleChange}
-                      className="w-full px-4 py-3 bg-black border border-amber-500/30 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-amber-500 transition-colors"
-                      placeholder="1"
-                      min="1"
-                    />
-                  </div>
-
-                  <div>
-                    <label htmlFor="minArea" className="block text-sm font-medium text-gray-300 mb-2">
-                      <Square className="inline h-4 w-4 mr-1" />
-                      Minimálna výmera (m²)
-                    </label>
-                    <input
-                      type="number"
-                      id="minArea"
-                      name="minArea"
-                      value={formData.minArea}
-                      onChange={handleChange}
-                      className="w-full px-4 py-3 bg-black border border-amber-500/30 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-amber-500 transition-colors"
-                      placeholder="50"
-                    />
-                  </div>
-
-                  <div>
-                    <label htmlFor="maxArea" className="block text-sm font-medium text-gray-300 mb-2">
-                      <Square className="inline h-4 w-4 mr-1" />
-                      Maximálna výmera (m²)
-                    </label>
-                    <input
-                      type="number"
-                      id="maxArea"
-                      name="maxArea"
-                      value={formData.maxArea}
-                      onChange={handleChange}
-                      className="w-full px-4 py-3 bg-black border border-amber-500/30 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-amber-500 transition-colors"
-                      placeholder="150"
-                    />
-                  </div>
-
-                  <div className="md:col-span-2">
                     <label htmlFor="additionalRequirements" className="block text-sm font-medium text-gray-300 mb-2">
-                      Dodatočné požiadavky
+                      Vaše požiadavky
                     </label>
                     <textarea
                       id="additionalRequirements"
                       name="additionalRequirements"
-                      rows={4}
+                      rows={7}
                       value={formData.additionalRequirements}
                       onChange={handleChange}
                       className="w-full px-4 py-3 bg-black border border-amber-500/30 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-amber-500 transition-colors resize-none"
-                      placeholder="Napríklad: parkovacie miesto, záhrada, balkón..."
+                      placeholder={`Popíšte vaše požiadavky, napríklad:\n\nPreferovaná lokalita: Bratislava, Košice...\nMinimálna cena: 100 000 €\nMaximálna cena: 250 000 €\nPočet izieb: 3\nPočet kúpeľní: 1\nMinimálna výmera: 60 m²\nMaximálna výmera: 120 m²\nĎalšie požiadavky: parkovacie miesto, záhrada, balkón...`}
                     />
                   </div>
                 </div>
