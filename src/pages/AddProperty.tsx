@@ -70,7 +70,7 @@ export default function AddProperty() {
     longitude: '',
     featured: false,
     rezervovane: false,
-    pridane: false,
+    predane: false,
     vytah: false,
     pivnica: false,
     balkon: false,
@@ -196,7 +196,7 @@ export default function AddProperty() {
           longitude: formData.longitude ? parseFloat(formData.longitude) : null,
           featured: formData.featured,
           rezervovane: formData.rezervovane,
-          pridane: formData.pridane,
+          predane: formData.predane,
           vytah: formData.vytah,
           pivnica: formData.pivnica,
           balkon: formData.balkon,
@@ -461,7 +461,7 @@ export default function AddProperty() {
               {[
                 { name: 'featured', label: 'Odporúčame', desc: 'Zobrazí sa medzi top ponukami' },
                 { name: 'rezervovane', label: 'Rezervované', desc: 'Nehnuteľnosť je rezervovaná' },
-                { name: 'pridane', label: 'Pridané', desc: 'Zvýraznenie ako novinky' },
+                { name: 'predane', label: 'Predané', desc: 'Nehnuteľnosť je predaná' },
               ].map(({ name, label, desc }) => (
                 <label key={name} className="flex items-start gap-3 cursor-pointer p-4 rounded-lg bg-stone-800 border border-stone-700 hover:border-amber-500/50 transition-colors">
                   <input

@@ -9,16 +9,6 @@ interface PropertyCardProps {
 const truncate = (str: string, max: number) =>
   str.length > max ? str.slice(0, max).trimEnd() + '…' : str;
 
-const getTransactionLabel = (type: string) => {
-  switch (type) {
-    case 'predaj': return 'Predaj';
-    case 'prenajom': return 'Prenájom';
-    case 'cena_dohodou': return 'Cena dohodou';
-    case 'ponuknite': return 'Ponúknite';
-    default: return type;
-  }
-};
-
 export default function PropertyCard({ property }: PropertyCardProps) {
   const formatPrice = (price: number) => {
     return new Intl.NumberFormat('sk-SK', {
@@ -31,7 +21,12 @@ export default function PropertyCard({ property }: PropertyCardProps) {
   const labels: { text: string; color: string }[] = [];
   if (property.featured) labels.push({ text: 'Odporúčame', color: 'bg-gradient-to-br from-amber-400 to-yellow-500 text-black' });
   if (property.rezervovane) labels.push({ text: 'Rezervované', color: 'bg-gradient-to-br from-stone-400 to-stone-500 text-white' });
-  if (property.pridane) labels.push({ text: 'Pridané', color: 'bg-gradient-to-br from-amber-500 to-amber-600 text-black' });
+  if (property.predane) labels.push({ text: 'Predané', color: 'bg-gradient-to-br from-amber-500 to-amber-600 text-black' });
+
+  const ribbonPositions = [
+    { corner: 'top-0 left-0', clip: 'w-28 h-28', transform: '-rotate-45', offset: 'top-[3.2rem] -left-[2.2rem]' },
+    { corner: 'top-0 right-0', clip: 'w-28 h-28', transform: 'rotate-45', offset: 'top-[3.2rem] -right-[2.2rem]' },
+  ];
 
   return (
     <Link
@@ -46,32 +41,17 @@ export default function PropertyCard({ property }: PropertyCardProps) {
         />
         <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
 
-        {labels.length > 0 && (
-          <div className="absolute top-0 left-0 overflow-hidden w-28 h-28 pointer-events-none">
-            {labels.slice(0, 1).map((label, i) => (
-              <div
-                key={i}
-                className={`absolute -left-6 top-5 w-36 text-center text-[10px] font-bold uppercase tracking-wider py-1 shadow-md rotate-[-45deg] ${label.color}`}
-              >
+        {labels.map((label, i) => {
+          const pos = ribbonPositions[i];
+          if (!pos) return null;
+          return (
+            <div key={i} className={`absolute ${pos.corner} overflow-hidden ${pos.clip} pointer-events-none`}>
+              <div className={`absolute ${pos.offset} w-36 text-center text-[10px] font-bold uppercase tracking-wider py-1.5 shadow-md ${pos.transform} ${label.color}`}>
                 {label.text}
               </div>
-            ))}
-          </div>
-        )}
-
-        <div className="absolute top-3 right-3 bg-black/80 backdrop-blur px-3 py-1.5 rounded-lg text-xs font-bold text-amber-500 border border-amber-500/30">
-          {getTransactionLabel(property.transaction_type)}
-        </div>
-
-        {labels.length > 1 && (
-          <div className="absolute top-10 left-2 flex flex-col gap-1">
-            {labels.slice(1).map((label, i) => (
-              <span key={i} className={`text-[10px] font-bold uppercase tracking-wide px-2 py-0.5 rounded ${label.color}`}>
-                {label.text}
-              </span>
-            ))}
-          </div>
-        )}
+            </div>
+          );
+        })}
 
         <div className="absolute bottom-3 right-3 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
           <div className="bg-amber-500 p-2.5 rounded-lg shadow-lg">

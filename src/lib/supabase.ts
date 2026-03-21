@@ -26,7 +26,7 @@ export interface Property {
   balkon?: boolean;
   terasa?: boolean;
   rezervovane?: boolean;
-  pridane?: boolean;
+  predane?: boolean;
   year_built: number | null;
   floor: number | null;
   latitude: number | null;

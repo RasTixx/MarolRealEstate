@@ -1,4 +1,4 @@
-import { Search, MapPin, Home, Repeat2, Quote } from 'lucide-react';
+import { Search, MapPin, Quote } from 'lucide-react';
 import { useState } from 'react';
 
 interface HeroProps {
@@ -20,15 +20,6 @@ const PROPERTY_TYPES = [
   { value: 'pozemok', label: 'Pozemok' },
 ];
 
-const STAV_OPTIONS = [
-  { value: 'novostavba', label: 'Novostavba' },
-  { value: 'ciastocna_rekonstrukcia', label: 'Čiastočná rekonštrukcia' },
-  { value: 'kompletna_rekonstrukcia', label: 'Kompletná rekonštrukcia' },
-  { value: 'povodny_stav', label: 'Pôvodný stav' },
-  { value: 'vo_vystavbe', label: 'Vo výstavbe' },
-  { value: 'developersky_projekt', label: 'Developerský projekt' },
-];
-
 const selectClass = "w-full px-4 py-3 pr-10 bg-stone-800/80 border border-stone-700 rounded-lg text-white appearance-none focus:outline-none focus:border-amber-500 focus:ring-1 focus:ring-amber-500 transition-all";
 
 function SelectArrow() {
@@ -41,13 +32,11 @@ function SelectArrow() {
 
 export default function Hero({ onSearch }: HeroProps) {
   const [searchTerm, setSearchTerm] = useState('');
-  const [transactionType, setTransactionType] = useState('');
   const [propertyType, setPropertyType] = useState('');
-  const [stav, setStav] = useState('');
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
-    onSearch(searchTerm, transactionType, propertyType, stav);
+    onSearch(searchTerm, '', propertyType, '');
 
     setTimeout(() => {
       const el = document.querySelector('#nehnutelnosti');
@@ -107,46 +96,11 @@ export default function Hero({ onSearch }: HeroProps) {
           <div className="bg-stone-900/20 backdrop-blur-xl rounded-2xl p-8 border border-amber-500/30 shadow-2xl shadow-amber-900/50">
             <form onSubmit={handleSearch} className="space-y-4">
               <div>
-                <label className="block text-sm font-medium text-amber-500 mb-2">Typ transakcie</label>
-                <div className="grid grid-cols-2 gap-3">
-                  {[
-                    { value: 'predaj', label: 'Predaj', icon: Home },
-                    { value: 'prenajom', label: 'Prenájom', icon: Repeat2 },
-                  ].map(({ value, label, icon: Icon }) => (
-                    <button
-                      key={value}
-                      type="button"
-                      onClick={() => setTransactionType(transactionType === value ? '' : value)}
-                      className={`p-3 rounded-lg border-2 transition-all flex items-center justify-center gap-2 ${
-                        transactionType === value
-                          ? 'bg-amber-500/20 border-amber-500 text-amber-400'
-                          : 'border-stone-700 text-gray-300 hover:border-amber-500/50'
-                      }`}
-                    >
-                      <Icon className="h-4 w-4" />
-                      <span className="text-sm font-medium">{label}</span>
-                    </button>
-                  ))}
-                </div>
-              </div>
-
-              <div>
                 <label className="block text-sm font-medium text-amber-500 mb-2">Typ nehnuteľnosti</label>
                 <div className="relative">
                   <select value={propertyType} onChange={(e) => setPropertyType(e.target.value)} className={selectClass}>
                     <option value="">Všetky typy</option>
                     {PROPERTY_TYPES.map(t => <option key={t.value} value={t.value}>{t.label}</option>)}
-                  </select>
-                  <SelectArrow />
-                </div>
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-amber-500 mb-2">Stav nehnuteľnosti</label>
-                <div className="relative">
-                  <select value={stav} onChange={(e) => setStav(e.target.value)} className={selectClass}>
-                    <option value="">Všetky stavy</option>
-                    {STAV_OPTIONS.map(s => <option key={s.value} value={s.value}>{s.label}</option>)}
                   </select>
                   <SelectArrow />
                 </div>
