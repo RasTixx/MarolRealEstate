@@ -33,7 +33,7 @@ export default function PropertyCard({ property }: PropertyCardProps) {
   const labels: { text: string; color: string }[] = [];
   if (property.featured) labels.push({ text: 'Odporúčame', color: 'bg-gradient-to-br from-amber-400 to-yellow-500 text-black' });
   if (property.rezervovane) labels.push({ text: 'Rezervované', color: 'bg-gradient-to-br from-stone-400 to-stone-500 text-white' });
-  if (property.pridane) labels.push({ text: 'Predané', color: 'bg-gradient-to-br from-amber-500 to-amber-600 text-black' });
+  if (property.predane) labels.push({ text: 'Predané', color: 'bg-gradient-to-br from-amber-500 to-amber-600 text-black' });
 
   const transactionLabel = getTransactionLabel(property.transaction_type);
 

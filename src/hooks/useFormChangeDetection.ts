@@ -23,5 +23,7 @@ export function useFormChangeDetection(isFormDirty: boolean) {
     };
   }, [shouldWarn]);
 
-  return { setShouldWarn };
+  const clearDirtyFlag = () => setShouldWarn(false);
+
+  return { setShouldWarn, clearDirtyFlag };
 }

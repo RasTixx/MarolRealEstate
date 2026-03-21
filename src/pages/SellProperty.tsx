@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Home, MapPin, DollarSign, Bed, Bath, Square, Calendar } from 'lucide-react';
+import { Home, MapPin, DollarSign } from 'lucide-react';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 import CustomSelect from '../components/CustomSelect';
@@ -44,14 +44,6 @@ export default function SellProperty() {
     { value: 'pozemok', label: 'Pozemok' },
     { value: 'komercna', label: 'Komerčná nehnuteľnosť' },
     { value: 'ine', label: 'Iné' },
-  ];
-
-  const propertyConditionOptions = [
-    { value: '', label: 'Vyberte stav' },
-    { value: 'nove', label: 'Nové' },
-    { value: 'velmi-dobre', label: 'Veľmi dobré' },
-    { value: 'dobre', label: 'Dobré' },
-    { value: 'potrebuje-rekonstrukciu', label: 'Potrebuje rekonštrukciu' },
   ];
 
   const handleSubmit = async (e: React.FormEvent) => {

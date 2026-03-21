@@ -294,7 +294,7 @@ export default function AdminDashboard() {
 
   const messageStats = {
     totalMessages: contactMessages.length,
-    newMessages: contactMessages.filter((m) => m.status === 'new').length,
+    newMessages: contactMessages.filter((m) => m.status === 'new').length + propertyInquiries.filter((i) => i.status === 'new').length,
     totalInquiries: propertyInquiries.length,
     buyInquiries: propertyInquiries.filter((i) => i.inquiry_type === 'buy').length,
     sellInquiries: propertyInquiries.filter((i) => i.inquiry_type === 'sell').length,
