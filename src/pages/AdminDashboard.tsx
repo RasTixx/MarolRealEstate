@@ -685,7 +685,7 @@ export default function AdminDashboard() {
                             </div>
                           </td>
                           <td className="px-6 py-4">
-                            <div className="text-sm text-gray-300 max-w-md line-clamp-2">
+                            <div className="text-sm text-gray-300 max-w-md">
                               {testimonial.testimonial_text}
                             </div>
                           </td>
@@ -879,7 +879,7 @@ export default function AdminDashboard() {
                               )}
                             </td>
                             <td className="px-6 py-4">
-                              <div className="text-sm text-gray-300 max-w-md line-clamp-2">
+                              <div className="text-sm text-gray-300 max-w-md">
                                 {message.message}
                               </div>
                             </td>
@@ -1011,19 +1011,31 @@ export default function AdminDashboard() {
                             </td>
                             <td className="px-6 py-4">
                               {inquiry.inquiry_type === 'buy' ? (
-                                <div className="text-sm text-gray-300">
+                                <div className="text-sm text-gray-300 space-y-1">
                                   <div><strong>Lokalita:</strong> {inquiry.location}</div>
                                   <div><strong>Typ:</strong> {inquiry.property_type}</div>
                                   {inquiry.min_price && inquiry.max_price && (
                                     <div><strong>Rozpočet:</strong> {inquiry.min_price}€ - {inquiry.max_price}€</div>
                                   )}
+                                  {inquiry.additional_requirements && (
+                                    <div className="mt-2 pt-2 border-t border-stone-700">
+                                      <div className="text-xs text-gray-400 font-medium mb-1">Vaše požiadavky:</div>
+                                      <div className="text-gray-300">{inquiry.additional_requirements}</div>
+                                    </div>
+                                  )}
                                 </div>
                               ) : (
-                                <div className="text-sm text-gray-300">
+                                <div className="text-sm text-gray-300 space-y-1">
                                   <div><strong>Adresa:</strong> {inquiry.address}, {inquiry.city}</div>
                                   <div><strong>Typ:</strong> {inquiry.property_type}</div>
                                   {inquiry.asking_price && (
                                     <div><strong>Cena:</strong> {inquiry.asking_price}€</div>
+                                  )}
+                                  {inquiry.description && (
+                                    <div className="mt-2 pt-2 border-t border-stone-700">
+                                      <div className="text-xs text-gray-400 font-medium mb-1">Vaša referencia / popis:</div>
+                                      <div className="text-gray-300">{inquiry.description}</div>
+                                    </div>
                                   )}
                                 </div>
                               )}

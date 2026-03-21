@@ -27,8 +27,6 @@ const PROPERTY_TYPES = [
 const TRANSACTION_TYPES = [
   { value: 'predaj', label: 'Predaj' },
   { value: 'prenajom', label: 'Prenájom' },
-  { value: 'cena_dohodou', label: 'Cena dohodou' },
-  { value: 'ponuknite', label: 'Ponúknite' },
 ];
 
 const STAV_OPTIONS = [
@@ -49,6 +47,7 @@ export default function AddProperty() {
   const [error, setError] = useState('');
   const [dragOverIndex, setDragOverIndex] = useState<number | null>(null);
   const dragIndexRef = useRef<number | null>(null);
+  const [priceOption, setPriceOption] = useState<'number' | 'cena_dohodou' | 'ponuknite'>('number');
 
   const [formData, setFormData] = useState({
     title: '',
@@ -174,16 +173,22 @@ export default function AddProperty() {
 
       const isLand = isPozemok(formData.property_type);
 
+      const finalTransactionType = priceOption === 'cena_dohodou'
+        ? 'cena_dohodou'
+        : priceOption === 'ponuknite'
+        ? 'ponuknite'
+        : formData.transaction_type;
+
       const { data: property, error: insertError } = await supabase
         .from('properties')
         .insert([{
           title: formData.title,
           description: formData.description,
-          price: parseFloat(formData.price) || 0,
+          price: priceOption === 'number' ? (parseFloat(formData.price) || 0) : 0,
           location: formData.location,
           address: formData.address,
           property_type: formData.property_type,
-          transaction_type: formData.transaction_type,
+          transaction_type: finalTransactionType,
           bedrooms: isLand ? 0 : (parseInt(formData.bedrooms) || 0),
           bathrooms: isLand ? 0 : (parseInt(formData.bathrooms) || 0),
           area: parseFloat(formData.area) || 0,
@@ -220,12 +225,26 @@ export default function AddProperty() {
     }
   };
 
+  const RIBBON_BADGES = ['featured', 'rezervovane', 'predane'];
+
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value, type } = e.target;
-    setFormData((prev) => ({
-      ...prev,
-      [name]: type === 'checkbox' ? (e.target as HTMLInputElement).checked : value,
-    }));
+    const checked = type === 'checkbox' ? (e.target as HTMLInputElement).checked : undefined;
+
+    if (type === 'checkbox' && RIBBON_BADGES.includes(name)) {
+      setFormData((prev) => ({
+        ...prev,
+        featured: false,
+        rezervovane: false,
+        predane: false,
+        [name]: checked,
+      }));
+    } else {
+      setFormData((prev) => ({
+        ...prev,
+        [name]: type === 'checkbox' ? checked : value,
+      }));
+    }
   };
 
   const inputClass = "w-full px-4 py-3 bg-stone-800 border border-stone-700 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-amber-500 focus:ring-1 focus:ring-amber-500";
@@ -330,25 +349,25 @@ export default function AddProperty() {
             <h2 className="text-lg font-semibold text-white mb-4">Základné informácie</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="md:col-span-2">
-                <label className={labelClass}>Názov *</label>
-                <input type="text" name="title" value={formData.title} onChange={handleChange} required className={inputClass} placeholder="Napr. Luxusný 3-izbový byt v centre" />
+                <label className={labelClass}>Názov</label>
+                <input type="text" name="title" value={formData.title} onChange={handleChange} className={inputClass} placeholder="Napr. Luxusný 3-izbový byt v centre" />
               </div>
 
               <div className="md:col-span-2">
-                <label className={labelClass}>Popis *</label>
-                <textarea name="description" value={formData.description} onChange={handleChange} required rows={4} className={inputClass} placeholder="Podrobný popis nehnuteľnosti..." />
+                <label className={labelClass}>Popis</label>
+                <textarea name="description" value={formData.description} onChange={handleChange} rows={4} className={inputClass} placeholder="Podrobný popis nehnuteľnosti..." />
               </div>
 
               <div>
-                <label className={labelClass}>Typ transakcie *</label>
-                <select name="transaction_type" value={formData.transaction_type} onChange={handleChange} required className={inputClass}>
+                <label className={labelClass}>Typ transakcie</label>
+                <select name="transaction_type" value={formData.transaction_type} onChange={handleChange} className={inputClass}>
                   {TRANSACTION_TYPES.map(t => <option key={t.value} value={t.value}>{t.label}</option>)}
                 </select>
               </div>
 
               <div>
-                <label className={labelClass}>Typ nehnuteľnosti *</label>
-                <select name="property_type" value={formData.property_type} onChange={handleChange} required className={inputClass}>
+                <label className={labelClass}>Typ nehnuteľnosti</label>
+                <select name="property_type" value={formData.property_type} onChange={handleChange} className={inputClass}>
                   {PROPERTY_TYPES.map(t => <option key={t.value} value={t.value}>{t.label}</option>)}
                 </select>
               </div>
@@ -361,14 +380,36 @@ export default function AddProperty() {
                 </select>
               </div>
 
-              <div>
-                <label className={labelClass}>Cena (€) *</label>
-                <input type="number" name="price" value={formData.price} onChange={handleChange} required min="0" step="0.01" className={inputClass} placeholder="150000" />
+              <div className="md:col-span-2">
+                <label className={labelClass}>Cena</label>
+                <div className="flex gap-2 mb-3">
+                  {[
+                    { value: 'number', label: 'Zadať cenu' },
+                    { value: 'cena_dohodou', label: 'Cena dohodou' },
+                    { value: 'ponuknite', label: 'Ponúknite' },
+                  ].map((opt) => (
+                    <button
+                      key={opt.value}
+                      type="button"
+                      onClick={() => setPriceOption(opt.value as 'number' | 'cena_dohodou' | 'ponuknite')}
+                      className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
+                        priceOption === opt.value
+                          ? 'bg-amber-500 text-black'
+                          : 'bg-stone-800 text-gray-300 border border-stone-700 hover:border-amber-500/50'
+                      }`}
+                    >
+                      {opt.label}
+                    </button>
+                  ))}
+                </div>
+                {priceOption === 'number' && (
+                  <input type="number" name="price" value={formData.price} onChange={handleChange} min="0" step="0.01" className={inputClass} placeholder="150000" />
+                )}
               </div>
 
               <div>
-                <label className={labelClass}>Plocha (m²) *</label>
-                <input type="number" name="area" value={formData.area} onChange={handleChange} required min="0" step="0.01" className={inputClass} placeholder="75" />
+                <label className={labelClass}>Plocha (m²)</label>
+                <input type="number" name="area" value={formData.area} onChange={handleChange} min="0" step="0.01" className={inputClass} placeholder="75" />
               </div>
 
               <div>
@@ -412,12 +453,12 @@ export default function AddProperty() {
             <h2 className="text-lg font-semibold text-white mb-4">Lokalita</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
-                <label className={labelClass}>Mesto/Obec *</label>
-                <input type="text" name="location" value={formData.location} onChange={handleChange} required className={inputClass} placeholder="Bratislava" />
+                <label className={labelClass}>Mesto/Obec</label>
+                <input type="text" name="location" value={formData.location} onChange={handleChange} className={inputClass} placeholder="Bratislava" />
               </div>
               <div>
-                <label className={labelClass}>Adresa *</label>
-                <input type="text" name="address" value={formData.address} onChange={handleChange} required className={inputClass} placeholder="Hlavná 123" />
+                <label className={labelClass}>Adresa</label>
+                <input type="text" name="address" value={formData.address} onChange={handleChange} className={inputClass} placeholder="Hlavná 123" />
               </div>
               <div>
                 <label className={labelClass}>Zemepisná šírka</label>
