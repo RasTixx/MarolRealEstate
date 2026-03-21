@@ -12,7 +12,6 @@ export default function ContactCard() {
               className="w-full h-full object-cover"
             />
           </div>
-         
         </div>
 
         <div className="w-full">
