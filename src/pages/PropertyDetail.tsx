@@ -17,6 +17,12 @@ import {
   ChevronRight,
   X,
   Send,
+  Ruler,
+  Star,
+  Wind,
+  TreePine,
+  ArrowUpCircle,
+  Package,
 } from 'lucide-react';
 
 interface Property {
@@ -31,6 +37,15 @@ interface Property {
   bedrooms: number;
   bathrooms: number;
   area: number;
+  uzitkova_plocha?: number | null;
+  zastavana_plocha?: number | null;
+  stav?: string | null;
+  vytah?: boolean;
+  pivnica?: boolean;
+  balkon?: boolean;
+  terasa?: boolean;
+  rezervovane?: boolean;
+  predane?: boolean;
   year_built: number | null;
   floor: number | null;
   latitude: number | null;
@@ -284,7 +299,7 @@ export default function PropertyDetail() {
                 </div>
               </div>
 
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-4 py-6 border-y border-stone-800">
+              <div className="grid grid-cols-2 md:grid-cols-3 gap-4 py-6 border-y border-stone-800">
                 <div className="text-center">
                   <div className="w-12 h-12 mx-auto mb-2 bg-amber-500/10 rounded-full flex items-center justify-center">
                     <Home className="w-6 h-6 text-amber-500" />
@@ -313,6 +328,24 @@ export default function PropertyDetail() {
                   <div className="text-sm text-gray-400">Výmera</div>
                   <div className="text-white font-semibold">{property.area} m²</div>
                 </div>
+                {property.uzitkova_plocha && (
+                  <div className="text-center">
+                    <div className="w-12 h-12 mx-auto mb-2 bg-amber-500/10 rounded-full flex items-center justify-center">
+                      <Ruler className="w-6 h-6 text-amber-500" />
+                    </div>
+                    <div className="text-sm text-gray-400">Úžitk. plocha</div>
+                    <div className="text-white font-semibold">{property.uzitkova_plocha} m²</div>
+                  </div>
+                )}
+                {property.stav && (
+                  <div className="text-center">
+                    <div className="w-12 h-12 mx-auto mb-2 bg-amber-500/10 rounded-full flex items-center justify-center">
+                      <Star className="w-6 h-6 text-amber-500" />
+                    </div>
+                    <div className="text-sm text-gray-400">Stav</div>
+                    <div className="text-white font-semibold capitalize">{property.stav}</div>
+                  </div>
+                )}
               </div>
 
               <div className="mt-6">
@@ -340,6 +373,38 @@ export default function PropertyDetail() {
                           <div className="text-sm text-gray-400">Poschodie</div>
                           <div className="text-white font-semibold">{property.floor}</div>
                         </div>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              )}
+
+              {(property.balkon || property.terasa || property.vytah || property.pivnica) && (
+                <div className="mt-6 pt-6 border-t border-stone-800">
+                  <h3 className="text-xl font-bold text-white mb-4">Vybavenie</h3>
+                  <div className="flex flex-wrap gap-3">
+                    {property.balkon && (
+                      <div className="flex items-center gap-2 px-4 py-2 bg-amber-500/10 border border-amber-500/20 rounded-lg text-amber-400 text-sm font-medium">
+                        <Wind className="w-4 h-4" />
+                        Balkón
+                      </div>
+                    )}
+                    {property.terasa && (
+                      <div className="flex items-center gap-2 px-4 py-2 bg-amber-500/10 border border-amber-500/20 rounded-lg text-amber-400 text-sm font-medium">
+                        <TreePine className="w-4 h-4" />
+                        Terasa
+                      </div>
+                    )}
+                    {property.vytah && (
+                      <div className="flex items-center gap-2 px-4 py-2 bg-amber-500/10 border border-amber-500/20 rounded-lg text-amber-400 text-sm font-medium">
+                        <ArrowUpCircle className="w-4 h-4" />
+                        Výtah
+                      </div>
+                    )}
+                    {property.pivnica && (
+                      <div className="flex items-center gap-2 px-4 py-2 bg-amber-500/10 border border-amber-500/20 rounded-lg text-amber-400 text-sm font-medium">
+                        <Package className="w-4 h-4" />
+                        Pivnica
                       </div>
                     )}
                   </div>

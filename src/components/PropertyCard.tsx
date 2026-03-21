@@ -1,4 +1,4 @@
-import { Bed, Bath, Square, MapPin, ArrowRight } from 'lucide-react';
+import { Bed, Bath, Square, MapPin, ArrowRight, Wind, TreePine, ArrowUpCircle, Package } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { Property } from '../lib/supabase';
 
@@ -120,6 +120,35 @@ export default function PropertyCard({ property }: PropertyCardProps) {
             <span className="font-medium">{property.area || property.area_sqm} m²</span>
           </div>
         </div>
+
+        {(property.balkon || property.terasa || property.vytah || property.pivnica) && (
+          <div className="flex items-center gap-3 mb-4 text-xs text-gray-400">
+            {property.balkon && (
+              <div className="flex items-center gap-1" title="Balkón">
+                <Wind className="h-3.5 w-3.5 text-amber-500" />
+                <span>Balkón</span>
+              </div>
+            )}
+            {property.terasa && (
+              <div className="flex items-center gap-1" title="Terasa">
+                <TreePine className="h-3.5 w-3.5 text-amber-500" />
+                <span>Terasa</span>
+              </div>
+            )}
+            {property.vytah && (
+              <div className="flex items-center gap-1" title="Výtah">
+                <ArrowUpCircle className="h-3.5 w-3.5 text-amber-500" />
+                <span>Výtah</span>
+              </div>
+            )}
+            {property.pivnica && (
+              <div className="flex items-center gap-1" title="Pivnica">
+                <Package className="h-3.5 w-3.5 text-amber-500" />
+                <span>Pivnica</span>
+              </div>
+            )}
+          </div>
+        )}
 
         <div className="flex items-center justify-between">
           <span className="text-lg md:text-xl font-bold text-amber-500">{formatPrice(property.price)}</span>
