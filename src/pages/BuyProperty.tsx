@@ -185,7 +185,7 @@ export default function BuyProperty() {
                       value={formData.additionalRequirements}
                       onChange={handleChange}
                       className="w-full px-4 py-3 bg-black border border-amber-500/30 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-amber-500 transition-colors resize-none"
-                      placeholder={`Popíšte vaše požiadavky, napríklad:\n\nPreferovaná lokalita: Bratislava, Košice...\nMinimálna cena: 100 000 €\nMaximálna cena: 250 000 €\nPočet izieb: 3\nPočet kúpeľní: 1\nMinimálna výmera: 60 m²\nMaximálna výmera: 120 m²\nĎalšie požiadavky: parkovacie miesto, záhrada, balkón...`}
+                      placeholder={`Popíšte vaše požiadavky (lokalita, cena, počet izieb, výmera...`}
                     />
                   </div>
                 </div>
