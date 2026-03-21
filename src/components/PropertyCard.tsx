@@ -51,7 +51,7 @@ export default function PropertyCard({ property }: PropertyCardProps) {
         <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
 
         <div className="absolute top-0 right-0 overflow-hidden w-32 h-32 pointer-events-none">
-          <div className="absolute -right-7 top-6 w-40 text-center text-[11px] font-bold uppercase tracking-wider py-1.5 shadow-md rotate-[45deg] bg-black/80 border-y border-amber-500/40 text-amber-400">
+          <div className="absolute -right-10 top-7 w-56 text-center text-[11px] font-bold uppercase tracking-wider py-1.5 shadow-md rotate-[45deg] bg-black/80 border-y border-amber-500/40 text-amber-400">
             {transactionLabel}
           </div>
         </div>
@@ -61,7 +61,7 @@ export default function PropertyCard({ property }: PropertyCardProps) {
             {labels.slice(0, 1).map((label, i) => (
               <div
                 key={i}
-                className={`absolute -left-7 top-6 w-40 text-center text-[11px] font-bold uppercase tracking-wider py-1.5 shadow-md rotate-[-45deg] ${label.color}`}
+                className={`absolute -left-10 top-7 w-56 text-center text-[11px] font-bold uppercase tracking-wider py-1.5 shadow-md rotate-[-45deg] ${label.color}`}
               >
                 {label.text}
               </div>
