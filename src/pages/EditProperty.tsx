@@ -25,11 +25,7 @@ const PROPERTY_TYPES = [
   { value: 'vidiecky', label: 'Vidiecky dom' },
   { value: 'komercne', label: 'Komerčný priestor' },
   { value: 'pozemok', label: 'Pozemok' },
-];
-
-const TRANSACTION_TYPES = [
-  { value: 'predaj', label: 'Predaj' },
-  { value: 'prenajom', label: 'Prenájom' },
+  { value: 'stavebny_pozemok', label: 'Stavebný pozemok' },
 ];
 
 const STAV_OPTIONS = [
@@ -41,7 +37,13 @@ const STAV_OPTIONS = [
   { value: 'developersky_projekt', label: 'Developerský projekt' },
 ];
 
-const isPozemok = (type: string) => type === 'pozemok';
+const KONSTRUKCIA_OPTIONS = [
+  { value: 'tehlovy', label: 'Tehlový' },
+  { value: 'panelovy', label: 'Panelový' },
+  { value: 'drevodom', label: 'Drevodom' },
+];
+
+const isPozemok = (type: string) => type === 'pozemok' || type === 'stavebny_pozemok';
 
 export default function EditProperty() {
   const { id } = useParams<{ id: string }>();
@@ -68,6 +70,7 @@ export default function EditProperty() {
     uzitkova_plocha: '',
     zastavana_plocha: '',
     stav: '',
+    konstrukcia: '',
     year_built: '',
     floor: '',
     latitude: '',
@@ -79,6 +82,11 @@ export default function EditProperty() {
     pivnica: false,
     balkon: false,
     terasa: false,
+    vlastny_pozemok: false,
+    vlastny_parking: false,
+    garaz: false,
+    parkovacie_miesto: false,
+    zahradka: false,
     image_url: '',
   });
 
@@ -125,6 +133,7 @@ export default function EditProperty() {
         uzitkova_plocha: data.uzitkova_plocha?.toString() || '',
         zastavana_plocha: data.zastavana_plocha?.toString() || '',
         stav: data.stav || '',
+        konstrukcia: data.konstrukcia || '',
         year_built: data.year_built?.toString() || '',
         floor: data.floor?.toString() || '',
         latitude: data.latitude?.toString() || '',
@@ -136,6 +145,11 @@ export default function EditProperty() {
         pivnica: data.pivnica || false,
         balkon: data.balkon || false,
         terasa: data.terasa || false,
+        vlastny_pozemok: data.vlastny_pozemok || false,
+        vlastny_parking: data.vlastny_parking || false,
+        garaz: data.garaz || false,
+        parkovacie_miesto: data.parkovacie_miesto || false,
+        zahradka: data.zahradka || false,
         image_url: data.image_url,
       });
     } catch (err: any) {
@@ -171,22 +185,31 @@ export default function EditProperty() {
     }
   };
 
-  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = Array.from(e.target.files || []);
     if (files.length === 0) return;
 
     const remainingSlots = 30 - images.length;
     const filesToAdd = files.slice(0, remainingSlots);
 
-    filesToAdd.forEach((file) => {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setImages((prev) => [
-          ...prev,
-          { file, preview: reader.result as string, order: prev.length + 1, is_primary: prev.length === 0, existing: false },
-        ]);
-      };
-      reader.readAsDataURL(file);
+    const readFile = (file: File): Promise<string> => {
+      return new Promise((resolve) => {
+        const reader = new FileReader();
+        reader.onloadend = () => resolve(reader.result as string);
+        reader.readAsDataURL(file);
+      });
+    };
+
+    const newImages: ImagePreview[] = [];
+    for (let i = 0; i < filesToAdd.length; i++) {
+      const file = filesToAdd[i];
+      const preview = await readFile(file);
+      newImages.push({ file, preview, order: images.length + i + 1, is_primary: images.length === 0 && i === 0, existing: false });
+    }
+
+    setImages((prev) => {
+      const combined = [...prev, ...newImages];
+      return combined.map((img, i) => ({ ...img, order: i + 1, is_primary: i === 0 }));
     });
 
     e.target.value = '';
@@ -304,6 +327,7 @@ export default function EditProperty() {
           uzitkova_plocha: formData.uzitkova_plocha ? parseFloat(formData.uzitkova_plocha) : null,
           zastavana_plocha: formData.zastavana_plocha ? parseFloat(formData.zastavana_plocha) : null,
           stav: formData.stav || null,
+          konstrukcia: isLand ? null : (formData.konstrukcia || null),
           year_built: formData.year_built ? parseInt(formData.year_built) : null,
           floor: formData.floor ? parseInt(formData.floor) : null,
           latitude: formData.latitude ? parseFloat(formData.latitude) : null,
@@ -315,6 +339,11 @@ export default function EditProperty() {
           pivnica: formData.pivnica,
           balkon: formData.balkon,
           terasa: formData.terasa,
+          vlastny_pozemok: formData.vlastny_pozemok,
+          vlastny_parking: formData.vlastny_parking,
+          garaz: formData.garaz,
+          parkovacie_miesto: formData.parkovacie_miesto,
+          zahradka: formData.zahradka,
           image_url: images.length > 0 ? images[0].preview : formData.image_url,
         })
         .eq('id', id);
@@ -330,20 +359,31 @@ export default function EditProperty() {
     }
   };
 
-  const RIBBON_BADGES = ['featured', 'rezervovane', 'predane'];
+  const RIBBON_BADGES = ['featured', 'rezervovane', 'predane', 'predaj', 'prenajom'];
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value, type } = e.target;
     const checked = type === 'checkbox' ? (e.target as HTMLInputElement).checked : undefined;
 
     if (type === 'checkbox' && RIBBON_BADGES.includes(name)) {
-      setFormData((prev) => ({
-        ...prev,
-        featured: false,
-        rezervovane: false,
-        predane: false,
-        [name]: checked,
-      }));
+      if (name === 'predaj' || name === 'prenajom') {
+        setFormData((prev) => ({
+          ...prev,
+          featured: false,
+          rezervovane: false,
+          predane: false,
+          transaction_type: name,
+        }));
+      } else {
+        setFormData((prev) => ({
+          ...prev,
+          featured: false,
+          rezervovane: false,
+          predane: false,
+          transaction_type: 'predaj',
+          [name]: checked,
+        }));
+      }
     } else {
       setFormData((prev) => ({
         ...prev,
@@ -468,13 +508,6 @@ export default function EditProperty() {
               </div>
 
               <div>
-                <label className={labelClass}>Typ transakcie</label>
-                <select name="transaction_type" value={formData.transaction_type} onChange={handleChange} className={inputClass}>
-                  {TRANSACTION_TYPES.map(t => <option key={t.value} value={t.value}>{t.label}</option>)}
-                </select>
-              </div>
-
-              <div>
                 <label className={labelClass}>Typ nehnuteľnosti</label>
                 <select name="property_type" value={formData.property_type} onChange={handleChange} className={inputClass}>
                   {PROPERTY_TYPES.map(t => <option key={t.value} value={t.value}>{t.label}</option>)}
@@ -488,6 +521,16 @@ export default function EditProperty() {
                   {STAV_OPTIONS.map(s => <option key={s.value} value={s.value}>{s.label}</option>)}
                 </select>
               </div>
+
+              {!isLand && (
+                <div>
+                  <label className={labelClass}>Konštrukcia</label>
+                  <select name="konstrukcia" value={formData.konstrukcia} onChange={handleChange} className={inputClass}>
+                    <option value="">-- Vyberte konštrukciu --</option>
+                    {KONSTRUKCIA_OPTIONS.map(k => <option key={k.value} value={k.value}>{k.label}</option>)}
+                  </select>
+                </div>
+              )}
 
               <div className="md:col-span-2">
                 <label className={labelClass}>Cena</label>
@@ -517,7 +560,7 @@ export default function EditProperty() {
               </div>
 
               <div>
-                <label className={labelClass}>Plocha (m²)</label>
+                <label className={labelClass}>{isLand ? 'Výmera pozemku (m²)' : 'Plocha (m²)'}</label>
                 <input type="number" name="area" value={formData.area} onChange={handleChange} min="0" step="0.01" className={inputClass} />
               </div>
 
@@ -552,7 +595,7 @@ export default function EditProperty() {
 
               <div>
                 <label className={labelClass}>Poschodie</label>
-                <input type="number" name="floor" value={formData.floor} onChange={handleChange} className={inputClass} />
+                <input type="number" name="floor" value={formData.floor} onChange={handleChange} min="0" className={inputClass} />
               </div>
             </div>
           </div>
@@ -583,12 +626,17 @@ export default function EditProperty() {
           {/* Features */}
           <div className="bg-stone-900 rounded-xl border border-stone-800 p-6">
             <h2 className="text-lg font-semibold text-white mb-4">Vybavenie a vlastnosti</h2>
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+            <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
               {[
                 { name: 'vytah', label: 'Výťah' },
                 { name: 'pivnica', label: 'Pivnica' },
                 { name: 'balkon', label: 'Balkón' },
                 { name: 'terasa', label: 'Terasa' },
+                { name: 'vlastny_pozemok', label: 'Vlastný pozemok' },
+                { name: 'vlastny_parking', label: 'Vlastný parking' },
+                { name: 'garaz', label: 'Garáž' },
+                { name: 'parkovacie_miesto', label: 'Parkovacie miesto' },
+                { name: 'zahradka', label: 'Záhradka' },
               ].map(({ name, label }) => (
                 <label key={name} className="flex items-center gap-3 cursor-pointer p-3 rounded-lg bg-stone-800 border border-stone-700 hover:border-amber-500/50 transition-colors">
                   <input
@@ -607,26 +655,38 @@ export default function EditProperty() {
           {/* Labels */}
           <div className="bg-stone-900 rounded-xl border border-stone-800 p-6">
             <h2 className="text-lg font-semibold text-white mb-4">Štítky</h2>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <p className="text-gray-400 text-sm mb-4">Vyberte jeden štítok, ktorý sa zobrazí na karte nehnuteľnosti</p>
+            <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-4">
               {[
+                { name: 'predaj', label: 'Predaj', desc: 'Nehnuteľnosť na predaj' },
+                { name: 'prenajom', label: 'Prenájom', desc: 'Nehnuteľnosť na prenájom' },
                 { name: 'featured', label: 'Odporúčame', desc: 'Zobrazí sa medzi top ponukami' },
                 { name: 'rezervovane', label: 'Rezervované', desc: 'Nehnuteľnosť je rezervovaná' },
                 { name: 'predane', label: 'Predané', desc: 'Nehnuteľnosť bola predaná' },
-              ].map(({ name, label, desc }) => (
-                <label key={name} className="flex items-start gap-3 cursor-pointer p-4 rounded-lg bg-stone-800 border border-stone-700 hover:border-amber-500/50 transition-colors">
-                  <input
-                    type="checkbox"
-                    name={name}
-                    checked={(formData as any)[name]}
-                    onChange={handleChange}
-                    className="w-4 h-4 mt-0.5 rounded border-stone-600 bg-stone-700 text-amber-500 focus:ring-amber-500 focus:ring-offset-0"
-                  />
-                  <div>
-                    <span className="text-white font-medium block">{label}</span>
-                    <span className="text-gray-400 text-xs">{desc}</span>
-                  </div>
-                </label>
-              ))}
+              ].map(({ name, label, desc }) => {
+                const isSelected = name === 'predaj' || name === 'prenajom'
+                  ? formData.transaction_type === name && !formData.featured && !formData.rezervovane && !formData.predane
+                  : (formData as any)[name];
+                return (
+                  <label key={name} className={`flex items-start gap-3 cursor-pointer p-4 rounded-lg border transition-colors ${
+                    isSelected
+                      ? 'bg-amber-500/20 border-amber-500'
+                      : 'bg-stone-800 border-stone-700 hover:border-amber-500/50'
+                  }`}>
+                    <input
+                      type="checkbox"
+                      name={name}
+                      checked={isSelected}
+                      onChange={handleChange}
+                      className="w-4 h-4 mt-0.5 rounded border-stone-600 bg-stone-700 text-amber-500 focus:ring-amber-500 focus:ring-offset-0"
+                    />
+                    <div>
+                      <span className="text-white font-medium block">{label}</span>
+                      <span className="text-gray-400 text-xs">{desc}</span>
+                    </div>
+                  </label>
+                );
+              })}
             </div>
           </div>
 

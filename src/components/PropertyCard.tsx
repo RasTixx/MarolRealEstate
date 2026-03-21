@@ -1,4 +1,4 @@
-import { Bed, Bath, Square, MapPin, ArrowRight, Wind, TreePine, ArrowUpCircle, Package } from 'lucide-react';
+import { Bed, Bath, Square, MapPin, ArrowRight, Wind, TreePine, ArrowUpCircle, Package, LandPlot, Car, Warehouse, ParkingCircle, Flower2 } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { Property } from '../lib/supabase';
 
@@ -9,20 +9,12 @@ interface PropertyCardProps {
 const truncate = (str: string, max: number) =>
   str.length > max ? str.slice(0, max).trimEnd() + '…' : str;
 
-const getTransactionLabel = (type: string) => {
-  switch (type) {
-    case 'predaj':
-    case 'sale': return 'Predaj';
-    case 'prenajom':
-    case 'rent': return 'Prenájom';
-    case 'cena_dohodou': return 'Cena dohodou';
-    case 'ponuknite': return 'Ponúknite';
-    default: return type;
-  }
-};
+const isPozemok = (type: string) => type === 'pozemok' || type === 'stavebny_pozemok';
 
 export default function PropertyCard({ property }: PropertyCardProps) {
-  const formatPrice = (price: number) => {
+  const formatPrice = (price: number, transactionType: string) => {
+    if (transactionType === 'cena_dohodou') return 'Cena Dohodou';
+    if (transactionType === 'ponuknite') return 'Ponuknite';
     return new Intl.NumberFormat('sk-SK', {
       style: 'currency',
       currency: 'EUR',
@@ -30,12 +22,17 @@ export default function PropertyCard({ property }: PropertyCardProps) {
     }).format(price);
   };
 
-  const labels: { text: string; color: string }[] = [];
-  if (property.featured) labels.push({ text: 'Odporúčame', color: 'bg-gradient-to-br from-amber-400 to-yellow-500 text-black' });
-  if (property.rezervovane) labels.push({ text: 'Rezervované', color: 'bg-gradient-to-br from-stone-400 to-stone-500 text-white' });
-  if (property.predane) labels.push({ text: 'Predané', color: 'bg-gradient-to-br from-amber-500 to-amber-600 text-black' });
+  const getBadge = (): { text: string; color: string } | null => {
+    if (property.featured) return { text: 'Odporucame', color: 'bg-gradient-to-br from-amber-400 to-yellow-500 text-black' };
+    if (property.rezervovane) return { text: 'Rezervovane', color: 'bg-gradient-to-br from-stone-400 to-stone-500 text-white' };
+    if (property.predane) return { text: 'Predane', color: 'bg-gradient-to-br from-amber-500 to-amber-600 text-black' };
+    if (property.transaction_type === 'predaj') return { text: 'Predaj', color: 'bg-gradient-to-br from-emerald-500 to-emerald-600 text-white' };
+    if (property.transaction_type === 'prenajom') return { text: 'Prenajom', color: 'bg-gradient-to-br from-sky-500 to-sky-600 text-white' };
+    return null;
+  };
 
-  const transactionLabel = getTransactionLabel(property.transaction_type);
+  const badge = getBadge();
+  const isLand = isPozemok(property.property_type);
 
   return (
     <Link
@@ -50,32 +47,13 @@ export default function PropertyCard({ property }: PropertyCardProps) {
         />
         <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
 
-        <div className="absolute top-0 right-0 overflow-hidden w-32 h-32 pointer-events-none">
-          <div className="absolute -right-10 top-7 w-40 text-center text-[11px] font-bold uppercase tracking-wider py-1.5 shadow-md rotate-[45deg] bg-black/80 border-y border-amber-500/40 text-amber-400">
-            {transactionLabel}
-          </div>
-        </div>
-
-        {labels.length > 0 && (
+        {badge && (
           <div className="absolute top-0 left-0 overflow-hidden w-32 h-32 pointer-events-none">
-            {labels.slice(0, 1).map((label, i) => (
-              <div
-                key={i}
-                className={`absolute -left-9 top-7 w-40 text-center text-[11px] font-bold uppercase tracking-wider py-1.5 shadow-md rotate-[-45deg] ${label.color}`}
-              >
-                {label.text}
-              </div>
-            ))}
-          </div>
-        )}
-
-        {labels.length > 1 && (
-          <div className="absolute top-10 left-2 flex flex-col gap-1">
-            {labels.slice(1).map((label, i) => (
-              <span key={i} className={`text-[10px] font-bold uppercase tracking-wide px-2 py-0.5 rounded ${label.color}`}>
-                {label.text}
-              </span>
-            ))}
+            <div
+              className={`absolute -left-9 top-7 w-40 text-center text-[11px] font-bold uppercase tracking-wider py-1.5 shadow-md rotate-[-45deg] ${badge.color}`}
+            >
+              {badge.text}
+            </div>
           </div>
         )}
 
@@ -103,13 +81,13 @@ export default function PropertyCard({ property }: PropertyCardProps) {
         </div>
 
         <div className="flex items-center gap-3 mb-4 pb-3 border-b border-zinc-800 text-xs text-gray-400">
-          {property.bedrooms > 0 && (
+          {!isLand && property.bedrooms > 0 && (
             <div className="flex items-center gap-1">
               <Bed className="h-3.5 w-3.5 text-amber-500" />
               <span className="font-medium">{property.bedrooms}</span>
             </div>
           )}
-          {property.bathrooms > 0 && (
+          {!isLand && property.bathrooms > 0 && (
             <div className="flex items-center gap-1">
               <Bath className="h-3.5 w-3.5 text-amber-500" />
               <span className="font-medium">{property.bathrooms}</span>
@@ -117,16 +95,16 @@ export default function PropertyCard({ property }: PropertyCardProps) {
           )}
           <div className="flex items-center gap-1">
             <Square className="h-3.5 w-3.5 text-amber-500" />
-            <span className="font-medium">{property.area || property.area_sqm} m²</span>
+            <span className="font-medium">{property.area || property.area_sqm} m2</span>
           </div>
         </div>
 
-        {(property.balkon || property.terasa || property.vytah || property.pivnica) && (
-          <div className="flex items-center gap-3 mb-4 text-xs text-gray-400">
+        {(property.balkon || property.terasa || property.vytah || property.pivnica || property.vlastny_pozemok || property.vlastny_parking || property.garaz || property.parkovacie_miesto || property.zahradka) && (
+          <div className="flex flex-wrap items-center gap-2 mb-4 text-xs text-gray-400">
             {property.balkon && (
-              <div className="flex items-center gap-1" title="Balkón">
+              <div className="flex items-center gap-1" title="Balkon">
                 <Wind className="h-3.5 w-3.5 text-amber-500" />
-                <span>Balkón</span>
+                <span>Balkon</span>
               </div>
             )}
             {property.terasa && (
@@ -136,9 +114,9 @@ export default function PropertyCard({ property }: PropertyCardProps) {
               </div>
             )}
             {property.vytah && (
-              <div className="flex items-center gap-1" title="Výtah">
+              <div className="flex items-center gap-1" title="Vytah">
                 <ArrowUpCircle className="h-3.5 w-3.5 text-amber-500" />
-                <span>Výtah</span>
+                <span>Vytah</span>
               </div>
             )}
             {property.pivnica && (
@@ -147,11 +125,41 @@ export default function PropertyCard({ property }: PropertyCardProps) {
                 <span>Pivnica</span>
               </div>
             )}
+            {property.vlastny_pozemok && (
+              <div className="flex items-center gap-1" title="Vlastny pozemok">
+                <LandPlot className="h-3.5 w-3.5 text-amber-500" />
+                <span>Pozemok</span>
+              </div>
+            )}
+            {property.vlastny_parking && (
+              <div className="flex items-center gap-1" title="Vlastny parking">
+                <Car className="h-3.5 w-3.5 text-amber-500" />
+                <span>Parking</span>
+              </div>
+            )}
+            {property.garaz && (
+              <div className="flex items-center gap-1" title="Garaz">
+                <Warehouse className="h-3.5 w-3.5 text-amber-500" />
+                <span>Garaz</span>
+              </div>
+            )}
+            {property.parkovacie_miesto && (
+              <div className="flex items-center gap-1" title="Parkovacie miesto">
+                <ParkingCircle className="h-3.5 w-3.5 text-amber-500" />
+                <span>Parkovanie</span>
+              </div>
+            )}
+            {property.zahradka && (
+              <div className="flex items-center gap-1" title="Zahradka">
+                <Flower2 className="h-3.5 w-3.5 text-amber-500" />
+                <span>Zahradka</span>
+              </div>
+            )}
           </div>
         )}
 
         <div className="flex items-center justify-between">
-          <span className="text-lg md:text-xl font-bold text-amber-500">{formatPrice(property.price)}</span>
+          <span className="text-lg md:text-xl font-bold text-amber-500">{formatPrice(property.price, property.transaction_type)}</span>
           <span className="px-3 py-1.5 bg-gradient-to-r from-yellow-500 via-yellow-400 to-amber-500 text-black rounded-lg font-bold text-xs transition-all duration-200 opacity-0 group-hover:opacity-100 whitespace-nowrap">
             Detaily
           </span>

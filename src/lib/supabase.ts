@@ -27,6 +27,12 @@ export interface Property {
   terasa?: boolean;
   rezervovane?: boolean;
   predane?: boolean;
+  vlastny_pozemok?: boolean;
+  vlastny_parking?: boolean;
+  garaz?: boolean;
+  parkovacie_miesto?: boolean;
+  zahradka?: boolean;
+  konstrukcia?: string | null;
   year_built: number | null;
   floor: number | null;
   latitude: number | null;

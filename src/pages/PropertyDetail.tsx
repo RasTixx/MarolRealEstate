@@ -24,6 +24,13 @@ import {
   ArrowUpCircle,
   Package,
   LayoutGrid,
+  Car,
+  Warehouse,
+  ParkingCircle,
+  Flower2,
+  LandPlot,
+  Hammer,
+  Euro,
 } from 'lucide-react';
 
 interface Property {
@@ -47,6 +54,12 @@ interface Property {
   terasa?: boolean;
   rezervovane?: boolean;
   predane?: boolean;
+  vlastny_pozemok?: boolean;
+  vlastny_parking?: boolean;
+  garaz?: boolean;
+  parkovacie_miesto?: boolean;
+  zahradka?: boolean;
+  konstrukcia?: string | null;
   year_built: number | null;
   floor: number | null;
   latitude: number | null;
@@ -189,9 +202,27 @@ export default function PropertyDetail() {
       komercne: 'Komerčný priestor',
       commercial: 'Komerčný priestor',
       pozemok: 'Pozemok',
+      stavebny_pozemok: 'Stavebný pozemok',
       land: 'Pozemok',
     };
     return types[type] || type;
+  };
+
+  const getKonstrukciaLabel = (konstrukcia: string) => {
+    const konstrukciaMap: Record<string, string> = {
+      tehlovy: 'Tehlový',
+      panelovy: 'Panelový',
+      drevodom: 'Drevodom',
+    };
+    return konstrukciaMap[konstrukcia] || konstrukcia;
+  };
+
+  const isPozemok = (type: string) => type === 'pozemok' || type === 'stavebny_pozemok';
+
+  const formatPrice = (price: number, transactionType: string) => {
+    if (transactionType === 'cena_dohodou') return 'Cena Dohodou';
+    if (transactionType === 'ponuknite') return 'Ponuknite';
+    return `${price.toLocaleString('sk-SK')} €`;
   };
 
   const getStavLabel = (stav: string) => {
@@ -309,19 +340,11 @@ export default function PropertyDetail() {
             </div>
 
             <div className="bg-stone-900 rounded-2xl p-6 md:p-8">
-              <div className="flex items-start justify-between mb-4">
-                <div>
-                  <h1 className="text-lg md:text-2xl font-bold text-white mb-2">{property.title}</h1>
-                  <div className="flex items-center gap-2 text-gray-400">
-                    <MapPin className="w-4 h-4 text-amber-500" />
-                    <span className="text-sm">{property.address}, {property.location}</span>
-                  </div>
-                </div>
-                <div className="text-right">
-                  <div className="text-xl md:text-2xl font-bold text-amber-500">
-                    {property.price.toLocaleString('sk-SK')} €
-                  </div>
-                  <div className="text-sm text-gray-400">{getTransactionTypeLabel(property.transaction_type)}</div>
+              <div className="mb-4">
+                <h1 className="text-lg md:text-2xl font-bold text-white mb-2">{property.title}</h1>
+                <div className="flex items-center gap-2 text-gray-400">
+                  <MapPin className="w-4 h-4 text-amber-500" />
+                  <span className="text-sm">{property.address}, {property.location}</span>
                 </div>
               </div>
 
@@ -330,37 +353,50 @@ export default function PropertyDetail() {
                   <div className="w-12 h-12 mx-auto mb-2 bg-amber-500/10 rounded-full flex items-center justify-center">
                     <Home className="w-6 h-6 text-amber-500" />
                   </div>
-                  <div className="text-sm text-gray-400">Typ</div>
+                  <div className="text-sm text-gray-400">Typ nehnutelnosti</div>
                   <div className="text-white font-semibold">{getPropertyTypeLabel(property.property_type)}</div>
                 </div>
-                <div className="text-center">
-                  <div className="w-12 h-12 mx-auto mb-2 bg-amber-500/10 rounded-full flex items-center justify-center">
-                    <BedDouble className="w-6 h-6 text-amber-500" />
+                {property.stav && (
+                  <div className="text-center">
+                    <div className="w-12 h-12 mx-auto mb-2 bg-amber-500/10 rounded-full flex items-center justify-center">
+                      <Star className="w-6 h-6 text-amber-500" />
+                    </div>
+                    <div className="text-sm text-gray-400">Stav nehnutelnosti</div>
+                    <div className="text-white font-semibold">{getStavLabel(property.stav)}</div>
                   </div>
-                  <div className="text-sm text-gray-400">Izby</div>
-                  <div className="text-white font-semibold">{property.bedrooms}</div>
-                </div>
-                <div className="text-center">
-                  <div className="w-12 h-12 mx-auto mb-2 bg-amber-500/10 rounded-full flex items-center justify-center">
-                    <Bath className="w-6 h-6 text-amber-500" />
+                )}
+                {!isPozemok(property.property_type) && property.bedrooms > 0 && (
+                  <div className="text-center">
+                    <div className="w-12 h-12 mx-auto mb-2 bg-amber-500/10 rounded-full flex items-center justify-center">
+                      <BedDouble className="w-6 h-6 text-amber-500" />
+                    </div>
+                    <div className="text-sm text-gray-400">Izby</div>
+                    <div className="text-white font-semibold">{property.bedrooms}</div>
                   </div>
-                  <div className="text-sm text-gray-400">Kúpeľne</div>
-                  <div className="text-white font-semibold">{property.bathrooms}</div>
-                </div>
+                )}
+                {!isPozemok(property.property_type) && property.bathrooms > 0 && (
+                  <div className="text-center">
+                    <div className="w-12 h-12 mx-auto mb-2 bg-amber-500/10 rounded-full flex items-center justify-center">
+                      <Bath className="w-6 h-6 text-amber-500" />
+                    </div>
+                    <div className="text-sm text-gray-400">Kupelne</div>
+                    <div className="text-white font-semibold">{property.bathrooms}</div>
+                  </div>
+                )}
                 <div className="text-center">
                   <div className="w-12 h-12 mx-auto mb-2 bg-amber-500/10 rounded-full flex items-center justify-center">
                     <Maximize className="w-6 h-6 text-amber-500" />
                   </div>
-                  <div className="text-sm text-gray-400">Výmera</div>
-                  <div className="text-white font-semibold">{property.area} m²</div>
+                  <div className="text-sm text-gray-400">{isPozemok(property.property_type) ? 'Vymera pozemku' : 'Vymera'}</div>
+                  <div className="text-white font-semibold">{property.area} m2</div>
                 </div>
                 {property.uzitkova_plocha && (
                   <div className="text-center">
                     <div className="w-12 h-12 mx-auto mb-2 bg-amber-500/10 rounded-full flex items-center justify-center">
                       <Ruler className="w-6 h-6 text-amber-500" />
                     </div>
-                    <div className="text-sm text-gray-400">Úžitk. plocha</div>
-                    <div className="text-white font-semibold">{property.uzitkova_plocha} m²</div>
+                    <div className="text-sm text-gray-400">Uzitkova plocha</div>
+                    <div className="text-white font-semibold">{property.uzitkova_plocha} m2</div>
                   </div>
                 )}
                 {property.zastavana_plocha && (
@@ -368,17 +404,35 @@ export default function PropertyDetail() {
                     <div className="w-12 h-12 mx-auto mb-2 bg-amber-500/10 rounded-full flex items-center justify-center">
                       <LayoutGrid className="w-6 h-6 text-amber-500" />
                     </div>
-                    <div className="text-sm text-gray-400">Zastav. plocha</div>
-                    <div className="text-white font-semibold">{property.zastavana_plocha} m²</div>
+                    <div className="text-sm text-gray-400">Zastavana plocha</div>
+                    <div className="text-white font-semibold">{property.zastavana_plocha} m2</div>
                   </div>
                 )}
-                {property.stav && (
+                {!isPozemok(property.property_type) && property.konstrukcia && (
                   <div className="text-center">
                     <div className="w-12 h-12 mx-auto mb-2 bg-amber-500/10 rounded-full flex items-center justify-center">
-                      <Star className="w-6 h-6 text-amber-500" />
+                      <Hammer className="w-6 h-6 text-amber-500" />
                     </div>
-                    <div className="text-sm text-gray-400">Stav</div>
-                    <div className="text-white font-semibold">{getStavLabel(property.stav)}</div>
+                    <div className="text-sm text-gray-400">Konstrukcia</div>
+                    <div className="text-white font-semibold">{getKonstrukciaLabel(property.konstrukcia)}</div>
+                  </div>
+                )}
+                {property.year_built && (
+                  <div className="text-center">
+                    <div className="w-12 h-12 mx-auto mb-2 bg-amber-500/10 rounded-full flex items-center justify-center">
+                      <Calendar className="w-6 h-6 text-amber-500" />
+                    </div>
+                    <div className="text-sm text-gray-400">Rok vystavby</div>
+                    <div className="text-white font-semibold">{property.year_built}</div>
+                  </div>
+                )}
+                {property.floor !== null && (
+                  <div className="text-center">
+                    <div className="w-12 h-12 mx-auto mb-2 bg-amber-500/10 rounded-full flex items-center justify-center">
+                      <Layers className="w-6 h-6 text-amber-500" />
+                    </div>
+                    <div className="text-sm text-gray-400">Poschodie</div>
+                    <div className="text-white font-semibold">{property.floor}</div>
                   </div>
                 )}
               </div>
@@ -388,40 +442,26 @@ export default function PropertyDetail() {
                 <p className="text-gray-300 leading-relaxed whitespace-pre-line">{property.description}</p>
               </div>
 
-              {(property.year_built || property.floor !== null) && (
-                <div className="mt-6 pt-6 border-t border-stone-800">
-                  <h3 className="text-xl font-bold text-white mb-4">Ďalšie informácie</h3>
-                  <div className="grid grid-cols-2 gap-4">
-                    {property.year_built && (
-                      <div className="flex items-center gap-3">
-                        <Calendar className="w-5 h-5 text-amber-500" />
-                        <div>
-                          <div className="text-sm text-gray-400">Rok výstavby</div>
-                          <div className="text-white font-semibold">{property.year_built}</div>
-                        </div>
-                      </div>
-                    )}
-                    {property.floor !== null && (
-                      <div className="flex items-center gap-3">
-                        <Layers className="w-5 h-5 text-amber-500" />
-                        <div>
-                          <div className="text-sm text-gray-400">Poschodie</div>
-                          <div className="text-white font-semibold">{property.floor}</div>
-                        </div>
-                      </div>
-                    )}
+              <div className="mt-6 pt-6 border-t border-stone-800">
+                <h3 className="text-xl font-bold text-white mb-4">Cena</h3>
+                <div className="flex items-center gap-3">
+                  <div className="w-12 h-12 bg-amber-500/10 rounded-full flex items-center justify-center">
+                    <Euro className="w-6 h-6 text-amber-500" />
+                  </div>
+                  <div className="text-2xl md:text-3xl font-bold text-amber-500">
+                    {formatPrice(property.price, property.transaction_type)}
                   </div>
                 </div>
-              )}
+              </div>
 
-              {(property.balkon || property.terasa || property.vytah || property.pivnica) && (
+              {(property.balkon || property.terasa || property.vytah || property.pivnica || property.vlastny_pozemok || property.vlastny_parking || property.garaz || property.parkovacie_miesto || property.zahradka) && (
                 <div className="mt-6 pt-6 border-t border-stone-800">
                   <h3 className="text-xl font-bold text-white mb-4">Vybavenie</h3>
                   <div className="flex flex-wrap gap-3">
                     {property.balkon && (
                       <div className="flex items-center gap-2 px-4 py-2 bg-amber-500/10 border border-amber-500/20 rounded-lg text-amber-400 text-sm font-medium">
                         <Wind className="w-4 h-4" />
-                        Balkón
+                        Balkon
                       </div>
                     )}
                     {property.terasa && (
@@ -433,13 +473,43 @@ export default function PropertyDetail() {
                     {property.vytah && (
                       <div className="flex items-center gap-2 px-4 py-2 bg-amber-500/10 border border-amber-500/20 rounded-lg text-amber-400 text-sm font-medium">
                         <ArrowUpCircle className="w-4 h-4" />
-                        Výtah
+                        Vytah
                       </div>
                     )}
                     {property.pivnica && (
                       <div className="flex items-center gap-2 px-4 py-2 bg-amber-500/10 border border-amber-500/20 rounded-lg text-amber-400 text-sm font-medium">
                         <Package className="w-4 h-4" />
                         Pivnica
+                      </div>
+                    )}
+                    {property.vlastny_pozemok && (
+                      <div className="flex items-center gap-2 px-4 py-2 bg-amber-500/10 border border-amber-500/20 rounded-lg text-amber-400 text-sm font-medium">
+                        <LandPlot className="w-4 h-4" />
+                        Vlastny pozemok
+                      </div>
+                    )}
+                    {property.vlastny_parking && (
+                      <div className="flex items-center gap-2 px-4 py-2 bg-amber-500/10 border border-amber-500/20 rounded-lg text-amber-400 text-sm font-medium">
+                        <Car className="w-4 h-4" />
+                        Vlastny parking
+                      </div>
+                    )}
+                    {property.garaz && (
+                      <div className="flex items-center gap-2 px-4 py-2 bg-amber-500/10 border border-amber-500/20 rounded-lg text-amber-400 text-sm font-medium">
+                        <Warehouse className="w-4 h-4" />
+                        Garaz
+                      </div>
+                    )}
+                    {property.parkovacie_miesto && (
+                      <div className="flex items-center gap-2 px-4 py-2 bg-amber-500/10 border border-amber-500/20 rounded-lg text-amber-400 text-sm font-medium">
+                        <ParkingCircle className="w-4 h-4" />
+                        Parkovacie miesto
+                      </div>
+                    )}
+                    {property.zahradka && (
+                      <div className="flex items-center gap-2 px-4 py-2 bg-amber-500/10 border border-amber-500/20 rounded-lg text-amber-400 text-sm font-medium">
+                        <Flower2 className="w-4 h-4" />
+                        Zahradka
                       </div>
                     )}
                   </div>
