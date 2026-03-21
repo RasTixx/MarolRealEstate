@@ -23,6 +23,7 @@ import {
   TreePine,
   ArrowUpCircle,
   Package,
+  LayoutGrid,
 } from 'lucide-react';
 
 interface Property {
@@ -172,12 +173,37 @@ export default function PropertyDetail() {
 
   const getPropertyTypeLabel = (type: string) => {
     const types: Record<string, string> = {
+      garsonka: 'Garsónka',
+      apartman: 'Apartmán',
+      '1izbovy': '1 izbový byt',
+      '2izbovy': '2 izbový byt',
+      '3izbovy': '3 izbový byt',
+      '4izbovy': '4 izbový byt',
+      '5izbovy': '5 a viac izbový byt',
       byt: 'Byt',
+      apartment: 'Byt',
       dom: 'Rodinný dom',
+      house: 'Rodinný dom',
+      zrubovy: 'Zrubový dom',
+      vidiecky: 'Vidiecky dom',
       komercne: 'Komerčný priestor',
+      commercial: 'Komerčný priestor',
       pozemok: 'Pozemok',
+      land: 'Pozemok',
     };
     return types[type] || type;
+  };
+
+  const getStavLabel = (stav: string) => {
+    const stavMap: Record<string, string> = {
+      novostavba: 'Novostavba',
+      ciastocna_rekonstrukcia: 'Čiastočná rekonštrukcia',
+      kompletna_rekonstrukcia: 'Kompletná rekonštrukcia',
+      povodny_stav: 'Pôvodný stav',
+      vo_vystavbe: 'Vo výstavbe',
+      developersky_projekt: 'Developerský projekt',
+    };
+    return stavMap[stav] || stav.replace(/_/g, ' ');
   };
 
   const getTransactionTypeLabel = (type: string) => {
@@ -337,13 +363,22 @@ export default function PropertyDetail() {
                     <div className="text-white font-semibold">{property.uzitkova_plocha} m²</div>
                   </div>
                 )}
+                {property.zastavana_plocha && (
+                  <div className="text-center">
+                    <div className="w-12 h-12 mx-auto mb-2 bg-amber-500/10 rounded-full flex items-center justify-center">
+                      <LayoutGrid className="w-6 h-6 text-amber-500" />
+                    </div>
+                    <div className="text-sm text-gray-400">Zastav. plocha</div>
+                    <div className="text-white font-semibold">{property.zastavana_plocha} m²</div>
+                  </div>
+                )}
                 {property.stav && (
                   <div className="text-center">
                     <div className="w-12 h-12 mx-auto mb-2 bg-amber-500/10 rounded-full flex items-center justify-center">
                       <Star className="w-6 h-6 text-amber-500" />
                     </div>
                     <div className="text-sm text-gray-400">Stav</div>
-                    <div className="text-white font-semibold capitalize">{property.stav}</div>
+                    <div className="text-white font-semibold">{getStavLabel(property.stav)}</div>
                   </div>
                 )}
               </div>
