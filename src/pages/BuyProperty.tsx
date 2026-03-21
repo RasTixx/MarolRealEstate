@@ -73,7 +73,7 @@ export default function BuyProperty() {
       const budgetRange = `${formData.minPrice || '0'}€ - ${formData.maxPrice || 'neobmedzené'}€`;
       const roomInfo = formData.bedrooms ? `${formData.bedrooms} izby` : '';
 
-      await fetch(
+      fetch(
         `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/send-inquiry-email`,
         {
           method: 'POST',
@@ -92,7 +92,7 @@ export default function BuyProperty() {
             message: formData.additionalRequirements,
           }),
         }
-      );
+      ).catch((err) => console.error('Email notification failed:', err));
 
       setSubmitMessage('Ďakujeme! Vaša požiadavka bola úspešne odoslaná. Čoskoro vás budeme kontaktovať.');
       clearDirtyFlag();

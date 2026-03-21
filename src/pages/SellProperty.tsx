@@ -77,7 +77,7 @@ export default function SellProperty() {
       const fullAddress = `${formData.address}, ${formData.city} ${formData.postalCode}`;
       const sizeInfo = formData.area ? `${formData.area} m²` : '';
 
-      await fetch(
+      fetch(
         `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/send-inquiry-email`,
         {
           method: 'POST',
@@ -97,7 +97,7 @@ export default function SellProperty() {
             message: formData.description,
           }),
         }
-      );
+      ).catch((err) => console.error('Email notification failed:', err));
 
       setSubmitMessage('Ďakujeme! Vaša požiadavka bola úspešne odoslaná. Čoskoro vás budeme kontaktovať.');
       clearDirtyFlag();
