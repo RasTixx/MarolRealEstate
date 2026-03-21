@@ -59,7 +59,7 @@ export default function Testimonials() {
     <section id="referencie" className="py-20 bg-gradient-to-b from-black to-stone-950">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-16">
-          <h2 className="text-3xl md:text-5xl font-bold text-white mb-4">
+          <h2 className="text-xl md:text-5xl font-bold text-white mb-4">
             Referencie klientov
           </h2>
           <p className="text-xl text-gray-400 max-w-3xl mx-auto">
