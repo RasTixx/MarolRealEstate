@@ -181,7 +181,7 @@ export default function BuyProperty() {
                     <textarea
                       id="additionalRequirements"
                       name="additionalRequirements"
-                      rows={7}
+                      rows={5}
                       value={formData.additionalRequirements}
                       onChange={handleChange}
                       className="w-full px-4 py-3 bg-black border border-amber-500/30 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-amber-500 transition-colors resize-none"
