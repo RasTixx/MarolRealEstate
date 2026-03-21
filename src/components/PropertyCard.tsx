@@ -31,7 +31,9 @@ export default function PropertyCard({ property }: PropertyCardProps) {
   const labels: { text: string; color: string }[] = [];
   if (property.featured) labels.push({ text: 'Odporúčame', color: 'bg-gradient-to-br from-amber-400 to-yellow-500 text-black' });
   if (property.rezervovane) labels.push({ text: 'Rezervované', color: 'bg-gradient-to-br from-stone-400 to-stone-500 text-white' });
-  if (property.pridane) labels.push({ text: 'Pridané', color: 'bg-gradient-to-br from-amber-500 to-amber-600 text-black' });
+  if (property.pridane) labels.push({ text: 'Predané', color: 'bg-gradient-to-br from-amber-500 to-amber-600 text-black' });
+
+  const transactionLabel = getTransactionLabel(property.transaction_type);
 
   return (
     <Link
@@ -46,22 +48,24 @@ export default function PropertyCard({ property }: PropertyCardProps) {
         />
         <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
 
+        <div className="absolute top-0 right-0 overflow-hidden w-32 h-32 pointer-events-none">
+          <div className="absolute -right-7 top-6 w-40 text-center text-[11px] font-bold uppercase tracking-wider py-1.5 shadow-md rotate-[45deg] bg-black/80 border-y border-amber-500/40 text-amber-400">
+            {transactionLabel}
+          </div>
+        </div>
+
         {labels.length > 0 && (
-          <div className="absolute top-0 left-0 overflow-hidden w-28 h-28 pointer-events-none">
+          <div className="absolute top-0 left-0 overflow-hidden w-32 h-32 pointer-events-none">
             {labels.slice(0, 1).map((label, i) => (
               <div
                 key={i}
-                className={`absolute -left-6 top-5 w-36 text-center text-[10px] font-bold uppercase tracking-wider py-1 shadow-md rotate-[-45deg] ${label.color}`}
+                className={`absolute -left-7 top-6 w-40 text-center text-[11px] font-bold uppercase tracking-wider py-1.5 shadow-md rotate-[-45deg] ${label.color}`}
               >
                 {label.text}
               </div>
             ))}
           </div>
         )}
-
-        <div className="absolute top-3 right-3 bg-black/80 backdrop-blur px-3 py-1.5 rounded-lg text-xs font-bold text-amber-500 border border-amber-500/30">
-          {getTransactionLabel(property.transaction_type)}
-        </div>
 
         {labels.length > 1 && (
           <div className="absolute top-10 left-2 flex flex-col gap-1">

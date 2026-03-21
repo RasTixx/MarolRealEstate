@@ -2,7 +2,7 @@ import { Search, MapPin, Home, Repeat2, Quote } from 'lucide-react';
 import { useState } from 'react';
 
 interface HeroProps {
-  onSearch: (searchTerm: string, transactionType: string, propertyType: string, stav: string) => void;
+  onSearch: (searchTerm: string, transactionType: string, propertyType: string) => void;
 }
 
 const PROPERTY_TYPES = [
@@ -20,14 +20,6 @@ const PROPERTY_TYPES = [
   { value: 'pozemok', label: 'Pozemok' },
 ];
 
-const STAV_OPTIONS = [
-  { value: 'novostavba', label: 'Novostavba' },
-  { value: 'ciastocna_rekonstrukcia', label: 'Čiastočná rekonštrukcia' },
-  { value: 'kompletna_rekonstrukcia', label: 'Kompletná rekonštrukcia' },
-  { value: 'povodny_stav', label: 'Pôvodný stav' },
-  { value: 'vo_vystavbe', label: 'Vo výstavbe' },
-  { value: 'developersky_projekt', label: 'Developerský projekt' },
-];
 
 const selectClass = "w-full px-4 py-3 pr-10 bg-stone-800/80 border border-stone-700 rounded-lg text-white appearance-none focus:outline-none focus:border-amber-500 focus:ring-1 focus:ring-amber-500 transition-all";
 
@@ -43,11 +35,10 @@ export default function Hero({ onSearch }: HeroProps) {
   const [searchTerm, setSearchTerm] = useState('');
   const [transactionType, setTransactionType] = useState('');
   const [propertyType, setPropertyType] = useState('');
-  const [stav, setStav] = useState('');
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
-    onSearch(searchTerm, transactionType, propertyType, stav);
+    onSearch(searchTerm, transactionType, propertyType);
 
     setTimeout(() => {
       const el = document.querySelector('#nehnutelnosti');
@@ -136,17 +127,6 @@ export default function Hero({ onSearch }: HeroProps) {
                   <select value={propertyType} onChange={(e) => setPropertyType(e.target.value)} className={selectClass}>
                     <option value="">Všetky typy</option>
                     {PROPERTY_TYPES.map(t => <option key={t.value} value={t.value}>{t.label}</option>)}
-                  </select>
-                  <SelectArrow />
-                </div>
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-amber-500 mb-2">Stav nehnuteľnosti</label>
-                <div className="relative">
-                  <select value={stav} onChange={(e) => setStav(e.target.value)} className={selectClass}>
-                    <option value="">Všetky stavy</option>
-                    {STAV_OPTIONS.map(s => <option key={s.value} value={s.value}>{s.label}</option>)}
                   </select>
                   <SelectArrow />
                 </div>
