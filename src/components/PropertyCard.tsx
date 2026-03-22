@@ -23,11 +23,11 @@ export default function PropertyCard({ property }: PropertyCardProps) {
   };
 
   const getBadge = (): { text: string; color: string } | null => {
-    if (property.featured) return { text: 'Odporucame', color: 'bg-gradient-to-br from-amber-400 to-yellow-500 text-black' };
-    if (property.rezervovane) return { text: 'Rezervovane', color: 'bg-gradient-to-br from-stone-400 to-stone-500 text-white' };
-    if (property.predane) return { text: 'Predane', color: 'bg-gradient-to-br from-amber-500 to-amber-600 text-black' };
+    if (property.featured) return { text: 'Odporúčame', color: 'bg-gradient-to-br from-amber-400 to-yellow-500 text-black' };
+    if (property.rezervovane) return { text: 'Rezervované', color: 'bg-gradient-to-br from-blue-500 to-blue-600 text-white' };
+    if (property.predane) return { text: 'Predané', color: 'bg-gradient-to-br from-amber-500 to-amber-600 text-black' };
     if (property.transaction_type === 'predaj') return { text: 'Predaj', color: 'bg-gradient-to-br from-emerald-500 to-emerald-600 text-white' };
-    if (property.transaction_type === 'prenajom') return { text: 'Prenajom', color: 'bg-gradient-to-br from-sky-500 to-sky-600 text-white' };
+    if (property.transaction_type === 'prenajom') return { text: 'Prenájom', color: 'bg-gradient-to-br from-sky-500 to-sky-600 text-white' };
     return null;
   };
 
@@ -95,16 +95,16 @@ export default function PropertyCard({ property }: PropertyCardProps) {
           )}
           <div className="flex items-center gap-1">
             <Square className="h-3.5 w-3.5 text-amber-500" />
-            <span className="font-medium">{property.area || property.area_sqm} m2</span>
+            <span className="font-medium">{property.area || property.area_sqm} m²</span>
           </div>
         </div>
 
         {(property.balkon || property.terasa || property.vytah || property.pivnica || property.vlastny_pozemok || property.vlastny_parking || property.garaz || property.parkovacie_miesto || property.zahradka) && (
           <div className="flex flex-wrap items-center gap-2 mb-4 text-xs text-gray-400">
             {property.balkon && (
-              <div className="flex items-center gap-1" title="Balkon">
+              <div className="flex items-center gap-1" title="Balkón">
                 <Wind className="h-3.5 w-3.5 text-amber-500" />
-                <span>Balkon</span>
+                <span>Balkón</span>
               </div>
             )}
             {property.terasa && (
@@ -114,9 +114,9 @@ export default function PropertyCard({ property }: PropertyCardProps) {
               </div>
             )}
             {property.vytah && (
-              <div className="flex items-center gap-1" title="Vytah">
+              <div className="flex items-center gap-1" title="Výťah">
                 <ArrowUpCircle className="h-3.5 w-3.5 text-amber-500" />
-                <span>Vytah</span>
+                <span>Výťah</span>
               </div>
             )}
             {property.pivnica && (
@@ -150,9 +150,9 @@ export default function PropertyCard({ property }: PropertyCardProps) {
               </div>
             )}
             {property.zahradka && (
-              <div className="flex items-center gap-1" title="Zahradka">
+              <div className="flex items-center gap-1" title="Záhradka">
                 <Flower2 className="h-3.5 w-3.5 text-amber-500" />
-                <span>Zahradka</span>
+                <span>Záhradka</span>
               </div>
             )}
           </div>

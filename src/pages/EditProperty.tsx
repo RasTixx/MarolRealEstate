@@ -23,6 +23,7 @@ const PROPERTY_TYPES = [
   { value: 'dom', label: 'Rodinný dom' },
   { value: 'zrubovy', label: 'Zrubový dom' },
   { value: 'vidiecky', label: 'Vidiecky dom' },
+  { value: 'chata', label: 'Chata' },
   { value: 'komercne', label: 'Komerčný priestor' },
   { value: 'pozemok', label: 'Pozemok' },
   { value: 'stavebny_pozemok', label: 'Stavebný pozemok' },
@@ -41,6 +42,8 @@ const KONSTRUKCIA_OPTIONS = [
   { value: 'tehlovy', label: 'Tehlový' },
   { value: 'panelovy', label: 'Panelový' },
   { value: 'drevodom', label: 'Drevodom' },
+  { value: 'murovana', label: 'Murovaná' },
+  { value: 'kovova', label: 'Kovová' },
 ];
 
 const isPozemok = (type: string) => type === 'pozemok' || type === 'stavebny_pozemok';
@@ -73,6 +76,7 @@ export default function EditProperty() {
     konstrukcia: '',
     year_built: '',
     floor: '',
+    pocet_poschodii: '',
     latitude: '',
     longitude: '',
     featured: false,
@@ -136,6 +140,7 @@ export default function EditProperty() {
         konstrukcia: data.konstrukcia || '',
         year_built: data.year_built?.toString() || '',
         floor: data.floor?.toString() || '',
+        pocet_poschodii: data.pocet_poschodii?.toString() || '',
         latitude: data.latitude?.toString() || '',
         longitude: data.longitude?.toString() || '',
         featured: data.featured || false,
@@ -330,6 +335,7 @@ export default function EditProperty() {
           konstrukcia: isLand ? null : (formData.konstrukcia || null),
           year_built: formData.year_built ? parseInt(formData.year_built) : null,
           floor: formData.floor ? parseInt(formData.floor) : null,
+          pocet_poschodii: formData.pocet_poschodii ? parseInt(formData.pocet_poschodii) : null,
           latitude: formData.latitude ? parseFloat(formData.latitude) : null,
           longitude: formData.longitude ? parseFloat(formData.longitude) : null,
           featured: formData.featured,
@@ -596,6 +602,11 @@ export default function EditProperty() {
               <div>
                 <label className={labelClass}>Poschodie</label>
                 <input type="number" name="floor" value={formData.floor} onChange={handleChange} min="0" className={inputClass} />
+              </div>
+
+              <div>
+                <label className={labelClass}>Počet poschodí</label>
+                <input type="number" name="pocet_poschodii" value={formData.pocet_poschodii} onChange={handleChange} min="0" className={inputClass} />
               </div>
             </div>
           </div>

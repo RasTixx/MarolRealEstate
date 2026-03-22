@@ -35,6 +35,7 @@ export interface Property {
   konstrukcia?: string | null;
   year_built: number | null;
   floor: number | null;
+  pocet_poschodii?: number | null;
   latitude: number | null;
   longitude: number | null;
   image_url: string;

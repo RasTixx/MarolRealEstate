@@ -305,6 +305,18 @@ export default function AdminDashboard() {
     return m.status === messageFilter;
   });
 
+  const parseContactMessage = (message: string): { propertyTitle: string | null; body: string } => {
+    const prefix = 'Záujem o nehnuteľnosť: ';
+    const newlineIndex = message.indexOf('\n');
+    if (message.startsWith(prefix) && newlineIndex !== -1) {
+      return {
+        propertyTitle: message.slice(prefix.length, newlineIndex).trim(),
+        body: message.slice(newlineIndex).trim(),
+      };
+    }
+    return { propertyTitle: null, body: message };
+  };
+
   const filteredInquiries = propertyInquiries.filter((i) => {
     if (inquiryTypeFilter === 'all') return true;
     if (inquiryTypeFilter === 'contact') return false;
@@ -879,9 +891,19 @@ export default function AdminDashboard() {
                               )}
                             </td>
                             <td className="px-6 py-4">
-                              <div className="text-sm text-gray-300 max-w-md">
-                                {message.message}
-                              </div>
+                              {(() => {
+                                const { propertyTitle, body } = parseContactMessage(message.message);
+                                return (
+                                  <div className="max-w-md">
+                                    {propertyTitle && (
+                                      <div className="text-xs text-amber-500 font-medium mb-1 truncate">
+                                        {propertyTitle}
+                                      </div>
+                                    )}
+                                    <div className="text-sm text-gray-300">{body}</div>
+                                  </div>
+                                );
+                              })()}
                             </td>
                             <td className="px-6 py-4 whitespace-nowrap">
                               <select

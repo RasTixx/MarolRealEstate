@@ -16,8 +16,10 @@ const PROPERTY_TYPES = [
   { value: 'dom', label: 'Rodinný dom' },
   { value: 'zrubovy', label: 'Zrubový dom' },
   { value: 'vidiecky', label: 'Vidiecky dom' },
+  { value: 'chata', label: 'Chata' },
   { value: 'komercne', label: 'Komerčný priestor' },
   { value: 'pozemok', label: 'Pozemok' },
+  { value: 'stavebny_pozemok', label: 'Stavebný pozemok' },
 ];
 
 

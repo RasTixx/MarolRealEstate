@@ -62,6 +62,7 @@ interface Property {
   konstrukcia?: string | null;
   year_built: number | null;
   floor: number | null;
+  pocet_poschodii?: number | null;
   latitude: number | null;
   longitude: number | null;
   image_url: string;
@@ -199,6 +200,7 @@ export default function PropertyDetail() {
       house: 'Rodinný dom',
       zrubovy: 'Zrubový dom',
       vidiecky: 'Vidiecky dom',
+      chata: 'Chata',
       komercne: 'Komerčný priestor',
       commercial: 'Komerčný priestor',
       pozemok: 'Pozemok',
@@ -213,11 +215,14 @@ export default function PropertyDetail() {
       tehlovy: 'Tehlový',
       panelovy: 'Panelový',
       drevodom: 'Drevodom',
+      murovana: 'Murovaná',
+      kovova: 'Kovová',
     };
     return konstrukciaMap[konstrukcia] || konstrukcia;
   };
 
   const isPozemok = (type: string) => type === 'pozemok' || type === 'stavebny_pozemok';
+
 
   const formatPrice = (price: number, transactionType: string) => {
     if (transactionType === 'cena_dohodou') return 'Cena Dohodou';
@@ -353,7 +358,7 @@ export default function PropertyDetail() {
                   <div className="w-12 h-12 mx-auto mb-2 bg-amber-500/10 rounded-full flex items-center justify-center">
                     <Home className="w-6 h-6 text-amber-500" />
                   </div>
-                  <div className="text-sm text-gray-400">Typ nehnutelnosti</div>
+                  <div className="text-sm text-gray-400">Typ nehnuteľnosti</div>
                   <div className="text-white font-semibold">{getPropertyTypeLabel(property.property_type)}</div>
                 </div>
                 {property.stav && (
@@ -361,7 +366,7 @@ export default function PropertyDetail() {
                     <div className="w-12 h-12 mx-auto mb-2 bg-amber-500/10 rounded-full flex items-center justify-center">
                       <Star className="w-6 h-6 text-amber-500" />
                     </div>
-                    <div className="text-sm text-gray-400">Stav nehnutelnosti</div>
+                    <div className="text-sm text-gray-400">Stav nehnuteľnosti</div>
                     <div className="text-white font-semibold">{getStavLabel(property.stav)}</div>
                   </div>
                 )}
@@ -379,7 +384,7 @@ export default function PropertyDetail() {
                     <div className="w-12 h-12 mx-auto mb-2 bg-amber-500/10 rounded-full flex items-center justify-center">
                       <Bath className="w-6 h-6 text-amber-500" />
                     </div>
-                    <div className="text-sm text-gray-400">Kupelne</div>
+                    <div className="text-sm text-gray-400">Kúpeľne</div>
                     <div className="text-white font-semibold">{property.bathrooms}</div>
                   </div>
                 )}
@@ -387,16 +392,16 @@ export default function PropertyDetail() {
                   <div className="w-12 h-12 mx-auto mb-2 bg-amber-500/10 rounded-full flex items-center justify-center">
                     <Maximize className="w-6 h-6 text-amber-500" />
                   </div>
-                  <div className="text-sm text-gray-400">{isPozemok(property.property_type) ? 'Vymera pozemku' : 'Vymera'}</div>
-                  <div className="text-white font-semibold">{property.area} m2</div>
+                  <div className="text-sm text-gray-400">{isPozemok(property.property_type) ? 'Výmera pozemku' : 'Výmera'}</div>
+                  <div className="text-white font-semibold">{property.area} m²</div>
                 </div>
                 {property.uzitkova_plocha && (
                   <div className="text-center">
                     <div className="w-12 h-12 mx-auto mb-2 bg-amber-500/10 rounded-full flex items-center justify-center">
                       <Ruler className="w-6 h-6 text-amber-500" />
                     </div>
-                    <div className="text-sm text-gray-400">Uzitkova plocha</div>
-                    <div className="text-white font-semibold">{property.uzitkova_plocha} m2</div>
+                    <div className="text-sm text-gray-400">Úžitková plocha</div>
+                    <div className="text-white font-semibold">{property.uzitkova_plocha} m²</div>
                   </div>
                 )}
                 {property.zastavana_plocha && (
@@ -404,8 +409,8 @@ export default function PropertyDetail() {
                     <div className="w-12 h-12 mx-auto mb-2 bg-amber-500/10 rounded-full flex items-center justify-center">
                       <LayoutGrid className="w-6 h-6 text-amber-500" />
                     </div>
-                    <div className="text-sm text-gray-400">Zastavana plocha</div>
-                    <div className="text-white font-semibold">{property.zastavana_plocha} m2</div>
+                    <div className="text-sm text-gray-400">Zastavaná plocha</div>
+                    <div className="text-white font-semibold">{property.zastavana_plocha} m²</div>
                   </div>
                 )}
                 {!isPozemok(property.property_type) && property.konstrukcia && (
@@ -413,7 +418,7 @@ export default function PropertyDetail() {
                     <div className="w-12 h-12 mx-auto mb-2 bg-amber-500/10 rounded-full flex items-center justify-center">
                       <Hammer className="w-6 h-6 text-amber-500" />
                     </div>
-                    <div className="text-sm text-gray-400">Konstrukcia</div>
+                    <div className="text-sm text-gray-400">Konštrukcia</div>
                     <div className="text-white font-semibold">{getKonstrukciaLabel(property.konstrukcia)}</div>
                   </div>
                 )}
@@ -422,7 +427,7 @@ export default function PropertyDetail() {
                     <div className="w-12 h-12 mx-auto mb-2 bg-amber-500/10 rounded-full flex items-center justify-center">
                       <Calendar className="w-6 h-6 text-amber-500" />
                     </div>
-                    <div className="text-sm text-gray-400">Rok vystavby</div>
+                    <div className="text-sm text-gray-400">Rok výstavby</div>
                     <div className="text-white font-semibold">{property.year_built}</div>
                   </div>
                 )}
@@ -433,6 +438,15 @@ export default function PropertyDetail() {
                     </div>
                     <div className="text-sm text-gray-400">Poschodie</div>
                     <div className="text-white font-semibold">{property.floor}</div>
+                  </div>
+                )}
+                {!isPozemok(property.property_type) && property.pocet_poschodii !== null && property.pocet_poschodii !== undefined && (
+                  <div className="text-center">
+                    <div className="w-12 h-12 mx-auto mb-2 bg-amber-500/10 rounded-full flex items-center justify-center">
+                      <Layers className="w-6 h-6 text-amber-500" />
+                    </div>
+                    <div className="text-sm text-gray-400">Počet poschodí</div>
+                    <div className="text-white font-semibold">{property.pocet_poschodii}</div>
                   </div>
                 )}
               </div>
@@ -448,7 +462,7 @@ export default function PropertyDetail() {
                   <div className="w-12 h-12 bg-amber-500/10 rounded-full flex items-center justify-center">
                     <Euro className="w-6 h-6 text-amber-500" />
                   </div>
-                  <div className="text-2xl md:text-3xl font-bold text-amber-500">
+                  <div className="text-xl font-bold text-amber-500">
                     {formatPrice(property.price, property.transaction_type)}
                   </div>
                 </div>
@@ -461,7 +475,7 @@ export default function PropertyDetail() {
                     {property.balkon && (
                       <div className="flex items-center gap-2 px-4 py-2 bg-amber-500/10 border border-amber-500/20 rounded-lg text-amber-400 text-sm font-medium">
                         <Wind className="w-4 h-4" />
-                        Balkon
+                        Balkón
                       </div>
                     )}
                     {property.terasa && (
@@ -473,7 +487,7 @@ export default function PropertyDetail() {
                     {property.vytah && (
                       <div className="flex items-center gap-2 px-4 py-2 bg-amber-500/10 border border-amber-500/20 rounded-lg text-amber-400 text-sm font-medium">
                         <ArrowUpCircle className="w-4 h-4" />
-                        Vytah
+                        Výťah
                       </div>
                     )}
                     {property.pivnica && (
@@ -485,19 +499,19 @@ export default function PropertyDetail() {
                     {property.vlastny_pozemok && (
                       <div className="flex items-center gap-2 px-4 py-2 bg-amber-500/10 border border-amber-500/20 rounded-lg text-amber-400 text-sm font-medium">
                         <LandPlot className="w-4 h-4" />
-                        Vlastny pozemok
+                        Vlastný pozemok
                       </div>
                     )}
                     {property.vlastny_parking && (
                       <div className="flex items-center gap-2 px-4 py-2 bg-amber-500/10 border border-amber-500/20 rounded-lg text-amber-400 text-sm font-medium">
                         <Car className="w-4 h-4" />
-                        Vlastny parking
+                        Vlastný parking
                       </div>
                     )}
                     {property.garaz && (
                       <div className="flex items-center gap-2 px-4 py-2 bg-amber-500/10 border border-amber-500/20 rounded-lg text-amber-400 text-sm font-medium">
                         <Warehouse className="w-4 h-4" />
-                        Garaz
+                        Garáž
                       </div>
                     )}
                     {property.parkovacie_miesto && (
@@ -509,7 +523,7 @@ export default function PropertyDetail() {
                     {property.zahradka && (
                       <div className="flex items-center gap-2 px-4 py-2 bg-amber-500/10 border border-amber-500/20 rounded-lg text-amber-400 text-sm font-medium">
                         <Flower2 className="w-4 h-4" />
-                        Zahradka
+                        Záhradka
                       </div>
                     )}
                   </div>
