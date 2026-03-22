@@ -140,7 +140,7 @@ export default function PropertyCard({ property }: PropertyCardProps) {
             {property.garaz && (
               <div className="flex items-center gap-1" title="Garaz">
                 <Warehouse className="h-3.5 w-3.5 text-amber-500" />
-                <span>Garaz</span>
+                <span>Garáž</span>
               </div>
             )}
             {property.parkovacie_miesto && (
