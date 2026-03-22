@@ -126,19 +126,19 @@ export default function PropertyCard({ property }: PropertyCardProps) {
               </div>
             )}
             {property.vlastny_pozemok && (
-              <div className="flex items-center gap-1" title="Vlastny pozemok">
+              <div className="flex items-center gap-1" title="Vlastný pozemok">
                 <LandPlot className="h-3.5 w-3.5 text-amber-500" />
                 <span>Pozemok</span>
               </div>
             )}
             {property.vlastny_parking && (
-              <div className="flex items-center gap-1" title="Vlastny parking">
+              <div className="flex items-center gap-1" title="Vlastný parking">
                 <Car className="h-3.5 w-3.5 text-amber-500" />
                 <span>Parking</span>
               </div>
             )}
             {property.garaz && (
-              <div className="flex items-center gap-1" title="Garaz">
+              <div className="flex items-center gap-1" title="Garáž">
                 <Warehouse className="h-3.5 w-3.5 text-amber-500" />
                 <span>Garáž</span>
               </div>
