@@ -1,7 +1,8 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { supabase, Property } from '../lib/supabase';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { LogOut, Home, Building2, Mail, BarChart3, Plus, CreditCard as Edit, Trash2, Star, StarOff, Search, MessageSquare, CheckCircle, XCircle, User, Inbox } from 'lucide-react';
 
 interface Testimonial {
@@ -47,12 +48,8 @@ interface PropertyInquiry {
 export default function AdminDashboard() {
   const { user, signOut } = useAuth();
   const navigate = useNavigate();
-  const [properties, setProperties] = useState<Property[]>([]);
-  const [testimonials, setTestimonials] = useState<Testimonial[]>([]);
-  const [contactMessages, setContactMessages] = useState<ContactMessage[]>([]);
-  const [propertyInquiries, setPropertyInquiries] = useState<PropertyInquiry[]>([]);
+  const queryClient = useQueryClient();
   const [activeTab, setActiveTab] = useState<'properties' | 'testimonials' | 'messages'>('properties');
-  const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
   const [filterType, setFilterType] = useState('');
   const [testimonialFilter, setTestimonialFilter] = useState<'all' | 'pending' | 'approved'>('all');
@@ -60,71 +57,59 @@ export default function AdminDashboard() {
   const [inquiryTypeFilter, setInquiryTypeFilter] = useState<'all' | 'buy' | 'sell' | 'contact'>('all');
   const [deleteConfirm, setDeleteConfirm] = useState<string | null>(null);
 
-  useEffect(() => {
-    fetchProperties();
-    fetchTestimonials();
-    fetchContactMessages();
-    fetchPropertyInquiries();
-  }, []);
-
-  const fetchProperties = async () => {
-    try {
-      setLoading(true);
+  const { data: properties = [], isLoading: propertiesLoading } = useQuery<Property[]>({
+    queryKey: ['admin', 'properties'],
+    queryFn: async () => {
       const { data, error } = await supabase
         .from('properties')
         .select('*')
         .order('created_at', { ascending: false });
-
       if (error) throw error;
-      setProperties(data || []);
-    } catch (error) {
-      console.error('Error fetching properties:', error);
-    } finally {
-      setLoading(false);
-    }
-  };
+      return data || [];
+    },
+    staleTime: 60 * 1000,
+  });
 
-  const fetchTestimonials = async () => {
-    try {
+  const { data: testimonials = [] } = useQuery<Testimonial[]>({
+    queryKey: ['admin', 'testimonials'],
+    queryFn: async () => {
       const { data, error } = await supabase
         .from('testimonials')
         .select('*')
         .order('created_at', { ascending: false });
-
       if (error) throw error;
-      setTestimonials(data || []);
-    } catch (error) {
-      console.error('Error fetching testimonials:', error);
-    }
-  };
+      return data || [];
+    },
+    staleTime: 60 * 1000,
+  });
 
-  const fetchContactMessages = async () => {
-    try {
+  const { data: contactMessages = [] } = useQuery<ContactMessage[]>({
+    queryKey: ['admin', 'contact_messages'],
+    queryFn: async () => {
       const { data, error } = await supabase
         .from('contact_messages')
         .select('*')
         .order('created_at', { ascending: false });
-
       if (error) throw error;
-      setContactMessages(data || []);
-    } catch (error) {
-      console.error('Error fetching contact messages:', error);
-    }
-  };
+      return data || [];
+    },
+    staleTime: 60 * 1000,
+  });
 
-  const fetchPropertyInquiries = async () => {
-    try {
+  const { data: propertyInquiries = [] } = useQuery<PropertyInquiry[]>({
+    queryKey: ['admin', 'property_inquiries'],
+    queryFn: async () => {
       const { data, error } = await supabase
         .from('property_inquiries')
         .select('*')
         .order('created_at', { ascending: false });
-
       if (error) throw error;
-      setPropertyInquiries(data || []);
-    } catch (error) {
-      console.error('Error fetching property inquiries:', error);
-    }
-  };
+      return data || [];
+    },
+    staleTime: 60 * 1000,
+  });
+
+  const loading = propertiesLoading;
 
   const handleSignOut = async () => {
     await signOut();
@@ -139,7 +124,8 @@ export default function AdminDashboard() {
         .eq('id', id);
 
       if (error) throw error;
-      await fetchProperties();
+      queryClient.invalidateQueries({ queryKey: ['admin', 'properties'] });
+      queryClient.invalidateQueries({ queryKey: ['properties'] });
     } catch (error) {
       console.error('Error toggling featured:', error);
     }
@@ -150,7 +136,8 @@ export default function AdminDashboard() {
       const { error } = await supabase.from('properties').delete().eq('id', id);
 
       if (error) throw error;
-      await fetchProperties();
+      queryClient.invalidateQueries({ queryKey: ['admin', 'properties'] });
+      queryClient.invalidateQueries({ queryKey: ['properties'] });
       setDeleteConfirm(null);
     } catch (error) {
       console.error('Error deleting property:', error);
@@ -165,7 +152,8 @@ export default function AdminDashboard() {
         .eq('id', id);
 
       if (error) throw error;
-      await fetchTestimonials();
+      queryClient.invalidateQueries({ queryKey: ['admin', 'testimonials'] });
+      queryClient.invalidateQueries({ queryKey: ['testimonials'] });
     } catch (error) {
       console.error('Error toggling approval:', error);
     }
@@ -179,7 +167,8 @@ export default function AdminDashboard() {
         .eq('id', id);
 
       if (error) throw error;
-      await fetchTestimonials();
+      queryClient.invalidateQueries({ queryKey: ['admin', 'testimonials'] });
+      queryClient.invalidateQueries({ queryKey: ['testimonials'] });
     } catch (error) {
       console.error('Error toggling featured:', error);
     }
@@ -190,7 +179,8 @@ export default function AdminDashboard() {
       const { error } = await supabase.from('testimonials').delete().eq('id', id);
 
       if (error) throw error;
-      await fetchTestimonials();
+      queryClient.invalidateQueries({ queryKey: ['admin', 'testimonials'] });
+      queryClient.invalidateQueries({ queryKey: ['testimonials'] });
       setDeleteConfirm(null);
     } catch (error) {
       console.error('Error deleting testimonial:', error);
@@ -205,7 +195,7 @@ export default function AdminDashboard() {
         .eq('id', id);
 
       if (error) throw error;
-      await fetchContactMessages();
+      queryClient.invalidateQueries({ queryKey: ['admin', 'contact_messages'] });
     } catch (error) {
       console.error('Error updating message status:', error);
     }
@@ -219,7 +209,7 @@ export default function AdminDashboard() {
         .eq('id', id);
 
       if (error) throw error;
-      await fetchPropertyInquiries();
+      queryClient.invalidateQueries({ queryKey: ['admin', 'property_inquiries'] });
     } catch (error) {
       console.error('Error updating inquiry status:', error);
     }
@@ -230,7 +220,7 @@ export default function AdminDashboard() {
       const { error } = await supabase.from('contact_messages').delete().eq('id', id);
 
       if (error) throw error;
-      await fetchContactMessages();
+      queryClient.invalidateQueries({ queryKey: ['admin', 'contact_messages'] });
       setDeleteConfirm(null);
     } catch (error) {
       console.error('Error deleting contact message:', error);
@@ -242,7 +232,7 @@ export default function AdminDashboard() {
       const { error } = await supabase.from('property_inquiries').delete().eq('id', id);
 
       if (error) throw error;
-      await fetchPropertyInquiries();
+      queryClient.invalidateQueries({ queryKey: ['admin', 'property_inquiries'] });
       setDeleteConfirm(null);
     } catch (error) {
       console.error('Error deleting property inquiry:', error);

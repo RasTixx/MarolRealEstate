@@ -1,6 +1,7 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { useLocation } from 'react-router-dom';
-import { supabase, Property } from '../lib/supabase';
+import { Property } from '../lib/supabase';
+import { useProperties } from '../hooks/useProperties';
 import Header from '../components/Header';
 import Hero from '../components/Hero';
 import PropertyList from '../components/PropertyList';
@@ -12,14 +13,9 @@ import Contact from '../components/Contact';
 import Footer from '../components/Footer';
 
 export default function HomePage() {
-  const [properties, setProperties] = useState<Property[]>([]);
-  const [filteredProperties, setFilteredProperties] = useState<Property[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [searchFilters, setSearchFilters] = useState({ term: '', transactionType: '', propertyType: '' });
   const location = useLocation();
-
-  useEffect(() => {
-    fetchProperties();
-  }, []);
+  const { data: properties = [], isLoading: loading } = useProperties();
 
   useEffect(() => {
     if (location.state?.scrollTo) {
@@ -43,35 +39,17 @@ export default function HomePage() {
     }
   }, [location.hash]);
 
-  const fetchProperties = async () => {
-    try {
-      setLoading(true);
-      const { data, error } = await supabase
-        .from('properties')
-        .select('*')
-        .order('featured', { ascending: false })
-        .order('created_at', { ascending: false });
-
-      if (error) throw error;
-
-      setProperties(data || []);
-      setFilteredProperties(data || []);
-    } catch (error) {
-      console.error('Error fetching properties:', error);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const handleSearch = (searchTerm: string, transactionType: string, propertyType: string) => {
+  const filteredProperties = useMemo<Property[]>(() => {
     let filtered = [...properties];
+    const { term, transactionType, propertyType } = searchFilters;
 
-    if (searchTerm) {
+    if (term) {
+      const lower = term.toLowerCase();
       filtered = filtered.filter(
         (p) =>
-          p.location.toLowerCase().includes(searchTerm.toLowerCase()) ||
-          p.address.toLowerCase().includes(searchTerm.toLowerCase()) ||
-          p.title.toLowerCase().includes(searchTerm.toLowerCase())
+          p.location.toLowerCase().includes(lower) ||
+          p.address.toLowerCase().includes(lower) ||
+          p.title.toLowerCase().includes(lower)
       );
     }
 
@@ -83,7 +61,11 @@ export default function HomePage() {
       filtered = filtered.filter((p) => p.property_type === propertyType);
     }
 
-    setFilteredProperties(filtered);
+    return filtered;
+  }, [properties, searchFilters]);
+
+  const handleSearch = (searchTerm: string, transactionType: string, propertyType: string) => {
+    setSearchFilters({ term: searchTerm, transactionType, propertyType });
   };
 
   return (

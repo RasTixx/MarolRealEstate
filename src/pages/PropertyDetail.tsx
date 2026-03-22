@@ -1,6 +1,7 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { supabase } from '../lib/supabase';
+import { useProperty, usePropertyImages } from '../hooks/useProperties';
 import ContactCard from '../components/ContactCard';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
@@ -80,14 +81,13 @@ interface PropertyImage {
 export default function PropertyDetail() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
-  const [property, setProperty] = useState<Property | null>(null);
-  const [images, setImages] = useState<PropertyImage[]>([]);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [showLightbox, setShowLightbox] = useState(false);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState('');
   const [formSubmitting, setFormSubmitting] = useState(false);
   const [formSuccess, setFormSuccess] = useState(false);
+
+  const { data: property, isLoading: loading, error: fetchError } = useProperty(id);
+  const { data: images = [] } = usePropertyImages(id);
 
   const [formData, setFormData] = useState({
     name: '',
@@ -95,48 +95,6 @@ export default function PropertyDetail() {
     phone: '',
     message: '',
   });
-
-  useEffect(() => {
-    if (id) {
-      fetchProperty();
-      fetchImages();
-    }
-  }, [id]);
-
-  const fetchProperty = async () => {
-    try {
-      const { data, error } = await supabase.from('properties').select('*').eq('id', id).maybeSingle();
-
-      if (error) throw error;
-      if (!data) {
-        setError('Nehnuteľnosť nenájdená');
-        return;
-      }
-
-      setProperty(data);
-    } catch (err: any) {
-      setError(err.message || 'Chyba pri načítaní nehnuteľnosti');
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const fetchImages = async () => {
-    try {
-      const { data, error } = await supabase
-        .from('property_images')
-        .select('*')
-        .eq('property_id', id)
-        .order('display_order', { ascending: true });
-
-      if (error) throw error;
-      if (data && data.length > 0) {
-        setImages(data);
-      }
-    } catch (err: any) {
-      console.error('Error fetching images:', err);
-    }
-  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -259,13 +217,13 @@ export default function PropertyDetail() {
     );
   }
 
-  if (error || !property) {
+  if (fetchError || !property) {
     return (
       <div className="min-h-screen bg-black">
         <Header />
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 text-center">
           <h1 className="text-3xl font-bold text-white mb-4">Nehnuteľnosť nenájdená</h1>
-          <p className="text-gray-400 mb-8">{error || 'Požadovaná nehnuteľnosť neexistuje.'}</p>
+          <p className="text-gray-400 mb-8">{fetchError ? (fetchError as Error).message : 'Požadovaná nehnuteľnosť neexistuje.'}</p>
           <Link
             to="/"
             className="inline-flex items-center gap-2 px-6 py-3 bg-amber-700 hover:bg-amber-600 text-white font-bold rounded-lg transition-colors"
@@ -337,7 +295,7 @@ export default function PropertyDetail() {
                         index === currentImageIndex ? 'border-amber-600 scale-105' : 'border-stone-700 opacity-60 hover:opacity-100'
                       }`}
                     >
-                      <img src={img.image_url} alt={`Thumbnail ${index + 1}`} className="w-full h-full object-cover" />
+                      <img src={img.image_url} alt={`Thumbnail ${index + 1}`} loading="lazy" decoding="async" className="w-full h-full object-cover" />
                     </button>
                   ))}
                 </div>

@@ -1,21 +1,12 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { Star, Send, User } from 'lucide-react';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 import { supabase } from '../lib/supabase';
-
-interface Testimonial {
-  id: string;
-  customer_name: string;
-  customer_role: string | null;
-  testimonial_text: string;
-  rating: number;
-  created_at: string;
-}
+import { useAllTestimonials } from '../hooks/useTestimonials';
 
 export default function Testimonials() {
-  const [testimonials, setTestimonials] = useState<Testimonial[]>([]);
-  const [loading, setLoading] = useState(true);
+  const { data: testimonials = [], isLoading: loading } = useAllTestimonials();
   const [formData, setFormData] = useState({
     customer_name: '',
     customer_role: '',
@@ -24,28 +15,6 @@ export default function Testimonials() {
   });
   const [submitting, setSubmitting] = useState(false);
   const [submitSuccess, setSubmitSuccess] = useState(false);
-
-  useEffect(() => {
-    fetchTestimonials();
-  }, []);
-
-  const fetchTestimonials = async () => {
-    try {
-      setLoading(true);
-      const { data, error } = await supabase
-        .from('testimonials')
-        .select('*')
-        .eq('approved', true)
-        .order('created_at', { ascending: false });
-
-      if (error) throw error;
-      setTestimonials(data || []);
-    } catch (error) {
-      console.error('Error fetching testimonials:', error);
-    } finally {
-      setLoading(false);
-    }
-  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();

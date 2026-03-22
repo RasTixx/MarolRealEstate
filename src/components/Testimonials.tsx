@@ -1,44 +1,9 @@
-import { useState, useEffect } from 'react';
 import { Star, User, ArrowRight } from 'lucide-react';
 import { Link } from 'react-router-dom';
-import { supabase } from '../lib/supabase';
-
-interface Testimonial {
-  id: string;
-  customer_name: string;
-  customer_role: string | null;
-  testimonial_text: string;
-  rating: number;
-  created_at: string;
-}
+import { useFeaturedTestimonials } from '../hooks/useTestimonials';
 
 export default function Testimonials() {
-  const [testimonials, setTestimonials] = useState<Testimonial[]>([]);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    fetchTestimonials();
-  }, []);
-
-  const fetchTestimonials = async () => {
-    try {
-      setLoading(true);
-      const { data, error } = await supabase
-        .from('testimonials')
-        .select('*')
-        .eq('approved', true)
-        .eq('featured', true)
-        .order('created_at', { ascending: false })
-        .limit(6);
-
-      if (error) throw error;
-      setTestimonials(data || []);
-    } catch (error) {
-      console.error('Error fetching testimonials:', error);
-    } finally {
-      setLoading(false);
-    }
-  };
+  const { data: testimonials = [], isLoading: loading } = useFeaturedTestimonials();
 
   const renderStars = (rating: number) => {
     return Array.from({ length: 5 }, (_, i) => (
