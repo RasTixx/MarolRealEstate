@@ -221,7 +221,7 @@ export default function PropertyDetail() {
     return konstrukciaMap[konstrukcia] || konstrukcia;
   };
 
-  const isPozemok = (type: string) => type === 'pozemok' || type === 'stavebny_pozemok';
+  const isPozemok = (type: string) => type === 'pozemok' || type === 'stavebny_pozemok' || type === 'land';
 
 
   const formatPrice = (price: number, transactionType: string) => {

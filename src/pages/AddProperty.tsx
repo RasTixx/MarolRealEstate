@@ -43,7 +43,7 @@ const KONSTRUKCIA_OPTIONS = [
   { value: 'kovova', label: 'Kovová' },
 ];
 
-const isPozemok = (type: string) => type === 'pozemok' || type === 'stavebny_pozemok';
+const isPozemok = (type: string) => type === 'pozemok' || type === 'stavebny_pozemok' || type === 'land';
 
 export default function AddProperty() {
   const navigate = useNavigate();

@@ -9,7 +9,7 @@ interface PropertyCardProps {
 const truncate = (str: string, max: number) =>
   str.length > max ? str.slice(0, max).trimEnd() + '…' : str;
 
-const isPozemok = (type: string) => type === 'pozemok' || type === 'stavebny_pozemok';
+const isPozemok = (type: string) => type === 'pozemok' || type === 'stavebny_pozemok' || type === 'land';
 
 export default function PropertyCard({ property }: PropertyCardProps) {
   const formatPrice = (price: number, transactionType: string) => {
