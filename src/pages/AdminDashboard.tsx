@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { supabase, Property } from '../lib/supabase';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
-import { LogOut, Home, Building2, Mail, BarChart3, Plus, CreditCard as Edit, Trash2, Star, StarOff, Search, MessageSquare, CheckCircle, XCircle, User, Inbox } from 'lucide-react';
+import { LogOut, Home, Building2, Mail, BarChart3, Plus, CreditCard as Edit, Trash2, Star, StarOff, Search, MessageSquare, CheckCircle, XCircle, User, Inbox, TrendingUp, Globe, Calendar, Clock } from 'lucide-react';
 
 interface Testimonial {
   id: string;
@@ -49,7 +49,7 @@ export default function AdminDashboard() {
   const { user, signOut } = useAuth();
   const navigate = useNavigate();
   const queryClient = useQueryClient();
-  const [activeTab, setActiveTab] = useState<'properties' | 'testimonials' | 'messages'>('properties');
+  const [activeTab, setActiveTab] = useState<'properties' | 'testimonials' | 'messages' | 'analytics'>('properties');
   const [searchTerm, setSearchTerm] = useState('');
   const [filterType, setFilterType] = useState('');
   const [testimonialFilter, setTestimonialFilter] = useState<'all' | 'pending' | 'approved'>('all');
@@ -107,6 +107,23 @@ export default function AdminDashboard() {
       return data || [];
     },
     staleTime: 60 * 1000,
+  });
+
+  const { data: pageViews = [] } = useQuery<{ page_path: string; session_id: string; created_at: string }[]>({
+    queryKey: ['admin', 'page_views'],
+    queryFn: async () => {
+      const thirtyDaysAgo = new Date();
+      thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+      const { data, error } = await supabase
+        .from('page_views')
+        .select('page_path, session_id, created_at')
+        .gte('created_at', thirtyDaysAgo.toISOString())
+        .order('created_at', { ascending: false });
+      if (error) throw error;
+      return data || [];
+    },
+    staleTime: 60 * 1000,
+    enabled: activeTab === 'analytics',
   });
 
   const loading = propertiesLoading;
@@ -290,6 +307,52 @@ export default function AdminDashboard() {
     sellInquiries: propertyInquiries.filter((i) => i.inquiry_type === 'sell').length,
   };
 
+  const now = new Date();
+  const todayStart = new Date(now.getFullYear(), now.getMonth(), now.getDate()).toISOString();
+  const weekStart = new Date(now.getFullYear(), now.getMonth(), now.getDate() - 6).toISOString();
+  const monthStart = new Date(now.getFullYear(), now.getMonth(), now.getDate() - 29).toISOString();
+
+  const analyticsStats = {
+    total: pageViews.length,
+    today: pageViews.filter((v) => v.created_at >= todayStart).length,
+    thisWeek: pageViews.filter((v) => v.created_at >= weekStart).length,
+    thisMonth: pageViews.filter((v) => v.created_at >= monthStart).length,
+    uniqueSessions: new Set(pageViews.map((v) => v.session_id)).size,
+  };
+
+  const pagePathCounts = pageViews.reduce<Record<string, number>>((acc, v) => {
+    acc[v.page_path] = (acc[v.page_path] || 0) + 1;
+    return acc;
+  }, {});
+
+  const topPages = Object.entries(pagePathCounts)
+    .sort((a, b) => b[1] - a[1])
+    .slice(0, 10);
+
+  const dailyCounts: Record<string, number> = {};
+  for (let i = 29; i >= 0; i--) {
+    const d = new Date(now.getFullYear(), now.getMonth(), now.getDate() - i);
+    const key = d.toISOString().slice(0, 10);
+    dailyCounts[key] = 0;
+  }
+  pageViews.forEach((v) => {
+    const key = v.created_at.slice(0, 10);
+    if (key in dailyCounts) dailyCounts[key]++;
+  });
+  const dailyData = Object.entries(dailyCounts);
+  const maxDailyCount = Math.max(...dailyData.map(([, c]) => c), 1);
+
+  const pageLabels: Record<string, string> = {
+    '/': 'Domov',
+    '/chcem-kupit': 'Chcem kúpiť',
+    '/chcem-predat': 'Chcem predať',
+    '/referencie': 'Referencie',
+    '/ochrana-osobnych-udajov': 'GDPR',
+    '/vseobecne-obchodne-podmienky': 'VOP',
+    '/reklamacny-poriadok': 'Reklamačný poriadok',
+    '/eticky-kodex': 'Etický kódex',
+  };
+
   const filteredMessages = contactMessages.filter((m) => {
     if (messageFilter === 'all') return true;
     return m.status === messageFilter;
@@ -380,6 +443,17 @@ export default function AdminDashboard() {
                 {messageStats.newMessages}
               </span>
             )}
+          </button>
+          <button
+            onClick={() => setActiveTab('analytics')}
+            className={`flex items-center gap-2 px-6 py-3 rounded-lg font-semibold transition-all ${
+              activeTab === 'analytics'
+                ? 'bg-gradient-to-r from-yellow-500 via-yellow-400 to-amber-500 text-black shadow-lg'
+                : 'bg-stone-800 text-gray-400 hover:bg-stone-700'
+            }`}
+          >
+            <TrendingUp className="w-5 h-5" />
+            Návštevnosť
           </button>
         </div>
 
@@ -1085,6 +1159,107 @@ export default function AdminDashboard() {
                       </tbody>
                     </table>
                   )}
+                </div>
+              </div>
+            </div>
+          </>
+        )}
+
+        {activeTab === 'analytics' && (
+          <>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+              <div className="bg-gradient-to-br from-stone-900 to-stone-800 rounded-xl p-6 border border-stone-700">
+                <div className="flex items-center justify-between mb-2">
+                  <Calendar className="w-8 h-8 text-amber-600" />
+                  <span className="text-3xl font-bold text-white">{analyticsStats.today}</span>
+                </div>
+                <p className="text-gray-400 text-sm">Dnes</p>
+              </div>
+              <div className="bg-gradient-to-br from-stone-900 to-stone-800 rounded-xl p-6 border border-stone-700">
+                <div className="flex items-center justify-between mb-2">
+                  <Clock className="w-8 h-8 text-amber-600" />
+                  <span className="text-3xl font-bold text-white">{analyticsStats.thisWeek}</span>
+                </div>
+                <p className="text-gray-400 text-sm">Posledných 7 dní</p>
+              </div>
+              <div className="bg-gradient-to-br from-stone-900 to-stone-800 rounded-xl p-6 border border-stone-700">
+                <div className="flex items-center justify-between mb-2">
+                  <TrendingUp className="w-8 h-8 text-amber-600" />
+                  <span className="text-3xl font-bold text-white">{analyticsStats.thisMonth}</span>
+                </div>
+                <p className="text-gray-400 text-sm">Posledných 30 dní</p>
+              </div>
+              <div className="bg-gradient-to-br from-stone-900 to-stone-800 rounded-xl p-6 border border-stone-700">
+                <div className="flex items-center justify-between mb-2">
+                  <User className="w-8 h-8 text-amber-600" />
+                  <span className="text-3xl font-bold text-white">{analyticsStats.uniqueSessions}</span>
+                </div>
+                <p className="text-gray-400 text-sm">Unikátnych návštev (30 dní)</p>
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              <div className="bg-stone-900 rounded-xl border border-stone-800 p-6">
+                <h2 className="text-xl font-bold text-white mb-6 flex items-center gap-2">
+                  <Globe className="w-5 h-5 text-amber-600" />
+                  Najnavštevovanejšie stránky
+                </h2>
+                {topPages.length === 0 ? (
+                  <p className="text-gray-500 text-center py-8">Žiadne dáta za posledných 30 dní</p>
+                ) : (
+                  <div className="space-y-3">
+                    {topPages.map(([path, count]) => (
+                      <div key={path} className="flex items-center gap-3">
+                        <div className="flex-1 min-w-0">
+                          <div className="flex items-center justify-between mb-1">
+                            <span className="text-sm text-gray-300 truncate">
+                              {path.startsWith('/nehnutelnost/') ? 'Detail nehnuteľnosti' : (pageLabels[path] || path)}
+                            </span>
+                            <span className="text-sm font-semibold text-amber-500 ml-2 shrink-0">{count}</span>
+                          </div>
+                          <div className="h-1.5 bg-stone-800 rounded-full overflow-hidden">
+                            <div
+                              className="h-full bg-gradient-to-r from-amber-600 to-yellow-500 rounded-full transition-all"
+                              style={{ width: `${(count / (topPages[0]?.[1] || 1)) * 100}%` }}
+                            />
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+
+              <div className="bg-stone-900 rounded-xl border border-stone-800 p-6">
+                <h2 className="text-xl font-bold text-white mb-6 flex items-center gap-2">
+                  <BarChart3 className="w-5 h-5 text-amber-600" />
+                  Denná návštevnosť (30 dní)
+                </h2>
+                {dailyData.every(([, c]) => c === 0) ? (
+                  <p className="text-gray-500 text-center py-8">Žiadne dáta za posledných 30 dní</p>
+                ) : (
+                  <div className="flex items-end gap-0.5 h-40">
+                    {dailyData.map(([date, count]) => {
+                      const height = maxDailyCount > 0 ? (count / maxDailyCount) * 100 : 0;
+                      const d = new Date(date + 'T12:00:00');
+                      const label = d.toLocaleDateString('sk-SK', { day: 'numeric', month: 'numeric' });
+                      return (
+                        <div key={date} className="flex-1 flex flex-col items-center justify-end group relative">
+                          <div
+                            className="w-full bg-gradient-to-t from-amber-600 to-yellow-500 rounded-t transition-all group-hover:from-amber-500 group-hover:to-yellow-400"
+                            style={{ height: `${Math.max(height, count > 0 ? 4 : 0)}%` }}
+                          />
+                          <div className="absolute bottom-full mb-1 bg-stone-800 text-white text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none z-10">
+                            {label}: {count}
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                )}
+                <div className="flex justify-between mt-2 text-xs text-gray-600">
+                  <span>{dailyData[0]?.[0] ? new Date(dailyData[0][0] + 'T12:00:00').toLocaleDateString('sk-SK', { day: 'numeric', month: 'numeric' }) : ''}</span>
+                  <span>{dailyData[dailyData.length - 1]?.[0] ? new Date(dailyData[dailyData.length - 1][0] + 'T12:00:00').toLocaleDateString('sk-SK', { day: 'numeric', month: 'numeric' }) : ''}</span>
                 </div>
               </div>
             </div>

@@ -5,6 +5,7 @@ import { AuthProvider } from './contexts/AuthContext';
 import ProtectedRoute from './components/ProtectedRoute';
 import ScrollToTop from './components/ScrollToTop';
 import CookieBanner from './components/CookieBanner';
+import { usePageTracking } from './hooks/usePageTracking';
 
 const HomePage = lazy(() => import('./pages/HomePage'));
 const BuyProperty = lazy(() => import('./pages/BuyProperty'));
@@ -37,11 +38,17 @@ const PageLoader = () => (
   </div>
 );
 
+function PageTracker() {
+  usePageTracking();
+  return null;
+}
+
 function App() {
   return (
     <QueryClientProvider client={queryClient}>
       <AuthProvider>
         <Router>
+          <PageTracker />
           <ScrollToTop />
           <CookieBanner />
           <Suspense fallback={<PageLoader />}>
