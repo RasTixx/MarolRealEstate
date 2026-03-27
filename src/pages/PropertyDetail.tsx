@@ -278,9 +278,6 @@ export default function PropertyDetail() {
                     >
                       <ChevronRight className="w-6 h-6" />
                     </button>
-                    <div className="absolute bottom-4 left-1/2 -translate-x-1/2 px-4 py-2 bg-black/70 text-white rounded-full text-sm">
-                      {currentImageIndex + 1} / {displayImages.length}
-                    </div>
                   </>
                 )}
               </div>
@@ -622,9 +619,6 @@ export default function PropertyDetail() {
                 >
                   <ChevronRight className="w-6 h-6" />
                 </button>
-                <div className="absolute bottom-4 left-1/2 -translate-x-1/2 px-4 py-2 bg-black/70 text-white rounded-full">
-                  {currentImageIndex + 1} / {displayImages.length}
-                </div>
               </>
             )}
           </div>

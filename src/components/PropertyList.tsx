@@ -1,5 +1,9 @@
+import { useState, useEffect } from 'react';
 import { Property } from '../lib/supabase';
 import PropertyCard from './PropertyCard';
+
+const INITIAL_COUNT = 6;
+const LOAD_MORE_COUNT = 3;
 
 interface PropertyListProps {
   properties: Property[];
@@ -7,6 +11,12 @@ interface PropertyListProps {
 }
 
 export default function PropertyList({ properties, loading }: PropertyListProps) {
+  const [visibleCount, setVisibleCount] = useState(INITIAL_COUNT);
+
+  useEffect(() => {
+    setVisibleCount(INITIAL_COUNT);
+  }, [properties]);
+
   if (loading) {
     return (
       <section id="nehnutelnosti" className="py-16 bg-black">
@@ -45,10 +55,21 @@ export default function PropertyList({ properties, loading }: PropertyListProps)
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {properties.map((property) => (
+          {properties.slice(0, visibleCount).map((property) => (
             <PropertyCard key={property.id} property={property} />
           ))}
         </div>
+
+        {visibleCount < properties.length && (
+          <div className="mt-12 text-center">
+            <button
+              onClick={() => setVisibleCount((prev) => prev + LOAD_MORE_COUNT)}
+              className="px-8 py-3 bg-gradient-to-r from-yellow-500 via-yellow-400 to-amber-500 text-black font-bold rounded-lg transition-all duration-200 shadow-lg hover:shadow-amber-500/20 hover:scale-105"
+            >
+              Ukázať viac
+            </button>
+          </div>
+        )}
       </div>
     </section>
   );
