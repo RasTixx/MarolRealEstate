@@ -90,7 +90,7 @@ export default function Hero({ onSearch }: HeroProps) {
             <div className="bg-stone-900/40 backdrop-blur-sm rounded-lg p-4 border-l-4 border-amber-500">
               <div className="flex gap-3">
                 <Quote className="h-6 w-6 text-amber-500 flex-shrink-0 mt-1" />
-                <p className="text-gray-300 italic text-sm md:text-base leading-relaxed">
+                <p className="text-gray-300 italic text-sm md:text-base leading-relaxed font-bold">
                   Nerozhodujte sa dlho, rozhodujte sa správne.
                 </p>
               </div>
