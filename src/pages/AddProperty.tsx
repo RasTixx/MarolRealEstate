@@ -1,6 +1,7 @@
 import { useState, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { supabase } from '../lib/supabase';
+import { uploadImageToCloudinary, isCloudinaryConfigured } from '../lib/cloudinary';
 import { ArrowLeft, Upload, X, Save } from 'lucide-react';
 
 interface ImagePreview {
@@ -156,22 +157,31 @@ export default function AddProperty() {
     setDragOverIndex(null);
   };
 
-  const uploadImages = async (propertyId: string): Promise<void> => {
+  const uploadImages = async (propertyId: string): Promise<string | null> => {
+    let primaryUrl: string | null = null;
+    const useCloudinary = isCloudinaryConfigured();
+
     for (let i = 0; i < images.length; i++) {
       const image = images[i];
-      const fileExt = image.file.name.split('.').pop();
-      const fileName = `${propertyId}/${Math.random().toString(36).substring(2)}-${Date.now()}.${fileExt}`;
+      let publicUrl: string;
 
-      const { error: uploadError } = await supabase.storage
-        .from('property-images')
-        .upload(fileName, image.file);
-
-      if (uploadError) {
-        console.error('Error uploading image:', uploadError);
+      try {
+        if (useCloudinary) {
+          publicUrl = await uploadImageToCloudinary(image.file, `properties/${propertyId}`);
+        } else {
+          const fileExt = image.file.name.split('.').pop();
+          const fileName = `${propertyId}/${Math.random().toString(36).substring(2)}-${Date.now()}.${fileExt}`;
+          const { error: uploadError } = await supabase.storage.from('property-images').upload(fileName, image.file);
+          if (uploadError) { console.error('Error uploading image:', uploadError); continue; }
+          const { data: { publicUrl: url } } = supabase.storage.from('property-images').getPublicUrl(fileName);
+          publicUrl = url;
+        }
+      } catch (err) {
+        console.error('Error uploading image:', err);
         continue;
       }
 
-      const { data: { publicUrl } } = supabase.storage.from('property-images').getPublicUrl(fileName);
+      if (i === 0) primaryUrl = publicUrl;
 
       await supabase.from('property_images').insert({
         property_id: propertyId,
@@ -180,6 +190,8 @@ export default function AddProperty() {
         is_primary: i === 0,
       });
     }
+
+    return primaryUrl;
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -188,10 +200,6 @@ export default function AddProperty() {
     setLoading(true);
 
     try {
-      const imageUrl = images.length > 0
-        ? images[0].preview
-        : 'https://images.pexels.com/photos/323780/pexels-photo-323780.jpeg';
-
       const isLand = isPozemok(formData.property_type);
 
       const finalTransactionType = priceOption === 'cena_dohodou'
@@ -234,7 +242,7 @@ export default function AddProperty() {
           garaz: formData.garaz,
           parkovacie_miesto: formData.parkovacie_miesto,
           zahradka: formData.zahradka,
-          image_url: imageUrl,
+          image_url: 'https://images.pexels.com/photos/323780/pexels-photo-323780.jpeg',
         }])
         .select()
         .single();
@@ -243,7 +251,10 @@ export default function AddProperty() {
       if (!property) throw new Error('Property not created');
 
       if (images.length > 0) {
-        await uploadImages(property.id);
+        const primaryUrl = await uploadImages(property.id);
+        if (primaryUrl) {
+          await supabase.from('properties').update({ image_url: primaryUrl }).eq('id', property.id);
+        }
       }
 
       navigate('/admin');

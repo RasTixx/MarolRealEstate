@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { supabase } from '../lib/supabase';
+import { uploadImageToCloudinary, isCloudinaryConfigured } from '../lib/cloudinary';
 import { ArrowLeft, Upload, X, Save } from 'lucide-react';
 
 interface ImagePreview {
@@ -268,8 +269,10 @@ export default function EditProperty() {
     setDragOverIndex(null);
   };
 
-  const uploadNewImages = async (): Promise<void> => {
-    if (!id) return;
+  const uploadNewImages = async (): Promise<string | null> => {
+    if (!id) return null;
+    const useCloudinary = isCloudinaryConfigured();
+    let primaryUrl: string | null = null;
 
     for (let i = 0; i < images.length; i++) {
       const image = images[i];
@@ -279,18 +282,26 @@ export default function EditProperty() {
           .from('property_images')
           .update({ display_order: image.order, is_primary: image.is_primary })
           .eq('id', image.id);
+        if (image.is_primary) primaryUrl = image.preview;
       } else if (image.file) {
-        const fileExt = image.file.name.split('.').pop();
-        const fileName = `${id}/${Math.random().toString(36).substring(2)}-${Date.now()}.${fileExt}`;
-
-        const { error: uploadError } = await supabase.storage.from('property-images').upload(fileName, image.file);
-
-        if (uploadError) {
-          console.error('Error uploading image:', uploadError);
+        let publicUrl: string;
+        try {
+          if (useCloudinary) {
+            publicUrl = await uploadImageToCloudinary(image.file, `properties/${id}`);
+          } else {
+            const fileExt = image.file.name.split('.').pop();
+            const fileName = `${id}/${Math.random().toString(36).substring(2)}-${Date.now()}.${fileExt}`;
+            const { error: uploadError } = await supabase.storage.from('property-images').upload(fileName, image.file);
+            if (uploadError) { console.error('Error uploading image:', uploadError); continue; }
+            const { data: { publicUrl: url } } = supabase.storage.from('property-images').getPublicUrl(fileName);
+            publicUrl = url;
+          }
+        } catch (err) {
+          console.error('Error uploading image:', err);
           continue;
         }
 
-        const { data: { publicUrl } } = supabase.storage.from('property-images').getPublicUrl(fileName);
+        if (image.is_primary) primaryUrl = publicUrl;
 
         await supabase.from('property_images').insert({
           property_id: id,
@@ -300,6 +311,8 @@ export default function EditProperty() {
         });
       }
     }
+
+    return primaryUrl;
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -356,7 +369,10 @@ export default function EditProperty() {
 
       if (updateError) throw updateError;
 
-      await uploadNewImages();
+      const primaryUrl = await uploadNewImages();
+      if (primaryUrl) {
+        await supabase.from('properties').update({ image_url: primaryUrl }).eq('id', id);
+      }
 
       navigate('/admin');
     } catch (err: any) {

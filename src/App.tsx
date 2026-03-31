@@ -24,10 +24,11 @@ const EthicsPage = lazy(() => import('./pages/EthicsPage'));
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
-      staleTime: 3 * 60 * 1000,
-      gcTime: 10 * 60 * 1000,
+      staleTime: 15 * 60 * 1000,
+      gcTime: 30 * 60 * 1000,
       retry: 1,
       refetchOnWindowFocus: false,
+      refetchOnMount: false,
     },
   },
 });

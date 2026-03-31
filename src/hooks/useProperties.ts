@@ -22,7 +22,7 @@ export function useProperties() {
       if (error) throw error;
       return data || [];
     },
-    staleTime: 3 * 60 * 1000,
+    staleTime: 15 * 60 * 1000,
   });
 }
 
@@ -41,7 +41,7 @@ export function useProperty(id: string | undefined) {
       return data;
     },
     enabled: !!id,
-    staleTime: 5 * 60 * 1000,
+    staleTime: 30 * 60 * 1000,
   });
 }
 
@@ -67,6 +67,6 @@ export function usePropertyImages(propertyId: string | undefined) {
       return data || [];
     },
     enabled: !!propertyId,
-    staleTime: 5 * 60 * 1000,
+    staleTime: 30 * 60 * 1000,
   });
 }
