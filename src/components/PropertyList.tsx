@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { RefreshCw } from 'lucide-react';
 import { Property } from '../lib/supabase';
 import PropertyCard from './PropertyCard';
 
@@ -8,9 +9,11 @@ const LOAD_MORE_COUNT = 3;
 interface PropertyListProps {
   properties: Property[];
   loading: boolean;
+  isError?: boolean;
+  onRetry?: () => void;
 }
 
-export default function PropertyList({ properties, loading }: PropertyListProps) {
+export default function PropertyList({ properties, loading, isError, onRetry }: PropertyListProps) {
   const [visibleCount, setVisibleCount] = useState(INITIAL_COUNT);
 
   useEffect(() => {
@@ -24,6 +27,27 @@ export default function PropertyList({ properties, loading }: PropertyListProps)
           <div className="text-center">
             <div className="inline-block h-8 w-8 animate-spin rounded-full border-4 border-solid border-amber-500 border-r-transparent"></div>
             <p className="mt-4 text-gray-400">Načítavam nehnuteľnosti...</p>
+          </div>
+        </div>
+      </section>
+    );
+  }
+
+  if (isError) {
+    return (
+      <section id="nehnutelnosti" className="py-16 bg-black">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center">
+            <p className="text-gray-400 mb-4">Nepodarilo sa načítať nehnuteľnosti. Skúste to prosím znova.</p>
+            {onRetry && (
+              <button
+                onClick={onRetry}
+                className="inline-flex items-center gap-2 px-6 py-3 bg-amber-500/10 border border-amber-500/30 text-amber-400 rounded-lg hover:bg-amber-500/20 transition-colors"
+              >
+                <RefreshCw className="h-4 w-4" />
+                Skúsiť znova
+              </button>
+            )}
           </div>
         </div>
       </section>

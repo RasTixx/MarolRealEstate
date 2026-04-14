@@ -15,7 +15,7 @@ import Footer from '../components/Footer';
 export default function HomePage() {
   const [searchFilters, setSearchFilters] = useState({ term: '', transactionType: '', propertyType: '' });
   const location = useLocation();
-  const { data: properties = [], isLoading: loading } = useProperties();
+  const { data: properties = [], isLoading: loading, isError, refetch } = useProperties();
 
   useEffect(() => {
     if (location.state?.scrollTo) {
@@ -73,7 +73,7 @@ export default function HomePage() {
       <Header />
       <main>
         <Hero onSearch={handleSearch} />
-        <PropertyList properties={filteredProperties} loading={loading} />
+        <PropertyList properties={filteredProperties} loading={loading} isError={isError} onRetry={refetch} />
         <About />
         <Services />
         <FinancingSection />
