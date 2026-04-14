@@ -79,9 +79,15 @@ export default function PropertyList({ properties, loading, isError, onRetry }: 
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {properties.slice(0, visibleCount).map((property) => (
-            <PropertyCard key={property.id} property={property} />
-          ))}
+          {[...properties]
+            .sort((a, b) => {
+              if (a.predane === b.predane) return 0;
+              return a.predane ? 1 : -1;
+            })
+            .slice(0, visibleCount)
+            .map((property) => (
+              <PropertyCard key={property.id} property={property} />
+            ))}
         </div>
 
         {visibleCount < properties.length && (

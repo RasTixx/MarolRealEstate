@@ -2,15 +2,19 @@ import { useState, useEffect, useRef } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { supabase } from '../lib/supabase';
 import { uploadImageToCloudinary, isCloudinaryConfigured } from '../lib/cloudinary';
-import { ArrowLeft, Upload, X, Save } from 'lucide-react';
+import { ArrowLeft, Upload, X, Save, CheckCircle, AlertCircle } from 'lucide-react';
+
+type UploadStatus = 'idle' | 'uploading' | 'done' | 'error';
 
 interface ImagePreview {
+  uid: string;
   id?: string;
   file?: File;
   preview: string;
   order: number;
   is_primary: boolean;
   existing: boolean;
+  uploadStatus: UploadStatus;
 }
 
 const PROPERTY_TYPES = [
@@ -49,6 +53,9 @@ const KONSTRUKCIA_OPTIONS = [
 
 const isPozemok = (type: string) => type === 'pozemok' || type === 'stavebny_pozemok' || type === 'land';
 
+let uidCounter = 0;
+const nextUid = () => `img-${++uidCounter}-${Date.now()}`;
+
 export default function EditProperty() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
@@ -59,6 +66,7 @@ export default function EditProperty() {
   const [dragOverIndex, setDragOverIndex] = useState<number | null>(null);
   const dragIndexRef = useRef<number | null>(null);
   const [priceOption, setPriceOption] = useState<'number' | 'cena_dohodou' | 'ponuknite'>('number');
+  const [uploadProgress, setUploadProgress] = useState<{ done: number; total: number } | null>(null);
 
   const [formData, setFormData] = useState({
     title: '',
@@ -178,11 +186,13 @@ export default function EditProperty() {
       if (data && data.length > 0) {
         setImages(
           data.map((img) => ({
+            uid: nextUid(),
             id: img.id,
             preview: img.image_url,
             order: img.display_order,
             is_primary: img.is_primary,
             existing: true,
+            uploadStatus: 'idle' as UploadStatus,
           }))
         );
       }
@@ -195,7 +205,8 @@ export default function EditProperty() {
     const files = Array.from(e.target.files || []);
     if (files.length === 0) return;
 
-    const remainingSlots = 30 - images.length;
+    const currentCount = images.length;
+    const remainingSlots = 30 - currentCount;
     const filesToAdd = files.slice(0, remainingSlots);
 
     const readFile = (file: File): Promise<string> => {
@@ -210,7 +221,15 @@ export default function EditProperty() {
     for (let i = 0; i < filesToAdd.length; i++) {
       const file = filesToAdd[i];
       const preview = await readFile(file);
-      newImages.push({ file, preview, order: images.length + i + 1, is_primary: images.length === 0 && i === 0, existing: false });
+      newImages.push({
+        uid: nextUid(),
+        file,
+        preview,
+        order: currentCount + i + 1,
+        is_primary: currentCount === 0 && i === 0,
+        existing: false,
+        uploadStatus: 'idle',
+      });
     }
 
     setImages((prev) => {
@@ -221,8 +240,9 @@ export default function EditProperty() {
     e.target.value = '';
   };
 
-  const removeImage = async (index: number) => {
-    const imageToRemove = images[index];
+  const removeImage = async (uid: string) => {
+    const imageToRemove = images.find((img) => img.uid === uid);
+    if (!imageToRemove) return;
 
     if (imageToRemove.existing && imageToRemove.id) {
       const { error } = await supabase.from('property_images').delete().eq('id', imageToRemove.id);
@@ -233,7 +253,7 @@ export default function EditProperty() {
     }
 
     setImages((prev) => {
-      const updated = prev.filter((_, i) => i !== index);
+      const updated = prev.filter((img) => img.uid !== uid);
       return updated.map((img, i) => ({ ...img, order: i + 1, is_primary: i === 0 }));
     });
   };
@@ -250,18 +270,15 @@ export default function EditProperty() {
   const handleDrop = (e: React.DragEvent, toIndex: number) => {
     e.preventDefault();
     const fromIndex = dragIndexRef.current;
-    if (fromIndex === null || fromIndex === toIndex) {
-      setDragOverIndex(null);
-      return;
-    }
+    dragIndexRef.current = null;
+    setDragOverIndex(null);
+    if (fromIndex === null || fromIndex === toIndex) return;
     setImages((prev) => {
       const updated = [...prev];
       const [moved] = updated.splice(fromIndex, 1);
       updated.splice(toIndex, 0, moved);
       return updated.map((img, i) => ({ ...img, order: i + 1, is_primary: i === 0 }));
     });
-    dragIndexRef.current = null;
-    setDragOverIndex(null);
   };
 
   const handleDragEnd = () => {
@@ -269,10 +286,20 @@ export default function EditProperty() {
     setDragOverIndex(null);
   };
 
+  const updateImageStatus = (uid: string, status: UploadStatus) => {
+    setImages((prev) => prev.map((img) => img.uid === uid ? { ...img, uploadStatus: status } : img));
+  };
+
   const uploadNewImages = async (): Promise<string | null> => {
     if (!id) return null;
     const useCloudinary = isCloudinaryConfigured();
     let primaryUrl: string | null = null;
+
+    const newImages = images.filter((img) => !img.existing && img.file);
+    if (newImages.length > 0) {
+      setUploadProgress({ done: 0, total: newImages.length });
+    }
+    let doneCount = 0;
 
     for (let i = 0; i < images.length; i++) {
       const image = images[i];
@@ -284,6 +311,8 @@ export default function EditProperty() {
           .eq('id', image.id);
         if (image.is_primary) primaryUrl = image.preview;
       } else if (image.file) {
+        updateImageStatus(image.uid, 'uploading');
+
         let publicUrl: string;
         try {
           if (useCloudinary) {
@@ -292,14 +321,27 @@ export default function EditProperty() {
             const fileExt = image.file.name.split('.').pop();
             const fileName = `${id}/${Math.random().toString(36).substring(2)}-${Date.now()}.${fileExt}`;
             const { error: uploadError } = await supabase.storage.from('property-images').upload(fileName, image.file);
-            if (uploadError) { console.error('Error uploading image:', uploadError); continue; }
+            if (uploadError) {
+              console.error('Error uploading image:', uploadError);
+              updateImageStatus(image.uid, 'error');
+              doneCount++;
+              setUploadProgress({ done: doneCount, total: newImages.length });
+              continue;
+            }
             const { data: { publicUrl: url } } = supabase.storage.from('property-images').getPublicUrl(fileName);
             publicUrl = url;
           }
         } catch (err) {
           console.error('Error uploading image:', err);
+          updateImageStatus(image.uid, 'error');
+          doneCount++;
+          setUploadProgress({ done: doneCount, total: newImages.length });
           continue;
         }
+
+        updateImageStatus(image.uid, 'done');
+        doneCount++;
+        setUploadProgress({ done: doneCount, total: newImages.length });
 
         if (image.is_primary) primaryUrl = publicUrl;
 
@@ -378,6 +420,7 @@ export default function EditProperty() {
     } catch (err: any) {
       setError(err.message || 'Nastala chyba pri aktualizácii nehnuteľnosti');
       setLoading(false);
+      setUploadProgress(null);
     }
   };
 
@@ -455,7 +498,14 @@ export default function EditProperty() {
           {/* Images */}
           <div className="bg-stone-900 rounded-xl border border-stone-800 p-6">
             <div className="flex items-center justify-between mb-4">
-              <h2 className="text-lg font-semibold text-white">Fotografie ({images.length}/30)</h2>
+              <div className="flex items-center gap-3">
+                <h2 className="text-lg font-semibold text-white">Fotografie ({images.length}/30)</h2>
+                {uploadProgress && (
+                  <span className="text-sm text-amber-400 font-medium">
+                    Nahrávanie: {uploadProgress.done} / {uploadProgress.total}
+                  </span>
+                )}
+              </div>
               {images.length < 30 && (
                 <label className="px-4 py-2 bg-amber-500 hover:bg-amber-400 text-black font-medium rounded-lg cursor-pointer transition-colors flex items-center gap-2">
                   <Upload className="w-4 h-4" />
@@ -480,7 +530,7 @@ export default function EditProperty() {
               <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
                 {images.map((image, index) => (
                   <div
-                    key={image.id || index}
+                    key={image.uid}
                     draggable
                     onDragStart={() => handleDragStart(index)}
                     onDragOver={(e) => handleDragOver(e, index)}
@@ -496,19 +546,38 @@ export default function EditProperty() {
                         Hlavná
                       </div>
                     )}
-                    <button
-                      type="button"
-                      onClick={() => removeImage(index)}
-                      className="absolute top-2 right-2 p-1.5 bg-red-600/90 hover:bg-red-600 text-white rounded transition-colors opacity-0 group-hover:opacity-100"
-                    >
-                      <X className="w-4 h-4" />
-                    </button>
+                    {image.uploadStatus === 'uploading' && (
+                      <div className="absolute inset-0 bg-black/50 flex items-center justify-center">
+                        <div className="w-6 h-6 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                      </div>
+                    )}
+                    {image.uploadStatus === 'done' && (
+                      <div className="absolute bottom-2 right-2">
+                        <CheckCircle className="w-5 h-5 text-green-400 drop-shadow" />
+                      </div>
+                    )}
+                    {image.uploadStatus === 'error' && (
+                      <div className="absolute bottom-2 right-2">
+                        <AlertCircle className="w-5 h-5 text-red-400 drop-shadow" />
+                      </div>
+                    )}
+                    {image.uploadStatus === 'idle' && (
+                      <button
+                        type="button"
+                        onClick={() => removeImage(image.uid)}
+                        className="absolute top-2 right-2 p-1.5 bg-red-600/90 hover:bg-red-600 text-white rounded transition-colors opacity-0 group-hover:opacity-100"
+                      >
+                        <X className="w-4 h-4" />
+                      </button>
+                    )}
                     <div className="absolute bottom-2 left-2 px-2 py-0.5 bg-black/70 text-white text-xs rounded">
                       #{image.order}
                     </div>
-                    <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 pointer-events-none">
-                      <div className="bg-black/50 rounded-lg px-2 py-1 text-white text-xs">Pretiahnuť</div>
-                    </div>
+                    {image.uploadStatus === 'idle' && (
+                      <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 pointer-events-none">
+                        <div className="bg-black/50 rounded-lg px-2 py-1 text-white text-xs">Pretiahnuť</div>
+                      </div>
+                    )}
                   </div>
                 ))}
               </div>
@@ -729,7 +798,9 @@ export default function EditProperty() {
               {loading ? (
                 <>
                   <div className="w-5 h-5 border-2 border-black/30 border-t-black rounded-full animate-spin" />
-                  Ukladám...
+                  {uploadProgress
+                    ? `Nahrávanie ${uploadProgress.done}/${uploadProgress.total}...`
+                    : 'Ukladám...'}
                 </>
               ) : (
                 <>

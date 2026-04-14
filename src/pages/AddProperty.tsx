@@ -2,12 +2,16 @@ import { useState, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { supabase } from '../lib/supabase';
 import { uploadImageToCloudinary, isCloudinaryConfigured } from '../lib/cloudinary';
-import { ArrowLeft, Upload, X, Save } from 'lucide-react';
+import { ArrowLeft, Upload, X, Save, CheckCircle, AlertCircle } from 'lucide-react';
+
+type UploadStatus = 'idle' | 'uploading' | 'done' | 'error';
 
 interface ImagePreview {
+  uid: string;
   file: File;
   preview: string;
   order: number;
+  uploadStatus: UploadStatus;
 }
 
 const PROPERTY_TYPES = [
@@ -46,6 +50,9 @@ const KONSTRUKCIA_OPTIONS = [
 
 const isPozemok = (type: string) => type === 'pozemok' || type === 'stavebny_pozemok' || type === 'land';
 
+let uidCounter = 0;
+const nextUid = () => `img-${++uidCounter}-${Date.now()}`;
+
 export default function AddProperty() {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
@@ -54,6 +61,7 @@ export default function AddProperty() {
   const [dragOverIndex, setDragOverIndex] = useState<number | null>(null);
   const dragIndexRef = useRef<number | null>(null);
   const [priceOption, setPriceOption] = useState<'number' | 'cena_dohodou' | 'ponuknite'>('number');
+  const [uploadProgress, setUploadProgress] = useState<{ done: number; total: number } | null>(null);
 
   const [formData, setFormData] = useState({
     title: '',
@@ -108,7 +116,7 @@ export default function AddProperty() {
     for (let i = 0; i < filesToAdd.length; i++) {
       const file = filesToAdd[i];
       const preview = await readFile(file);
-      newImages.push({ file, preview, order: images.length + i + 1 });
+      newImages.push({ uid: nextUid(), file, preview, order: images.length + i + 1, uploadStatus: 'idle' });
     }
 
     setImages((prev) => {
@@ -119,9 +127,9 @@ export default function AddProperty() {
     e.target.value = '';
   };
 
-  const removeImage = (index: number) => {
+  const removeImage = (uid: string) => {
     setImages((prev) => {
-      const updated = prev.filter((_, i) => i !== index);
+      const updated = prev.filter((img) => img.uid !== uid);
       return updated.map((img, i) => ({ ...img, order: i + 1 }));
     });
   };
@@ -138,18 +146,15 @@ export default function AddProperty() {
   const handleDrop = (e: React.DragEvent, toIndex: number) => {
     e.preventDefault();
     const fromIndex = dragIndexRef.current;
-    if (fromIndex === null || fromIndex === toIndex) {
-      setDragOverIndex(null);
-      return;
-    }
+    dragIndexRef.current = null;
+    setDragOverIndex(null);
+    if (fromIndex === null || fromIndex === toIndex) return;
     setImages((prev) => {
       const updated = [...prev];
       const [moved] = updated.splice(fromIndex, 1);
       updated.splice(toIndex, 0, moved);
       return updated.map((img, i) => ({ ...img, order: i + 1 }));
     });
-    dragIndexRef.current = null;
-    setDragOverIndex(null);
   };
 
   const handleDragEnd = () => {
@@ -157,12 +162,21 @@ export default function AddProperty() {
     setDragOverIndex(null);
   };
 
+  const updateImageStatus = (uid: string, status: UploadStatus) => {
+    setImages((prev) => prev.map((img) => img.uid === uid ? { ...img, uploadStatus: status } : img));
+  };
+
   const uploadImages = async (propertyId: string): Promise<string | null> => {
     let primaryUrl: string | null = null;
     const useCloudinary = isCloudinaryConfigured();
+    let doneCount = 0;
+
+    setUploadProgress({ done: 0, total: images.length });
 
     for (let i = 0; i < images.length; i++) {
       const image = images[i];
+      updateImageStatus(image.uid, 'uploading');
+
       let publicUrl: string;
 
       try {
@@ -172,14 +186,27 @@ export default function AddProperty() {
           const fileExt = image.file.name.split('.').pop();
           const fileName = `${propertyId}/${Math.random().toString(36).substring(2)}-${Date.now()}.${fileExt}`;
           const { error: uploadError } = await supabase.storage.from('property-images').upload(fileName, image.file);
-          if (uploadError) { console.error('Error uploading image:', uploadError); continue; }
+          if (uploadError) {
+            console.error('Error uploading image:', uploadError);
+            updateImageStatus(image.uid, 'error');
+            doneCount++;
+            setUploadProgress({ done: doneCount, total: images.length });
+            continue;
+          }
           const { data: { publicUrl: url } } = supabase.storage.from('property-images').getPublicUrl(fileName);
           publicUrl = url;
         }
       } catch (err) {
         console.error('Error uploading image:', err);
+        updateImageStatus(image.uid, 'error');
+        doneCount++;
+        setUploadProgress({ done: doneCount, total: images.length });
         continue;
       }
+
+      updateImageStatus(image.uid, 'done');
+      doneCount++;
+      setUploadProgress({ done: doneCount, total: images.length });
 
       if (i === 0) primaryUrl = publicUrl;
 
@@ -261,6 +288,7 @@ export default function AddProperty() {
     } catch (err: any) {
       setError(err.message || 'Nastala chyba pri vytváraní nehnuteľnosti');
       setLoading(false);
+      setUploadProgress(null);
     }
   };
 
@@ -330,7 +358,14 @@ export default function AddProperty() {
           {/* Images */}
           <div className="bg-stone-900 rounded-xl border border-stone-800 p-6">
             <div className="flex items-center justify-between mb-4">
-              <h2 className="text-lg font-semibold text-white">Fotografie ({images.length}/30)</h2>
+              <div className="flex items-center gap-3">
+                <h2 className="text-lg font-semibold text-white">Fotografie ({images.length}/30)</h2>
+                {uploadProgress && (
+                  <span className="text-sm text-amber-400 font-medium">
+                    Nahrávanie: {uploadProgress.done} / {uploadProgress.total}
+                  </span>
+                )}
+              </div>
               {images.length < 30 && (
                 <label className="px-4 py-2 bg-amber-500 hover:bg-amber-400 text-black font-medium rounded-lg cursor-pointer transition-colors flex items-center gap-2">
                   <Upload className="w-4 h-4" />
@@ -355,7 +390,7 @@ export default function AddProperty() {
               <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
                 {images.map((image, index) => (
                   <div
-                    key={index}
+                    key={image.uid}
                     draggable
                     onDragStart={() => handleDragStart(index)}
                     onDragOver={(e) => handleDragOver(e, index)}
@@ -375,19 +410,38 @@ export default function AddProperty() {
                         Hlavná
                       </div>
                     )}
-                    <button
-                      type="button"
-                      onClick={() => removeImage(index)}
-                      className="absolute top-2 right-2 p-1.5 bg-red-600/90 hover:bg-red-600 text-white rounded transition-colors opacity-0 group-hover:opacity-100"
-                    >
-                      <X className="w-4 h-4" />
-                    </button>
+                    {image.uploadStatus === 'uploading' && (
+                      <div className="absolute inset-0 bg-black/50 flex items-center justify-center">
+                        <div className="w-6 h-6 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                      </div>
+                    )}
+                    {image.uploadStatus === 'done' && (
+                      <div className="absolute bottom-2 right-2">
+                        <CheckCircle className="w-5 h-5 text-green-400 drop-shadow" />
+                      </div>
+                    )}
+                    {image.uploadStatus === 'error' && (
+                      <div className="absolute bottom-2 right-2">
+                        <AlertCircle className="w-5 h-5 text-red-400 drop-shadow" />
+                      </div>
+                    )}
+                    {image.uploadStatus === 'idle' && (
+                      <button
+                        type="button"
+                        onClick={() => removeImage(image.uid)}
+                        className="absolute top-2 right-2 p-1.5 bg-red-600/90 hover:bg-red-600 text-white rounded transition-colors opacity-0 group-hover:opacity-100"
+                      >
+                        <X className="w-4 h-4" />
+                      </button>
+                    )}
                     <div className="absolute bottom-2 left-2 px-2 py-0.5 bg-black/70 text-white text-xs rounded">
                       #{image.order}
                     </div>
-                    <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 pointer-events-none">
-                      <div className="bg-black/50 rounded-lg px-2 py-1 text-white text-xs">Pretiahnuť</div>
-                    </div>
+                    {image.uploadStatus === 'idle' && (
+                      <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 pointer-events-none">
+                        <div className="bg-black/50 rounded-lg px-2 py-1 text-white text-xs">Pretiahnuť</div>
+                      </div>
+                    )}
                   </div>
                 ))}
               </div>
@@ -608,7 +662,9 @@ export default function AddProperty() {
               {loading ? (
                 <>
                   <div className="w-5 h-5 border-2 border-black/30 border-t-black rounded-full animate-spin" />
-                  Ukladám...
+                  {uploadProgress
+                    ? `Nahrávanie ${uploadProgress.done}/${uploadProgress.total}...`
+                    : 'Ukladám...'}
                 </>
               ) : (
                 <>
