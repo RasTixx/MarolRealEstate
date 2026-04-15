@@ -4,6 +4,7 @@ import { Property } from '../lib/supabase';
 
 interface PropertyCardProps {
   property: Property;
+  onNavigate?: () => void;
 }
 
 const truncate = (str: string, max: number) =>
@@ -11,7 +12,7 @@ const truncate = (str: string, max: number) =>
 
 const isPozemok = (type: string) => type === 'pozemok' || type === 'stavebny_pozemok' || type === 'land';
 
-export default function PropertyCard({ property }: PropertyCardProps) {
+export default function PropertyCard({ property, onNavigate }: PropertyCardProps) {
   const formatPrice = (price: number, transactionType: string) => {
     if (transactionType === 'cena_dohodou') return 'Cena Dohodou';
     if (transactionType === 'ponuknite') return 'Ponuknite';
@@ -25,7 +26,7 @@ export default function PropertyCard({ property }: PropertyCardProps) {
   const getBadge = (): { text: string; color: string } | null => {
     if (property.featured) return { text: 'Odporúčame', color: 'bg-gradient-to-br from-amber-400 to-yellow-500 text-black' };
     if (property.rezervovane) return { text: 'Rezervované', color: 'bg-gradient-to-br from-blue-500 to-blue-600 text-white' };
-    if (property.predane) return { text: 'Predané', color: 'bg-gradient-to-br from-amber-500 to-amber-600 text-black' };
+    if (property.predane) return { text: 'Predané', color: 'bg-gradient-to-br from-red-600 to-red-700 text-white' };
     if (property.transaction_type === 'predaj') return { text: 'Predaj', color: 'bg-gradient-to-br from-emerald-500 to-emerald-600 text-white' };
     if (property.transaction_type === 'prenajom') return { text: 'Prenájom', color: 'bg-gradient-to-br from-sky-500 to-sky-600 text-white' };
     return null;
@@ -37,6 +38,7 @@ export default function PropertyCard({ property }: PropertyCardProps) {
   return (
     <Link
       to={`/nehnutelnost/${property.id}`}
+      onClick={onNavigate}
       className="group bg-zinc-900 rounded-xl overflow-hidden border border-amber-500/20 hover:border-amber-500 hover:shadow-2xl hover:shadow-amber-500/20 transition-all duration-300 block cursor-pointer"
     >
       <div className="relative h-56 overflow-hidden bg-zinc-800">

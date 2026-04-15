@@ -614,7 +614,7 @@ export default function EditProperty() {
 
               <div className="md:col-span-2">
                 <label className={labelClass}>Popis</label>
-                <textarea name="description" value={formData.description} onChange={handleChange} rows={4} className={inputClass} />
+                <textarea name="description" value={formData.description} onChange={handleChange} rows={8} className={`${inputClass} whitespace-pre-wrap`} style={{ whiteSpace: 'pre-wrap' }} />
               </div>
 
               <div>

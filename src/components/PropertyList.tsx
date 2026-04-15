@@ -1,10 +1,12 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { RefreshCw } from 'lucide-react';
 import { Property } from '../lib/supabase';
 import PropertyCard from './PropertyCard';
 
 const INITIAL_COUNT = 6;
 const LOAD_MORE_COUNT = 3;
+const STORAGE_KEY = 'propertyList_visibleCount';
+const SCROLL_KEY = 'propertyList_scrollY';
 
 interface PropertyListProps {
   properties: Property[];
@@ -14,11 +16,43 @@ interface PropertyListProps {
 }
 
 export default function PropertyList({ properties, loading, isError, onRetry }: PropertyListProps) {
-  const [visibleCount, setVisibleCount] = useState(INITIAL_COUNT);
+  const [visibleCount, setVisibleCount] = useState(() => {
+    const saved = sessionStorage.getItem(STORAGE_KEY);
+    return saved ? parseInt(saved, 10) : INITIAL_COUNT;
+  });
+  const didRestoreScroll = useRef(false);
+  const listRef = useRef<HTMLElement>(null);
 
   useEffect(() => {
-    setVisibleCount(INITIAL_COUNT);
-  }, [properties]);
+    if (!loading && properties.length > 0 && !didRestoreScroll.current) {
+      const savedScroll = sessionStorage.getItem(SCROLL_KEY);
+      if (savedScroll) {
+        didRestoreScroll.current = true;
+        sessionStorage.removeItem(SCROLL_KEY);
+        const scrollY = parseInt(savedScroll, 10);
+        requestAnimationFrame(() => {
+          setTimeout(() => {
+            window.scrollTo({ top: scrollY, behavior: 'instant' });
+          }, 50);
+        });
+      }
+    }
+  }, [loading, properties]);
+
+  useEffect(() => {
+    if (!loading) {
+      sessionStorage.setItem(STORAGE_KEY, String(visibleCount));
+    }
+  }, [visibleCount, loading]);
+
+  useEffect(() => {
+    if (!loading) {
+      const saved = sessionStorage.getItem(STORAGE_KEY);
+      if (!saved) {
+        setVisibleCount(INITIAL_COUNT);
+      }
+    }
+  }, [properties, loading]);
 
   if (loading) {
     return (
@@ -67,7 +101,7 @@ export default function PropertyList({ properties, loading, isError, onRetry }: 
   }
 
   return (
-    <section id="nehnutelnosti" className="py-16 bg-black">
+    <section id="nehnutelnosti" ref={listRef} className="py-16 bg-black">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-12">
           <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">
@@ -86,7 +120,14 @@ export default function PropertyList({ properties, loading, isError, onRetry }: 
             })
             .slice(0, visibleCount)
             .map((property) => (
-              <PropertyCard key={property.id} property={property} />
+              <PropertyCard
+                key={property.id}
+                property={property}
+                onNavigate={() => {
+                  sessionStorage.setItem(STORAGE_KEY, String(visibleCount));
+                  sessionStorage.setItem(SCROLL_KEY, String(window.scrollY));
+                }}
+              />
             ))}
         </div>
 

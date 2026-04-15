@@ -65,6 +65,8 @@ export default function HomePage() {
   }, [properties, searchFilters]);
 
   const handleSearch = (searchTerm: string, transactionType: string, propertyType: string) => {
+    sessionStorage.removeItem('propertyList_visibleCount');
+    sessionStorage.removeItem('propertyList_scrollY');
     setSearchFilters({ term: searchTerm, transactionType, propertyType });
   };
 
