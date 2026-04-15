@@ -114,7 +114,14 @@ export default function EditProperty() {
     try {
       const { data, error } = await supabase
         .from('properties')
-        .select('*')
+        .select(`
+          id, title, description, price, location, address,
+          property_type, transaction_type, bedrooms, bathrooms,
+          area, uzitkova_plocha, zastavana_plocha, stav, konstrukcia,
+          featured, rezervovane, predane, year_built, floor, pocet_poschodii,
+          vytah, pivnica, balkon, terasa, vlastny_pozemok, vlastny_parking,
+          garaz, parkovacie_miesto, zahradka, image_url, latitude, longitude
+        `)
         .eq('id', id)
         .maybeSingle();
 
@@ -177,7 +184,7 @@ export default function EditProperty() {
     try {
       const { data, error } = await supabase
         .from('property_images')
-        .select('*')
+        .select('id, image_url, display_order, is_primary')
         .eq('property_id', id)
         .order('display_order', { ascending: true });
 

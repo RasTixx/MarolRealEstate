@@ -26,6 +26,15 @@ export function useProperties() {
   });
 }
 
+const PROPERTY_DETAIL_COLUMNS = `
+  id, title, description, price, location, address,
+  property_type, transaction_type, bedrooms, bathrooms,
+  area, uzitkova_plocha, zastavana_plocha, stav, konstrukcia,
+  featured, rezervovane, predane, year_built, floor, pocet_poschodii,
+  vytah, pivnica, balkon, terasa, vlastny_pozemok, vlastny_parking,
+  garaz, parkovacie_miesto, zahradka, image_url, latitude, longitude, created_at, updated_at
+`.trim();
+
 export function useProperty(id: string | undefined) {
   return useQuery<Property | null>({
     queryKey: ['properties', 'detail', id],
@@ -33,7 +42,7 @@ export function useProperty(id: string | undefined) {
       if (!id) return null;
       const { data, error } = await supabase
         .from('properties')
-        .select('*')
+        .select(PROPERTY_DETAIL_COLUMNS)
         .eq('id', id)
         .maybeSingle();
 

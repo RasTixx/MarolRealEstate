@@ -1,9 +1,11 @@
-import { useState } from 'react';
+import { useState, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { supabase, Property } from '../lib/supabase';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
-import { LogOut, Home, Building2, Mail, BarChart3, Plus, CreditCard as Edit, Trash2, Star, StarOff, Search, MessageSquare, CheckCircle, XCircle, User, Inbox, TrendingUp, Globe, Calendar, Clock } from 'lucide-react';
+import { useAdminTestimonials } from '../hooks/useTestimonials';
+import { uploadImageToCloudinary, isCloudinaryConfigured } from '../lib/cloudinary';
+import { LogOut, Home, Building2, Mail, BarChart3, Plus, CreditCard as Edit, Trash2, Star, StarOff, Search, MessageSquare, CheckCircle, XCircle, User, Inbox, TrendingUp, Globe, Calendar, Clock, AlertTriangle } from 'lucide-react';
 
 interface Testimonial {
   id: string;
@@ -56,6 +58,8 @@ export default function AdminDashboard() {
   const [messageFilter, setMessageFilter] = useState<'all' | 'new' | 'contacted' | 'closed'>('all');
   const [inquiryTypeFilter, setInquiryTypeFilter] = useState<'all' | 'buy' | 'sell' | 'contact'>('all');
   const [deleteConfirm, setDeleteConfirm] = useState<string | null>(null);
+  const [migrating, setMigrating] = useState(false);
+  const [migrateResult, setMigrateResult] = useState<string | null>(null);
 
   const { data: properties = [], isLoading: propertiesLoading } = useQuery<Property[]>({
     queryKey: ['admin', 'properties'],
@@ -70,18 +74,7 @@ export default function AdminDashboard() {
     staleTime: 5 * 60 * 1000,
   });
 
-  const { data: testimonials = [] } = useQuery<Testimonial[]>({
-    queryKey: ['admin', 'testimonials'],
-    queryFn: async () => {
-      const { data, error } = await supabase
-        .from('testimonials')
-        .select('id, customer_name, customer_role, testimonial_text, rating, featured, approved, created_at')
-        .order('created_at', { ascending: false });
-      if (error) throw error;
-      return data || [];
-    },
-    staleTime: 5 * 60 * 1000,
-  });
+  const { data: testimonials = [] } = useAdminTestimonials();
 
   const { data: contactMessages = [] } = useQuery<ContactMessage[]>({
     queryKey: ['admin', 'contact_messages'],
@@ -94,6 +87,7 @@ export default function AdminDashboard() {
       return data || [];
     },
     staleTime: 5 * 60 * 1000,
+    enabled: activeTab === 'messages',
   });
 
   const { data: propertyInquiries = [] } = useQuery<PropertyInquiry[]>({
@@ -107,24 +101,84 @@ export default function AdminDashboard() {
       return data || [];
     },
     staleTime: 5 * 60 * 1000,
+    enabled: activeTab === 'messages',
   });
 
-  const { data: pageViews = [] } = useQuery<{ page_path: string; session_id: string; created_at: string }[]>({
-    queryKey: ['admin', 'page_views'],
+  interface AnalyticsData {
+    totalViews: number;
+    todayViews: number;
+    weekViews: number;
+    monthViews: number;
+    uniqueSessions: number;
+    topPages: { page_path: string; count: number }[];
+    dailyCounts: { date: string; count: number }[];
+  }
+
+  const { data: analyticsData } = useQuery<AnalyticsData>({
+    queryKey: ['admin', 'analytics'],
     queryFn: async () => {
-      const thirtyDaysAgo = new Date();
-      thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
-      const { data, error } = await supabase
-        .from('page_views')
-        .select('page_path, session_id, created_at')
-        .gte('created_at', thirtyDaysAgo.toISOString())
-        .order('created_at', { ascending: false });
-      if (error) throw error;
-      return data || [];
+      const now = new Date();
+      const todayStart = new Date(now.getFullYear(), now.getMonth(), now.getDate()).toISOString();
+      const weekStart = new Date(now.getFullYear(), now.getMonth(), now.getDate() - 6).toISOString();
+      const monthStart = new Date(now.getFullYear(), now.getMonth(), now.getDate() - 29).toISOString();
+
+      const [totalRes, todayRes, weekRes, monthRes, sessionsRes, topPagesRes, dailyRes] = await Promise.all([
+        supabase.from('page_views').select('id', { count: 'exact', head: true }).gte('created_at', monthStart),
+        supabase.from('page_views').select('id', { count: 'exact', head: true }).gte('created_at', todayStart),
+        supabase.from('page_views').select('id', { count: 'exact', head: true }).gte('created_at', weekStart),
+        supabase.from('page_views').select('id', { count: 'exact', head: true }).gte('created_at', monthStart),
+        supabase.rpc('count_unique_sessions', { since: monthStart }),
+        supabase.rpc('top_pages', { since: monthStart, page_limit: 10 }),
+        supabase.rpc('daily_page_views', { since: monthStart }),
+      ]);
+
+      return {
+        totalViews: totalRes.count ?? 0,
+        todayViews: todayRes.count ?? 0,
+        weekViews: weekRes.count ?? 0,
+        monthViews: monthRes.count ?? 0,
+        uniqueSessions: sessionsRes.data ?? 0,
+        topPages: topPagesRes.data ?? [],
+        dailyCounts: dailyRes.data ?? [],
+      };
     },
     staleTime: 5 * 60 * 1000,
     enabled: activeTab === 'analytics',
   });
+
+  const base64Properties = properties.filter((p) => p.image_url && p.image_url.startsWith('data:'));
+
+  const migrateBase64Images = useCallback(async () => {
+    if (!isCloudinaryConfigured()) {
+      setMigrateResult('Cloudinary nie je nakonfigurovaný. Skontrolujte VITE_CLOUDINARY_CLOUD_NAME a VITE_CLOUDINARY_UPLOAD_PRESET.');
+      return;
+    }
+    setMigrating(true);
+    setMigrateResult(null);
+    let successCount = 0;
+    let errorCount = 0;
+    for (const prop of base64Properties) {
+      try {
+        const res = await fetch(prop.image_url);
+        const blob = await res.blob();
+        const ext = blob.type.split('/')[1] || 'jpg';
+        const file = new File([blob], `property-${prop.id}.${ext}`, { type: blob.type });
+        const cloudUrl = await uploadImageToCloudinary(file, 'properties');
+        const { error } = await supabase
+          .from('properties')
+          .update({ image_url: cloudUrl })
+          .eq('id', prop.id);
+        if (error) throw error;
+        successCount++;
+      } catch {
+        errorCount++;
+      }
+    }
+    queryClient.invalidateQueries({ queryKey: ['admin', 'properties'] });
+    queryClient.invalidateQueries({ queryKey: ['properties'] });
+    setMigrateResult(`Dokončené: ${successCount} úspešne presunuté${errorCount > 0 ? `, ${errorCount} zlyhalo` : ''}.`);
+    setMigrating(false);
+  }, [base64Properties, queryClient]);
 
   const loading = propertiesLoading;
 
@@ -308,38 +362,27 @@ export default function AdminDashboard() {
   };
 
   const now = new Date();
-  const todayStart = new Date(now.getFullYear(), now.getMonth(), now.getDate()).toISOString();
-  const weekStart = new Date(now.getFullYear(), now.getMonth(), now.getDate() - 6).toISOString();
-  const monthStart = new Date(now.getFullYear(), now.getMonth(), now.getDate() - 29).toISOString();
 
   const analyticsStats = {
-    total: pageViews.length,
-    today: pageViews.filter((v) => v.created_at >= todayStart).length,
-    thisWeek: pageViews.filter((v) => v.created_at >= weekStart).length,
-    thisMonth: pageViews.filter((v) => v.created_at >= monthStart).length,
-    uniqueSessions: new Set(pageViews.map((v) => v.session_id)).size,
+    total: analyticsData?.totalViews ?? 0,
+    today: analyticsData?.todayViews ?? 0,
+    thisWeek: analyticsData?.weekViews ?? 0,
+    thisMonth: analyticsData?.monthViews ?? 0,
+    uniqueSessions: analyticsData?.uniqueSessions ?? 0,
   };
 
-  const pagePathCounts = pageViews.reduce<Record<string, number>>((acc, v) => {
-    acc[v.page_path] = (acc[v.page_path] || 0) + 1;
-    return acc;
-  }, {});
+  const topPages = (analyticsData?.topPages ?? []).map((r) => [r.page_path, r.count] as [string, number]);
 
-  const topPages = Object.entries(pagePathCounts)
-    .sort((a, b) => b[1] - a[1])
-    .slice(0, 10);
-
-  const dailyCounts: Record<string, number> = {};
+  const dailyMap: Record<string, number> = {};
   for (let i = 29; i >= 0; i--) {
     const d = new Date(now.getFullYear(), now.getMonth(), now.getDate() - i);
-    const key = d.toISOString().slice(0, 10);
-    dailyCounts[key] = 0;
+    dailyMap[d.toISOString().slice(0, 10)] = 0;
   }
-  pageViews.forEach((v) => {
-    const key = v.created_at.slice(0, 10);
-    if (key in dailyCounts) dailyCounts[key]++;
+  (analyticsData?.dailyCounts ?? []).forEach((r) => {
+    const key = r.date.slice(0, 10);
+    if (key in dailyMap) dailyMap[key] = r.count;
   });
-  const dailyData = Object.entries(dailyCounts);
+  const dailyData = Object.entries(dailyMap);
   const maxDailyCount = Math.max(...dailyData.map(([, c]) => c), 1);
 
   const pageLabels: Record<string, string> = {
@@ -459,6 +502,36 @@ export default function AdminDashboard() {
 
         {activeTab === 'properties' && (
           <>
+            {base64Properties.length > 0 && (
+              <div className="mb-6 bg-amber-950/40 border border-amber-700/50 rounded-xl p-5 flex flex-col sm:flex-row gap-4 items-start sm:items-center">
+                <AlertTriangle className="w-6 h-6 text-amber-500 shrink-0 mt-0.5 sm:mt-0" />
+                <div className="flex-1 min-w-0">
+                  <p className="text-amber-300 font-semibold text-sm">
+                    {base64Properties.length} {base64Properties.length === 1 ? 'nehnuteľnosť má' : 'nehnuteľnosti majú'} obrázok uložený priamo v databáze (base64)
+                  </p>
+                  <p className="text-amber-500/70 text-xs mt-1">
+                    Toto spôsobuje vysoké diskové IO a spomaľuje celú aplikáciu. Kliknite na tlačidlo pre presunutie obrázkov na Cloudinary.
+                  </p>
+                  {migrateResult && (
+                    <p className="text-green-400 text-xs mt-2 font-medium">{migrateResult}</p>
+                  )}
+                </div>
+                <button
+                  onClick={migrateBase64Images}
+                  disabled={migrating}
+                  className="shrink-0 flex items-center gap-2 px-4 py-2 bg-amber-600 hover:bg-amber-500 disabled:bg-amber-800 disabled:cursor-not-allowed text-black font-semibold rounded-lg transition-colors text-sm"
+                >
+                  {migrating ? (
+                    <>
+                      <div className="w-4 h-4 border-2 border-black/30 border-t-black rounded-full animate-spin" />
+                      Presúvam...
+                    </>
+                  ) : (
+                    'Presunúť na Cloudinary'
+                  )}
+                </button>
+              </div>
+            )}
             <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
           <div className="bg-gradient-to-br from-stone-900 to-stone-800 rounded-xl p-6 border border-stone-700">
             <div className="flex items-center justify-between mb-2">

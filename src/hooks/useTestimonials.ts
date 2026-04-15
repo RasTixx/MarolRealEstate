@@ -50,16 +50,16 @@ export function useAllTestimonials() {
 
 export function useAdminTestimonials() {
   return useQuery<Testimonial[]>({
-    queryKey: ['testimonials', 'admin'],
+    queryKey: ['admin', 'testimonials'],
     queryFn: async () => {
       const { data, error } = await supabase
         .from('testimonials')
-        .select('*')
+        .select('id, customer_name, customer_role, testimonial_text, rating, featured, approved, created_at')
         .order('created_at', { ascending: false });
 
       if (error) throw error;
       return data || [];
     },
-    staleTime: 1 * 60 * 1000,
+    staleTime: 5 * 60 * 1000,
   });
 }
