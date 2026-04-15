@@ -62,12 +62,12 @@ export default function AdminDashboard() {
     queryFn: async () => {
       const { data, error } = await supabase
         .from('properties')
-        .select('*')
+        .select('id, title, price, location, property_type, transaction_type, bedrooms, bathrooms, area, featured, rezervovane, predane, created_at, image_url')
         .order('created_at', { ascending: false });
       if (error) throw error;
       return data || [];
     },
-    staleTime: 60 * 1000,
+    staleTime: 5 * 60 * 1000,
   });
 
   const { data: testimonials = [] } = useQuery<Testimonial[]>({
@@ -75,12 +75,12 @@ export default function AdminDashboard() {
     queryFn: async () => {
       const { data, error } = await supabase
         .from('testimonials')
-        .select('*')
+        .select('id, customer_name, customer_role, testimonial_text, rating, featured, approved, created_at')
         .order('created_at', { ascending: false });
       if (error) throw error;
       return data || [];
     },
-    staleTime: 60 * 1000,
+    staleTime: 5 * 60 * 1000,
   });
 
   const { data: contactMessages = [] } = useQuery<ContactMessage[]>({
@@ -88,12 +88,12 @@ export default function AdminDashboard() {
     queryFn: async () => {
       const { data, error } = await supabase
         .from('contact_messages')
-        .select('*')
+        .select('id, name, email, phone, message, status, created_at')
         .order('created_at', { ascending: false });
       if (error) throw error;
       return data || [];
     },
-    staleTime: 60 * 1000,
+    staleTime: 5 * 60 * 1000,
   });
 
   const { data: propertyInquiries = [] } = useQuery<PropertyInquiry[]>({
@@ -101,12 +101,12 @@ export default function AdminDashboard() {
     queryFn: async () => {
       const { data, error } = await supabase
         .from('property_inquiries')
-        .select('*')
+        .select('id, inquiry_type, full_name, email, phone, property_type, location, min_price, max_price, address, city, asking_price, additional_requirements, description, status, created_at')
         .order('created_at', { ascending: false });
       if (error) throw error;
       return data || [];
     },
-    staleTime: 60 * 1000,
+    staleTime: 5 * 60 * 1000,
   });
 
   const { data: pageViews = [] } = useQuery<{ page_path: string; session_id: string; created_at: string }[]>({
@@ -122,7 +122,7 @@ export default function AdminDashboard() {
       if (error) throw error;
       return data || [];
     },
-    staleTime: 60 * 1000,
+    staleTime: 5 * 60 * 1000,
     enabled: activeTab === 'analytics',
   });
 

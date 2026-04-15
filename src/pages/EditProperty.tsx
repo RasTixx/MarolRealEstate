@@ -301,57 +301,69 @@ export default function EditProperty() {
     }
     let doneCount = 0;
 
-    for (let i = 0; i < images.length; i++) {
-      const image = images[i];
-
-      if (image.existing && image.id) {
-        await supabase
+    const existingUpdates = images.filter((img) => img.existing && img.id);
+    await Promise.all(
+      existingUpdates.map((image) =>
+        supabase
           .from('property_images')
           .update({ display_order: image.order, is_primary: image.is_primary })
-          .eq('id', image.id);
-        if (image.is_primary) primaryUrl = image.preview;
-      } else if (image.file) {
-        updateImageStatus(image.uid, 'uploading');
+          .eq('id', image.id!)
+      )
+    );
 
-        let publicUrl: string;
-        try {
-          if (useCloudinary) {
-            publicUrl = await uploadImageToCloudinary(image.file, `properties/${id}`);
-          } else {
-            const fileExt = image.file.name.split('.').pop();
-            const fileName = `${id}/${Math.random().toString(36).substring(2)}-${Date.now()}.${fileExt}`;
-            const { error: uploadError } = await supabase.storage.from('property-images').upload(fileName, image.file);
-            if (uploadError) {
-              console.error('Error uploading image:', uploadError);
-              updateImageStatus(image.uid, 'error');
-              doneCount++;
-              setUploadProgress({ done: doneCount, total: newImages.length });
-              continue;
-            }
-            const { data: { publicUrl: url } } = supabase.storage.from('property-images').getPublicUrl(fileName);
-            publicUrl = url;
+    const existingPrimary = existingUpdates.find((img) => img.is_primary);
+    if (existingPrimary) primaryUrl = existingPrimary.preview;
+
+    const newImageRows: { property_id: string; image_url: string; display_order: number; is_primary: boolean }[] = [];
+
+    for (let i = 0; i < images.length; i++) {
+      const image = images[i];
+      if (image.existing || !image.file) continue;
+
+      updateImageStatus(image.uid, 'uploading');
+
+      let publicUrl: string;
+      try {
+        if (useCloudinary) {
+          publicUrl = await uploadImageToCloudinary(image.file, `properties/${id}`);
+        } else {
+          const fileExt = image.file.name.split('.').pop();
+          const fileName = `${id}/${Math.random().toString(36).substring(2)}-${Date.now()}.${fileExt}`;
+          const { error: uploadError } = await supabase.storage.from('property-images').upload(fileName, image.file);
+          if (uploadError) {
+            console.error('Error uploading image:', uploadError);
+            updateImageStatus(image.uid, 'error');
+            doneCount++;
+            setUploadProgress({ done: doneCount, total: newImages.length });
+            continue;
           }
-        } catch (err) {
-          console.error('Error uploading image:', err);
-          updateImageStatus(image.uid, 'error');
-          doneCount++;
-          setUploadProgress({ done: doneCount, total: newImages.length });
-          continue;
+          const { data: { publicUrl: url } } = supabase.storage.from('property-images').getPublicUrl(fileName);
+          publicUrl = url;
         }
-
-        updateImageStatus(image.uid, 'done');
+      } catch (err) {
+        console.error('Error uploading image:', err);
+        updateImageStatus(image.uid, 'error');
         doneCount++;
         setUploadProgress({ done: doneCount, total: newImages.length });
-
-        if (image.is_primary) primaryUrl = publicUrl;
-
-        await supabase.from('property_images').insert({
-          property_id: id,
-          image_url: publicUrl,
-          display_order: image.order,
-          is_primary: image.is_primary,
-        });
+        continue;
       }
+
+      updateImageStatus(image.uid, 'done');
+      doneCount++;
+      setUploadProgress({ done: doneCount, total: newImages.length });
+
+      if (image.is_primary) primaryUrl = publicUrl;
+
+      newImageRows.push({
+        property_id: id,
+        image_url: publicUrl,
+        display_order: image.order,
+        is_primary: image.is_primary,
+      });
+    }
+
+    if (newImageRows.length > 0) {
+      await supabase.from('property_images').insert(newImageRows);
     }
 
     return primaryUrl;

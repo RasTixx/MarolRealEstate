@@ -173,6 +173,8 @@ export default function AddProperty() {
 
     setUploadProgress({ done: 0, total: images.length });
 
+    const imageRows: { property_id: string; image_url: string; display_order: number; is_primary: boolean }[] = [];
+
     for (let i = 0; i < images.length; i++) {
       const image = images[i];
       updateImageStatus(image.uid, 'uploading');
@@ -210,12 +212,16 @@ export default function AddProperty() {
 
       if (i === 0) primaryUrl = publicUrl;
 
-      await supabase.from('property_images').insert({
+      imageRows.push({
         property_id: propertyId,
         image_url: publicUrl,
         display_order: image.order,
         is_primary: i === 0,
       });
+    }
+
+    if (imageRows.length > 0) {
+      await supabase.from('property_images').insert(imageRows);
     }
 
     return primaryUrl;
